@@ -1,0 +1,17 @@
+variable "libvirt_hostname" {
+  type        = string
+  description = "DNS resolvable hostname of a libvirt host"
+  default     = "hv1"
+}
+
+variable "libvirt_user" {
+  type        = string
+  description = "user to connect to libvirt as"
+  default     = "jhughes"
+}
+
+variable "libvirt_ssh_key" {
+  type        = string
+  description = "SSH key for libvirt connections"
+  default     = "$HOME/.ssh/hv1.pem"
+}
