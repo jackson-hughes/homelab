@@ -17,28 +17,28 @@ resource "libvirt_volume" "centos8_base" {
 }
 
 resource "libvirt_volume" "main" {
-  for_each       = toset(var.kvm_virtual_machines)
-  name           = each.value
+  for_each       = { for vm in var.kvm_virtual_machines : vm.name => vm }
+  name           = each.value.name
   base_volume_id = libvirt_volume.centos8_base.id
 }
 
 resource "libvirt_cloudinit_disk" "main" {
-  for_each  = toset(var.kvm_virtual_machines)
-  name      = "${each.value}_cloud_init.iso"
-  user_data = templatefile("${path.module}/templates/cloud_init.tpl", { hostname = each.value })
+  for_each  = { for vm in var.kvm_virtual_machines : vm.name => vm }
+  name      = "${each.value.name}_cloud_init.iso"
+  user_data = templatefile("${path.module}/templates/cloud_init.tpl", { hostname = each.value.name })
 }
 
 resource "libvirt_domain" "main" {
-  for_each = toset(var.kvm_virtual_machines)
-  name     = each.value
-  memory   = "1024"
-  vcpu     = "1"
+  for_each = { for vm in var.kvm_virtual_machines : vm.name => vm }
+  name     = each.value.name
+  vcpu     = each.value.cpus
+  memory   = each.value.memory
   cmdline  = []
 
-  cloudinit = libvirt_cloudinit_disk.main[each.value].id
+  cloudinit = libvirt_cloudinit_disk.main[each.value.name].id
 
   disk {
-    volume_id = libvirt_volume.main[each.value].id
+    volume_id = libvirt_volume.main[each.value.name].id
   }
 
   graphics {

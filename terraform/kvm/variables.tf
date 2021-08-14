@@ -17,7 +17,7 @@ variable "libvirt_ssh_key" {
 }
 
 variable "kvm_virtual_machines" {
-  type        = list(string) # todo: turn into a map including VM spec, e.g. CPU, etc.
+  type        = list(map(string))
   description = "List of hostnames for VMs"
   default     = []
 }
