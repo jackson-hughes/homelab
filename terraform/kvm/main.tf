@@ -18,7 +18,7 @@ resource "libvirt_volume" "centos8_base" {
 
 resource "libvirt_volume" "main" {
   for_each       = { for vm in var.kvm_virtual_machines : vm.name => vm }
-  name           = each.value.name
+  name           = "${each.value.name}.qcow2"
   base_volume_id = libvirt_volume.centos8_base.id
 }
 
