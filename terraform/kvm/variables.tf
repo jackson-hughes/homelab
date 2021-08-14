@@ -15,3 +15,9 @@ variable "libvirt_ssh_key" {
   description = "SSH key for libvirt connections"
   default     = "$HOME/.ssh/hv1.pem"
 }
+
+variable "kvm_virtual_machines" {
+  type        = list(string) # todo: turn into a map including VM spec, e.g. CPU, etc.
+  description = "List of hostnames for VMs"
+  default     = []
+}

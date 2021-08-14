@@ -16,38 +16,29 @@ resource "libvirt_volume" "centos8_base" {
   source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
 }
 
-locals {
-  kvm_virtual_machines = [
-    "consul01",
-    "consul02",
-    "consul03",
-  ]
-}
-
 resource "libvirt_volume" "main" {
-  count          = length(local.kvm_virtual_machines)
-  name           = element(local.kvm_virtual_machines, count.index)
+  for_each       = toset(var.kvm_virtual_machines)
+  name           = each.value
   base_volume_id = libvirt_volume.centos8_base.id
 }
 
 resource "libvirt_cloudinit_disk" "main" {
-  count     = length(local.kvm_virtual_machines)
-  name      = "${element(local.kvm_virtual_machines, count.index)}_cloud_init.iso"
-  user_data = templatefile("${path.module}/templates/cloud_init.tpl", { hostname = element(local.kvm_virtual_machines, count.index) })
+  for_each  = toset(var.kvm_virtual_machines)
+  name      = "${each.value}_cloud_init.iso"
+  user_data = templatefile("${path.module}/templates/cloud_init.tpl", { hostname = each.value })
 }
 
-
 resource "libvirt_domain" "main" {
-  count   = length(local.kvm_virtual_machines)
-  name    = element(local.kvm_virtual_machines, count.index)
-  memory  = "1024"
-  vcpu    = "1"
-  cmdline = []
+  for_each = toset(var.kvm_virtual_machines)
+  name     = each.value
+  memory   = "1024"
+  vcpu     = "1"
+  cmdline  = []
 
-  cloudinit = libvirt_cloudinit_disk.main[count.index].id
+  cloudinit = libvirt_cloudinit_disk.main[each.value].id
 
   disk {
-    volume_id = libvirt_volume.main[count.index].id
+    volume_id = libvirt_volume.main[each.value].id
   }
 
   graphics {
