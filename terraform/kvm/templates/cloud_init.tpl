@@ -13,3 +13,5 @@ packages:
   - firewalld
 runcmd:
   - systemctl enable --now firewalld
+  - yum update \-y
+  - reboot
