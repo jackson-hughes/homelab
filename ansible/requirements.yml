@@ -1,0 +1,4 @@
+# firewalld
+- src: https://github.com/jhughes01/ansible-role-firewalld
+  version: master
+

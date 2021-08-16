@@ -1,0 +1,18 @@
+---
+- hosts: all
+  roles:
+  - ansible-role-firewalld
+
+  tasks:
+  - name: Add my user account
+    user:
+      name: jhughes
+      shell: /bin/bash
+      groups: wheel
+      append: yes
+
+  - name: Add key for jhughes user
+    authorized_key:
+      user: jhughes
+      state: present
+      key: https://github.com/jhughes01.keys

@@ -1,0 +1,6 @@
+---
+# Firewall variables
+firewalld_open_ports: []
+
+firewalld_active_services:
+  - "ssh"
