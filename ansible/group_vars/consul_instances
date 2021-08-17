@@ -1,0 +1,10 @@
+---
+# Firewall variables
+firewalld_open_ports: 
+  - 8600/udp # dns
+  - 8600/tcp # dns
+  - 53/udp   # dns
+  - 8500/tcp # http
+  - 8400/tcp # tcp
+  - 8301/tcp # serf lan
+  - 8300/tcp # rpc

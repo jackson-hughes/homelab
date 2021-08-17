@@ -1,3 +1,8 @@
 [docker]
-docker03
+docker03.lan.jhcloud.io
 
+[consul_instances]
+consul01.lan.jhcloud.io consul_node_role=server consul_bootstrap_expect=true
+consul02.lan.jhcloud.io consul_node_role=server consul_bootstrap_expect=true
+consul03.lan.jhcloud.io consul_node_role=server consul_bootstrap_expect=true
+docker03.lan.jhcloud.io consul_node_role=agent consul_bootstrap_expect=true

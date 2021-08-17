@@ -13,5 +13,10 @@ roles:
   - src: geerlingguy.repo-epel
     version: 3.1.0
 
+  - src: https://github.com/ansible-community/ansible-consul.git
+    name: ansible-consul
+    # version: v2.6.1
+    version: master # https://github.com/ansible-community/ansible-consul/issues/389
+
 collections:
 - name: community.docker
