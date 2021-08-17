@@ -2,6 +2,7 @@
 - hosts: all
   roles:
   - ansible-role-firewalld
+  - geerlingguy.repo-epel
 
   tasks:
   - name: Add my user account

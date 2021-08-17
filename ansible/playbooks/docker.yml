@@ -1,6 +1,32 @@
 ---
 - hosts: docker
+  # Deprecation notice fix but option not yet available on latest ansible?
+  # module_defaults:
+  #   community.docker.docker_container:
+  #     container_default_behaviour: no_defaults
+
+  pre_tasks:
+  - name: Install packages
+    yum:
+      name: "{{ packages }}"
+    vars:
+      packages:
+      - python3
+      - nfs-utils
+  
   roles:
   - geerlingguy.docker
+  - geerlingguy.pip
   vars:
     docker_edition: 'ce'
+    pip_install_packages:
+    - name: docker
+
+  tasks:
+  - name: Prometheus container
+    community.docker.docker_container:
+      # state: absent
+      name: prometheus
+      image: prom/prometheus
+      ports:
+      - 9090:9090
