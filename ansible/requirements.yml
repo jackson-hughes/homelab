@@ -2,3 +2,5 @@
 - src: https://github.com/jhughes01/ansible-role-firewalld
   version: master
 
+- src: geerlingguy.docker
+  version: 4.0.0
