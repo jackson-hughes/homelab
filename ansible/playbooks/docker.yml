@@ -42,4 +42,4 @@
       name: plex
       image: linuxserver/plex
       ports:
-      - 3000:3000
+      - 32400:32400
