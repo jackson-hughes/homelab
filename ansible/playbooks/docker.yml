@@ -37,9 +37,30 @@
       ports:
       - 3000:3000
 
+  - name: Mount plex config
+    ansible.posix.mount:
+      src: storage:/volume1/plex-config
+      path: /data/plex-config
+      opts: auto,rw,noatime,nolock,bg,soft
+      state: mounted
+      fstype: nfs
+
+  - name: Mount plex data
+    ansible.posix.mount:
+      src: storage:/volume1/plex-media
+      path: /data/plex-media
+      opts: auto,rw,noatime,nolock,bg,soft
+      state: mounted
+      fstype: nfs
+
   - name: Plex container
     community.docker.docker_container:
       name: plex
       image: linuxserver/plex
-      ports:
-      - 32400:32400
+      network_mode: host
+      volumes:
+        - /data/plex-config:/config
+        - /data/plex-media/tv:/tv
+        - /data/plex-media/movies:/movies
+      restart_policy: unless-stopped
+      devices: /dev/dri:/dev/dri
