@@ -1,6 +1,10 @@
 ---
 # Firewall variables
-firewalld_open_ports: []
+firewalld_open_ports:
+  - 8300/tcp # consul rpc
+  - 8301/tcp # consul serf lan
+  - 8500/tcp # consul http
+  - 53/udp   # consul dns
 
 firewalld_active_services:
   - "ssh"
