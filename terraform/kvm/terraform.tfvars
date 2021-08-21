@@ -16,8 +16,8 @@ kvm_virtual_machines = [
   },
   {
     name : "kube01",
-    cpus : "1",
-    memory : "2048"
+    cpus : "2",
+    memory : "4096"
   },
   {
     name : "docker03",

@@ -11,6 +11,10 @@ firewalld_open_ports:
   - 32413/udp
   - 32414/udp
   - 32469/tcp
+  - 8300/tcp # consul rpc
+  - 8301/tcp # consul serf lan
+  - 8500/tcp # consul http
+  - 53/udp   # consul dns
 
 firewalld_active_services:
   - "ssh"
