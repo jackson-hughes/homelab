@@ -42,7 +42,7 @@
       src: storage:/volume1/plex-config
       path: /data/plex-config
       opts: auto,rw,noatime,nolock,bg,soft
-      state: mounted
+      state: present
       fstype: nfs
 
   - name: Mount plex data
@@ -50,11 +50,12 @@
       src: storage:/volume1/plex-media
       path: /data/plex-media
       opts: auto,rw,noatime,nolock,bg,soft
-      state: mounted
+      state: present
       fstype: nfs
 
   - name: Plex container
     community.docker.docker_container:
+      state: running
       name: plex
       image: linuxserver/plex
       network_mode: host

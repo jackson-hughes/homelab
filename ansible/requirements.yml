@@ -1,6 +1,5 @@
 ---
 roles:
-  # firewalld
   - src: https://github.com/jhughes01/ansible-role-firewalld
     version: master
 
@@ -17,6 +16,9 @@ roles:
     name: ansible-consul
     # version: v2.6.1
     version: master # https://github.com/ansible-community/ansible-consul/issues/389
+
+  - src: https://github.com/jhughes01/ansible-role-plex
+    version: master
 
 collections:
 - name: community.docker
