@@ -14,7 +14,7 @@
       src: storage:/volume1/plex-config
       path: /var/lib/plexmediaserver/
       opts: auto,rw,noatime,nolock,bg,soft
-      state: absent
+      state: mounted
       fstype: nfs
 
   - name: Mount plex data
