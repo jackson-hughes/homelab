@@ -5,6 +5,7 @@ firewalld_open_ports:
   - 8301/tcp # consul serf lan
   - 8500/tcp # consul http
   - 53/udp   # consul dns
+  - 9100/tcp # node exporter
 
 firewalld_active_services:
   - "ssh"

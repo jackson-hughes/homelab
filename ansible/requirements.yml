@@ -20,5 +20,9 @@ roles:
   - src: https://github.com/jhughes01/ansible-role-plex
     version: master
 
+  - src: cloudalchemy.node_exporter
+    # version: 2.0.0
+    version: master # https://github.com/cloudalchemy/ansible-node-exporter/issues/230
+
 collections:
 - name: community.docker
