@@ -1,20 +1,11 @@
 ---
 # Firewall variables
 firewalld_open_ports:
-  - 32400/tcp
-  - 1900/udp
-  - 3005/tcp
-  - 5353/udp
-  - 8324/tcp
-  - 32410/udp
-  - 32412/udp
-  - 32413/udp
-  - 32414/udp
-  - 32469/tcp
   - 8300/tcp # consul rpc
   - 8301/tcp # consul serf lan
   - 8500/tcp # consul http
   - 53/udp   # consul dns
+  - 9100/tcp # node exporter
 
 firewalld_active_services:
   - "ssh"

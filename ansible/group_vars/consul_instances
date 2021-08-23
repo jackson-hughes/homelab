@@ -8,6 +8,7 @@ firewalld_open_ports:
   - 8400/tcp # tcp
   - 8301/tcp # serf lan
   - 8300/tcp # rpc
+  - 9100/tcp # node exporter
 
 firewalld_active_services:
   - "ssh"

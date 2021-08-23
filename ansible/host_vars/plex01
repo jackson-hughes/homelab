@@ -1,0 +1,45 @@
+---
+consul_services:
+  - name: "plex media server"
+    tags:
+      - "plex"
+      - "media"
+    port: "32400"
+    checks:
+      - name: 
+        http: "http://localhost:32400/web/index.html"
+        interval: "15s"
+        timeout: "3s"
+  - name: "node exporter"
+    tags:
+      - "node exporter"
+      - "monitoring"
+    port: "9100"
+    checks:
+      - name: 
+        http: "http://localhost:9100/metrics"
+        interval: "15s"
+        timeout: "3s"
+
+firewalld_active_services:
+  - "ssh"
+
+firewalld_open_ports:
+  - 32400/tcp # plex
+  - 1900/udp  # plex
+  - 3005/tcp  # plex
+  - 5353/udp  # plex
+  - 8324/tcp  # plex
+  - 32410/udp # plex
+  - 32412/udp # plex
+  - 32413/udp # plex
+  - 32414/udp # plex
+  - 32469/tcp # plex
+  - 8600/udp  # consul dns
+  - 8600/tcp  # consul dns
+  - 53/udp    # consul dns
+  - 8500/tcp  # consul http
+  - 8400/tcp  # consul tcp
+  - 8301/tcp  # consul serf lan
+  - 8300/tcp  # consul rpc
+  - 9100/tcp  # node exporter

@@ -3,6 +3,7 @@
   roles:
   - ansible-role-firewalld
   - geerlingguy.repo-epel
+  - cloudalchemy.node_exporter
 
   tasks:
   - name: Add my user account

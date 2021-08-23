@@ -23,44 +23,72 @@
     - name: docker
 
   tasks:
+  - name: Create prometheus config directory
+    ansible.builtin.file:
+      path: /opt/prometheus
+      state: directory
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Prometheus configuration
+    ansible.builtin.copy:
+      src: prometheus/prometheus.yml
+      dest: /opt/prometheus/prometheus.yml
+      owner: root
+      group: root
+      mode: '0644'
+
   - name: Prometheus container
     community.docker.docker_container:
       name: prometheus
       image: prom/prometheus
       ports:
-      - 9090:9090
+        - 9090:9090
+      volumes:
+        - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
 
   - name: Grafana container
     community.docker.docker_container:
       name: grafana
       image: grafana/grafana
       ports:
-      - 3000:3000
+        - 3000:3000
 
-  - name: Mount plex config
-    ansible.posix.mount:
-      src: storage:/volume1/plex-config
-      path: /data/plex-config
-      opts: auto,rw,noatime,nolock,bg,soft
-      state: mounted
-      fstype: nfs
-
-  - name: Mount plex data
-    ansible.posix.mount:
-      src: storage:/volume1/plex-media
-      path: /data/plex-media
-      opts: auto,rw,noatime,nolock,bg,soft
-      state: mounted
-      fstype: nfs
-
-  - name: Plex container
+  - name: Consul exporter container
     community.docker.docker_container:
-      name: plex
-      image: linuxserver/plex
-      network_mode: host
-      volumes:
-        - /data/plex-config:/config
-        - /data/plex-media/tv:/tv
-        - /data/plex-media/movies:/movies
-      restart_policy: unless-stopped
-      devices: /dev/dri:/dev/dri
+      name: consul-exporter
+      image: prom/consul-exporter
+      ports:
+        - 9107:9107
+      command: "--consul.server=consul01:8500"
+      
+
+  # - name: Mount plex config
+  #   ansible.posix.mount:
+  #     src: storage:/volume1/plex-config
+  #     path: /data/plex-config
+  #     opts: auto,rw,noatime,nolock,bg,soft
+  #     state: absent
+  #     fstype: nfs
+
+  # - name: Mount plex data
+  #   ansible.posix.mount:
+  #     src: storage:/volume1/plex-media
+  #     path: /data/plex-media
+  #     opts: auto,rw,noatime,nolock,bg,soft
+  #     state: absent
+  #     fstype: nfs
+
+  # - name: Plex container
+  #   community.docker.docker_container:
+  #     state: absent
+  #     name: plex
+  #     image: linuxserver/plex
+  #     network_mode: host
+  #     volumes:
+  #       - /data/plex-config:/config
+  #       - /data/plex-media/tv:/tv
+  #       - /data/plex-media/movies:/movies
+  #     restart_policy: unless-stopped
+  #     devices: /dev/dri:/dev/dri

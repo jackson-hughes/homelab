@@ -5,6 +5,21 @@ firewalld_open_ports:
   - 8301/tcp # consul serf lan
   - 8500/tcp # consul http
   - 53/udp   # consul dns
+  - 9100/tcp # node exporter
 
 firewalld_active_services:
   - "ssh"
+
+node_exporter_version: "1.2.2"
+
+consul_services:
+  - name: "node exporter"
+    tags:
+      - "node exporter"
+      - "monitoring"
+    port: "9100"
+    checks:
+      - name: 
+        http: "http://localhost:9100/metrics"
+        interval: "15s"
+        timeout: "3s"

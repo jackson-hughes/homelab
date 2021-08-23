@@ -24,4 +24,9 @@ kvm_virtual_machines = [
     cpus : "4",
     memory : "4096"
   },
+  {
+    name : "plex01",
+    cpus : "4",
+    memory : "4096"
+  },
 ]

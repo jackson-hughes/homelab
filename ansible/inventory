@@ -7,3 +7,7 @@ consul02 consul_node_role=server
 consul03 consul_node_role=server
 docker03 consul_node_role=agent
 kube01   consul_node_role=agent
+plex01   consul_node_role=agent
+
+[plex]
+plex01
