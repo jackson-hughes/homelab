@@ -29,11 +29,12 @@ resource "libvirt_cloudinit_disk" "main" {
 }
 
 resource "libvirt_domain" "main" {
-  for_each = { for vm in var.kvm_virtual_machines : vm.name => vm }
-  name     = each.value.name
-  vcpu     = each.value.cpus
-  memory   = each.value.memory
-  cmdline  = []
+  for_each  = { for vm in var.kvm_virtual_machines : vm.name => vm }
+  name      = each.value.name
+  vcpu      = each.value.cpus
+  memory    = each.value.memory
+  cmdline   = []
+  autostart = true
 
   cloudinit = libvirt_cloudinit_disk.main[each.value.name].id
 
