@@ -2,6 +2,30 @@ resource "aws_route53_zone" "jhcloud" {
   name = "jhcloud.io"
 }
 
+resource "aws_route53_zone" "lan_jhcloud" {
+  name = "lan.jhcloud.io"
+}
+
+resource "aws_route53_record" "lan_jhcloud_ns" {
+  zone_id = aws_route53_zone.jhcloud.zone_id
+  name    = "lan.jhcloud.io"
+  type    = "NS"
+  ttl     = 300
+  records = aws_route53_zone.lan_jhcloud.name_servers
+}
+
+resource "aws_route53_zone" "svc_lan_jhcloud" {
+  name = "svc.lan.jhcloud.io"
+}
+
+resource "aws_route53_record" "svc_lan_jhcloud_ns" {
+  zone_id = aws_route53_zone.lan_jhcloud.zone_id
+  name    = "svc.lan.jhcloud.io"
+  type    = "NS"
+  ttl     = 300
+  records = aws_route53_zone.svc_lan_jhcloud.name_servers
+}
+
 resource "aws_route53_zone" "zentech" {
   name = "zentech.xyz"
 }

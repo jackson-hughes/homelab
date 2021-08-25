@@ -62,7 +62,31 @@
       ports:
         - 9107:9107
       command: "--consul.server=consul01:8500"
-      
+
+  - name: Traefik configuration
+    ansible.builtin.copy:
+      src: traefik/traefik.yml
+      dest: /opt/traefik.yml
+      owner: root
+      group: root
+      mode: '0644'
+
+  - name: Traefik container
+    community.docker.docker_container:
+      name: traefik
+      image: traefik:v2.5.1
+      ports:
+        - 80:80     # http
+        - 443:443   # https
+        - 8080:8080 # traefik dashboard
+      volumes:
+        - /opt/traefik.yml:/etc/traefik/traefik.yml
+      env:
+        AWS_ACCESS_KEY_ID: "{{ acme_aws_access_key }}"
+        AWS_SECRET_ACCESS_KEY: "{{ acme_aws_secret_key }}"
+        AWS_REGION: eu-west-2
+        AWS_HOSTED_ZONE_ID: Z06622143R5WP36DLERL5
+
 
   # - name: Mount plex config
   #   ansible.posix.mount:

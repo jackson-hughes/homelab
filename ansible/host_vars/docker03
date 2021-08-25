@@ -4,6 +4,10 @@ consul_services:
     tags:
       - "prometheus"
       - "monitoring"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.prometheus.tls=true"
+      - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.prometheus.tls.domains[0].main=*.svc.lan.jhcloud.io"
     port: "9090"
     checks:
       - name: "Metrics endpoint check"
@@ -14,6 +18,10 @@ consul_services:
     tags:
       - "grafana"
       - "monitoring"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.grafana.tls=true"
+      - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.grafana.tls.domains[0].main=*.svc.lan.jhcloud.io"
     port: "3000"
     checks:
       - name: "Metrics endpoint check"
@@ -40,3 +48,20 @@ consul_services:
         http: "http://localhost:9107/metrics"
         interval: "15s"
         timeout: "3s"
+
+acme_aws_access_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          65353630613738393735343332343534346331383132306161373361346366386437386362656266
+          6436663663346333363464336239633638666439303065310a306233363062373961343430653536
+          30326330363738633365303233336637383938623031323964613638663733346333613665336232
+          3335343637363662390a613366383930656364653664383262393039373063613964393031353436
+          34366561383665313939323331663136626136653462383838633630393036663666
+
+acme_aws_secret_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          66316636633462343831663533343465343237646263666638343931623338383461356565356163
+          6462366136623437376366373933633432376366313737330a393165393935346439633934663666
+          35663739396664663663363435636533336564613061336366666263613832373133623932353639
+          6238363835323335300a343235633637333461323566393834303138363066626537633839343564
+          36393932303531356537383764366166373261376334303838633833303361316435363531626666
+          3136383237363036306262313734366531383461636534663464
