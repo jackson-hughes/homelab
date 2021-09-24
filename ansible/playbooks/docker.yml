@@ -47,6 +47,7 @@
         - 9090:9090
       volumes:
         - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      restart_policy: unless-stopped
 
   - name: Grafana container
     community.docker.docker_container:
@@ -54,6 +55,7 @@
       image: grafana/grafana
       ports:
         - 3000:3000
+      restart_policy: unless-stopped
 
   - name: Consul exporter container
     community.docker.docker_container:
@@ -62,6 +64,7 @@
       ports:
         - 9107:9107
       command: "--consul.server=consul01:8500"
+      restart_policy: unless-stopped
 
   - name: Traefik configuration
     ansible.builtin.copy:
@@ -81,38 +84,9 @@
         - 8080:8080 # traefik dashboard
       volumes:
         - /opt/traefik.yml:/etc/traefik/traefik.yml
+      restart_policy: unless-stopped
       env:
         AWS_ACCESS_KEY_ID: "{{ acme_aws_access_key }}"
         AWS_SECRET_ACCESS_KEY: "{{ acme_aws_secret_key }}"
         AWS_REGION: eu-west-2
         AWS_HOSTED_ZONE_ID: Z06622143R5WP36DLERL5
-
-
-  # - name: Mount plex config
-  #   ansible.posix.mount:
-  #     src: storage:/volume1/plex-config
-  #     path: /data/plex-config
-  #     opts: auto,rw,noatime,nolock,bg,soft
-  #     state: absent
-  #     fstype: nfs
-
-  # - name: Mount plex data
-  #   ansible.posix.mount:
-  #     src: storage:/volume1/plex-media
-  #     path: /data/plex-media
-  #     opts: auto,rw,noatime,nolock,bg,soft
-  #     state: absent
-  #     fstype: nfs
-
-  # - name: Plex container
-  #   community.docker.docker_container:
-  #     state: absent
-  #     name: plex
-  #     image: linuxserver/plex
-  #     network_mode: host
-  #     volumes:
-  #       - /data/plex-config:/config
-  #       - /data/plex-media/tv:/tv
-  #       - /data/plex-media/movies:/movies
-  #     restart_policy: unless-stopped
-  #     devices: /dev/dri:/dev/dri
