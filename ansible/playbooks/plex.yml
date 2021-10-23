@@ -9,14 +9,6 @@
       packages:
       - nfs-utils
 
-  - name: Mount plex config
-    ansible.posix.mount:
-      src: storage:/volume1/plex-config
-      path: /var/lib/plexmediaserver/
-      opts: auto,rw,noatime,nolock,bg,soft
-      state: mounted
-      fstype: nfs
-
   - name: Mount plex data
     ansible.posix.mount:
       src: storage:/volume1/plex-media/
