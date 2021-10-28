@@ -1,0 +1,57 @@
+# https://taskfile.dev
+
+version: '3'
+
+vars:
+  PYTHON_BIN: python3
+  PYTHON_BIN_PATH: venv/bin
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
+
+  venv-setup:
+    run: once
+    desc: Creates a virtual environment called venv and installs dependencies
+    cmds:
+      - "{{.PYTHON_BIN}} -m venv venv"
+      - "{{.PYTHON_BIN_PATH}}/{{.PYTHON_BIN}} -m pip install -r requirements.txt"
+    sources:
+      - requirements.txt
+    generates:
+      - venv/**
+
+  ansible-setup:
+    run: once
+    deps: [venv-setup]
+    desc: Installs required ansible roles as defined in requirements.yml
+    cmds:
+      - "{{.PYTHON_BIN_PATH}}/ansible-galaxy install -r requirements.yml"
+  
+  setup:
+    desc: Runs python and ansible setup tasks
+    cmds:
+      - task: venv-setup
+      - task: ansible-setup
+
+  plan:
+    desc: Runs specified ansible playbook in check mode with diff enabled
+    cmds:
+      - "{{.PYTHON_BIN_PATH}}/ansible-playbook --check --diff playbooks/{{.CLI_ARGS}}.yml"
+
+  plan-all:
+    desc: Runs all ansible playbooks in check mode with diff enabled
+    cmds:
+      - "{{.PYTHON_BIN_PATH}}/ansible-playbook --check --diff playbooks/site.yml"
+
+  apply:
+    desc: Runs specified ansible playbook
+    cmds:
+      - "{{.PYTHON_BIN_PATH}}/ansible-playbook playbooks/{{.CLI_ARGS}}.yml"
+
+  apply-all:
+    desc: Runs site.yml ansible playbook
+    cmds:
+      - "{{.PYTHON_BIN_PATH}}/ansible-playbook playbooks/site.yml"

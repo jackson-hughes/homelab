@@ -1,0 +1,14 @@
+# https://taskfile.dev
+
+version: '3'
+
+includes:
+  ansible:
+    taskfile: ./ansible/Taskfile.yml
+    dir: ./ansible
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
