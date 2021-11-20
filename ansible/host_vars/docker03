@@ -1,5 +1,18 @@
 ---
 consul_services:
+  - name: "traefik"
+    tags:
+      - "traefik"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.traefik.tls.domains[0].main=*.svc.lan.jhcloud.io"
+    port: "8080"
+    checks:
+      - name: "Metrics endpoint check"
+        http: "http://localhost:8080"
+        interval: "15s"
+        timeout: "3s"
   - name: "prometheus"
     tags:
       - "prometheus"
@@ -46,6 +59,48 @@ consul_services:
     checks:
       - name: "Metrics endpoint check"
         http: "http://localhost:9107/metrics"
+        interval: "15s"
+        timeout: "3s"
+  - name: "nzbget"
+    tags:
+      - "nzbget"
+      - "media-stack"
+      - "traefik.http.routers.nzbget.rule=Host(`nzb.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.nzbget.tls=true"
+      - "traefik.http.routers.nzbget.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.nzbget.tls.domains[0].main=*.svc.lan.jhcloud.io"
+    port: "6789"
+    checks:
+      - name: "HTTP check"
+        http: "http://localhost:6789"
+        interval: "15s"
+        timeout: "3s"
+  - name: "radarr"
+    tags:
+      - "radarr"
+      - "media-stack"
+      - "traefik.http.routers.radarr.rule=Host(`movies.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.radarr.tls=true"
+      - "traefik.http.routers.radarr.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.radarr.tls.domains[0].main=*.svc.lan.jhcloud.io"
+    port: "7878"
+    checks:
+      - name: "HTTP check"
+        http: "http://localhost:7878"
+        interval: "15s"
+        timeout: "3s"
+  - name: "sonarr"
+    tags:
+      - "sonarr"
+      - "media-stack"
+      - "traefik.http.routers.sonarr.rule=Host(`tv.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.sonarr.tls=true"
+      - "traefik.http.routers.sonarr.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.sonarr.tls.domains[0].main=*.svc.lan.jhcloud.io"
+    port: "8989"
+    checks:
+      - name: "HTTP check"
+        http: "http://localhost:8989"
         interval: "15s"
         timeout: "3s"
 
