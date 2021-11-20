@@ -2,7 +2,7 @@
 - hosts: all
   roles:
   - ansible-role-firewalld
-  - geerlingguy.repo-epel
+  # - geerlingguy.repo-epel # Doesn't work with Fedora
   - cloudalchemy.node_exporter
 
   tasks:
