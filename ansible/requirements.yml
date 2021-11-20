@@ -24,5 +24,8 @@ roles:
     # version: 2.0.0
     version: master # https://github.com/cloudalchemy/ansible-node-exporter/issues/230
 
+  - src: https://github.com/jhughes01/ansible-role-libvirt
+    version: main
+
 collections:
 - name: community.docker

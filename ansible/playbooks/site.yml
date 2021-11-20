@@ -3,3 +3,4 @@
 - import_playbook: docker.yml
 - import_playbook: consul.yml
 - import_playbook: plex.yml
+- import_playbook: libvirt.yml

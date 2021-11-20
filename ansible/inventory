@@ -6,12 +6,12 @@ consul01 consul_node_role=server
 consul02 consul_node_role=server
 consul03 consul_node_role=server
 docker03 consul_node_role=agent
-kube01   consul_node_role=agent
+# kube01   consul_node_role=agent
 plex01   consul_node_role=agent
 titan    consul_node_role=agent
 
 [plex]
 plex01
 
-[kvm_hosts]
-titan
+[libvirt_hosts]
+titan libvirt_rw_users=jhughes
