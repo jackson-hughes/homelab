@@ -1,18 +1,18 @@
 kvm_virtual_machines = [
   {
-    name : "consul01",
+    name : "leviathan01",
     cpus : "1",
     memory : "1024"
     disk_size : 17179869184 # 16GB
   },
   {
-    name : "consul02",
+    name : "leviathan02",
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB
   },
   {
-    name : "consul03",
+    name : "leviathan03",
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB
