@@ -2,31 +2,31 @@ kvm_virtual_machines = [
   {
     name : "consul01",
     cpus : "1",
-    memory : "2048"
+    memory : "1024"
+    disk_size : 17179869184 # 16GB
   },
   {
     name : "consul02",
     cpus : "1",
-    memory : "2048"
+    memory : "1024",
+    disk_size : 17179869184 # 16GB
   },
   {
     name : "consul03",
     cpus : "1",
-    memory : "2048"
+    memory : "1024",
+    disk_size : 17179869184 # 16GB
   },
   {
-    name : "kube01",
-    cpus : "2",
-    memory : "4096"
-  },
-  {
-    name : "docker03",
+    name : "ifrit",
     cpus : "4",
-    memory : "4096"
+    memory : "4096",
+    disk_size : 17179869184 # 16GB
   },
   {
-    name : "plex01",
-    cpus : "4",
-    memory : "4096"
+    name : "garuda",
+    cpus : "6",
+    memory : "4096",
+    disk_size : 64424509440 # 60GB
   },
 ]

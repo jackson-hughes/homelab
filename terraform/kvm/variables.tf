@@ -1,7 +1,7 @@
 variable "libvirt_hostname" {
   type        = string
   description = "DNS resolvable hostname of a libvirt host"
-  default     = "hv1"
+  default     = "titan"
 }
 
 variable "libvirt_user" {

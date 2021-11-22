@@ -11,15 +11,16 @@ provider "libvirt" {
   uri = "qemu+ssh://${var.libvirt_user}@${var.libvirt_hostname}/system?keyfile=${var.libvirt_ssh_key}"
 }
 
-resource "libvirt_volume" "centos8_base" {
-  name   = "centos8_base.qcow2"
-  source = "https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2"
+resource "libvirt_volume" "fedora35_base" {
+  name   = "fedora35_base.qcow2"
+  source = "https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/Fedora-Cloud-Base-35-1.2.x86_64.qcow2"
 }
 
 resource "libvirt_volume" "main" {
   for_each       = { for vm in var.kvm_virtual_machines : vm.name => vm }
   name           = "${each.value.name}.qcow2"
-  base_volume_id = libvirt_volume.centos8_base.id
+  base_volume_id = libvirt_volume.fedora35_base.id
+  size           = each.value.disk_size
 }
 
 resource "libvirt_cloudinit_disk" "main" {
@@ -37,6 +38,10 @@ resource "libvirt_domain" "main" {
   autostart = true
 
   cloudinit = libvirt_cloudinit_disk.main[each.value.name].id
+
+  cpu = {
+    mode = "host-passthrough"
+  }
 
   disk {
     volume_id = libvirt_volume.main[each.value.name].id
