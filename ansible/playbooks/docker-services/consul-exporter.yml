@@ -1,0 +1,9 @@
+---
+- name: Consul exporter container
+  community.docker.docker_container:
+    name: consul-exporter
+    image: prom/consul-exporter
+    ports:
+      - 9107:9107
+    command: "--consul.server=consul01:8500"
+    restart_policy: unless-stopped

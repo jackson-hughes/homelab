@@ -13,6 +13,14 @@
       packages:
       - python3
       - nfs-utils
+
+  - name: Mount plex media
+    ansible.posix.mount:
+      src: storage:/volume1/plex-media/
+      path: /data/plex-media
+      opts: auto,rw,noatime,nolock,bg,soft
+      state: mounted
+      fstype: nfs
   
   roles:
   - geerlingguy.docker
@@ -23,70 +31,17 @@
     - name: docker
 
   tasks:
-  - name: Create prometheus config directory
-    ansible.builtin.file:
-      path: /opt/prometheus
-      state: directory
-      owner: root
-      group: root
-      mode: '0644'
+    - name: consul exporter container
+      include: docker-services/consul-exporter.yml
 
-  - name: Prometheus configuration
-    ansible.builtin.copy:
-      src: prometheus/prometheus.yml
-      dest: /opt/prometheus/prometheus.yml
-      owner: root
-      group: root
-      mode: '0644'
+    - name: grafana container
+      include: docker-services/grafana.yml
 
-  - name: Prometheus container
-    community.docker.docker_container:
-      name: prometheus
-      image: prom/prometheus
-      ports:
-        - 9090:9090
-      volumes:
-        - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      restart_policy: unless-stopped
+    - name: media stack
+      include: docker-services/media.yml
 
-  - name: Grafana container
-    community.docker.docker_container:
-      name: grafana
-      image: grafana/grafana
-      ports:
-        - 3000:3000
-      restart_policy: unless-stopped
+    - name: prometheus container
+      include: docker-services/prometheus.yml
 
-  - name: Consul exporter container
-    community.docker.docker_container:
-      name: consul-exporter
-      image: prom/consul-exporter
-      ports:
-        - 9107:9107
-      command: "--consul.server=consul01:8500"
-      restart_policy: unless-stopped
-
-  - name: Traefik configuration
-    ansible.builtin.copy:
-      src: traefik/traefik.yml
-      dest: /opt/traefik.yml
-      owner: root
-      group: root
-      mode: '0644'
-
-  - name: Traefik container
-    community.docker.docker_container:
-      name: traefik
-      image: traefik:v2.5.1
-      ports:
-        - 80:80     # http
-        - 443:443   # https
-        - 8080:8080 # traefik dashboard
-      volumes:
-        - /opt/traefik.yml:/etc/traefik/traefik.yml
-      restart_policy: unless-stopped
-      env:
-        AWS_ACCESS_KEY_ID: "{{ acme_aws_access_key }}"
-        AWS_SECRET_ACCESS_KEY: "{{ acme_aws_secret_key }}"
-        AWS_REGION: eu-west-2
-        AWS_HOSTED_ZONE_ID: Z06622143R5WP36DLERL5
+    - name: traefik container
+      include: docker-services/traefik.yml

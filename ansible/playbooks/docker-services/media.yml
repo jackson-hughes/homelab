@@ -1,0 +1,47 @@
+---
+- name: Add media group
+  ansible.builtin.group:
+    name: media
+    state: present
+    gid: 1200
+
+- name: Add media users
+  ansible.builtin.user:
+    name: "{{ item.name }}"
+    state: present
+    uid: "{{ item.uid }}"
+    group: media
+  loop:
+    - { name: "nzbget", uid: 1201 }
+    - { name: "radarr", uid: 1202 }
+    - { name: "sonarr", uid: 1203 }
+
+- name: Create media config directories
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: '0664'
+  loop:
+    - { path: "/opt/media",        owner: "root",   group: "media" }
+    - { path: "/opt/media/nzbget", owner: "nzbget", group: "media" }
+    - { path: "/opt/media/radarr", owner: "radarr", group: "media" }
+    - { path: "/opt/media/sonarr", owner: "sonarr", group: "media" }
+
+- name: Ensure media docker-compose.yml present
+  ansible.builtin.template:
+    src: media-compose.yml.j2
+    dest: /opt/media/docker-compose.yml
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Ensure media compose stack is running
+  community.docker.docker_compose:
+    project_src: "/opt/media/"
+    state: present
+  register: output
+
+- ansible.builtin.assert:
+    that: "not output.changed"

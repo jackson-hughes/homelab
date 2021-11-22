@@ -1,0 +1,73 @@
+---
+version: '3'
+services:
+  gluetun:
+    image: qmcgaw/private-internet-access
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    network_mode: bridge
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=0
+    ports:
+      - 6789:6789/tcp # NZBGet
+      - 7878:7878/tcp # Radarr
+      - 8989:8989/tcp # Sonarr
+    environment:
+      - VPNSP=mullvad
+      - PROTOCOL=udp
+      - OPENVPN_VERBOSITY=1
+      - OPENVPN_ROOT=no
+      - TZ=Europe/London
+      # Mullvad
+      - USER={{ mullvad_user }}
+      - COUNTRY=UK
+      - CITY=Manchester
+      - ISP=M247
+      - DNS_PLAINTEXT_ADDRESS=192.168.1.1
+      - FIREWALL=on
+      - EXTRA_SUBNETS=192.168.1.0/24
+    restart: always
+  nzbget:
+    image: linuxserver/nzbget
+    container_name: nzbget
+    network_mode: "service:gluetun"
+    environment:
+      - TZ=Europe/London
+      - PUID=1201
+      - PGUD=1200
+    volumes:
+      - ./nzbget/config:/config
+      - /data/plex-media/downloads:/downloads
+    depends_on:
+      - gluetun
+  sonarr:
+    image: linuxserver/sonarr
+    container_name: sonarr
+    network_mode: "service:gluetun"
+    environment:
+      - TZ=Europe/London
+      - PUID=1202
+      - PGUD=1200
+    volumes:
+      - ./sonarr/data:/config
+      - /data/plex-media/tv:/tv
+      - /data/plex-media/downloads:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+  radarr:
+    image: linuxserver/radarr
+    container_name: radarr
+    network_mode: "service:gluetun"
+    environment:
+      - TZ=Europe/London
+      - PUID=1201
+      - PGUD=1200
+    volumes:
+      - ./radarr/data:/config
+      - /data/plex-media/movies:/movies
+      - /data/plex-media/downloads:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
