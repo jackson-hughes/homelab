@@ -14,6 +14,7 @@
     owner: root
     group: root
     mode: '0644'
+  register: prometheus_config
 
 - name: Prometheus container
   community.docker.docker_container:
@@ -24,3 +25,4 @@
     volumes:
       - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     restart_policy: unless-stopped
+    restart: "{{ prometheus_config.changed }}"

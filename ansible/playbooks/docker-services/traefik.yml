@@ -14,6 +14,7 @@
     owner: root
     group: root
     mode: '0644'
+  register: traefik_config
 
 - name: Traefik container
   community.docker.docker_container:
@@ -26,6 +27,7 @@
     volumes:
       - /opt/traefik/traefik.yml:/etc/traefik/traefik.yml
     restart_policy: unless-stopped
+    restart: "{{ traefik_config.changed }}"
     env:
       AWS_ACCESS_KEY_ID: "{{ acme_aws_access_key }}"
       AWS_SECRET_ACCESS_KEY: "{{ acme_aws_secret_key }}"
