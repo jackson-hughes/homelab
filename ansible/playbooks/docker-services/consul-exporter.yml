@@ -5,5 +5,5 @@
     image: prom/consul-exporter
     ports:
       - 9107:9107
-    command: "--consul.server=consul01:8500"
+    command: "--consul.server=https://consul-ui.svc.lan.jhcloud.io"
     restart_policy: unless-stopped
