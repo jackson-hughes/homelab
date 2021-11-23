@@ -1,8 +1,39 @@
 ---
+- name: Create grafana config directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - "/opt/grafana"
+    - "/opt/grafana/dashboards"
+
+- name: grafana configuration
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    group: root
+    mode: '0644'
+  loop:
+    - { src: "grafana/grafana.ini",                  dest: "/opt/grafana/grafana.ini"}
+    - { src: "grafana/datasources.yml",              dest: "/opt/grafana/datasources.yml"}
+    - { src: "grafana/dashboards.yml",               dest: "/opt/grafana/dashboards.yml"}
+    - { src: "grafana/dashboards/node_exporter.json", dest: "/opt/grafana/dashboards/node_exporter.json"}
+  register: grafana_config
+
 - name: Grafana container
   community.docker.docker_container:
     name: grafana
     image: grafana/grafana
     ports:
       - 3000:3000
+    volumes:
+      - /opt/grafana/grafana.ini:/etc/grafana/grafana.ini
+      - /opt/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - /opt/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - /opt/grafana/dashboards/node_exporter.json:/var/lib/grafana/dashboards/node_exporter.json
     restart_policy: unless-stopped
+    restart: "{{ grafana_config.changed }}" 
