@@ -18,7 +18,7 @@ entryPoints:
 providers:
   consulCatalog:
     endpoint:
-      address: consul01:8500
+      address: leviathan01:8500
     prefix: traefik
 
 certificatesResolvers:
