@@ -1,16 +1,14 @@
+[consul_instances]
+leviathan[01:03] consul_node_role=server
+titan            consul_node_role=agent
+ifrit            consul_node_role=agent
+garuda           consul_node_role=agent
+
 [docker]
 ifrit
 
-[consul_instances]
-leviathan01 consul_node_role=server
-leviathan02 consul_node_role=server
-leviathan03 consul_node_role=server
-titan       consul_node_role=agent
-ifrit       consul_node_role=agent
-garuda      consul_node_role=agent
+[libvirt_hosts]
+titan libvirt_rw_users=jhughes
 
 [plex]
 garuda
-
-[libvirt_hosts]
-titan libvirt_rw_users=jhughes
