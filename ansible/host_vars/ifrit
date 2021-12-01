@@ -9,8 +9,12 @@ consul_services:
       - "traefik.http.routers.traefik.tls.domains[0].main=*.svc.lan.jhcloud.io"
     port: "8080"
     checks:
-      - name: "Metrics endpoint check"
+      - name: "UI endpoint check"
         http: "http://localhost:8080"
+        interval: "15s"
+        timeout: "3s"
+      - name: "Metrics endpoint check"
+        http: "http://localhost:8080/metrics"
         interval: "15s"
         timeout: "3s"
   - name: "prometheus"

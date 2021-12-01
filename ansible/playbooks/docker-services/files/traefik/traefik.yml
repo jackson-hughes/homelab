@@ -18,7 +18,7 @@ entryPoints:
 providers:
   consulCatalog:
     endpoint:
-      address: leviathan01:8500
+      address: "leviathan01:8500"
     prefix: traefik
 
 certificatesResolvers:
@@ -30,3 +30,6 @@ certificatesResolvers:
         resolvers:
           - "8.8.8.8:53"
         provider: route53
+
+metrics:
+  prometheus: {}
