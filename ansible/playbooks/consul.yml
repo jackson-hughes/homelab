@@ -11,3 +11,17 @@
     consul_dnsmasq_enable: true
     consul_dnsmasq_servers: 
       - 192.168.1.1
+
+  tasks:
+    - name: Ensure NetworkManager configured to lookup using dnsmasq
+      ansible.builtin.copy:
+        src: "dns.conf"
+        dest: "/etc/NetworkManager/conf.d/dns.conf"
+        owner: root
+        group: root
+        mode: '0644'
+      register: dns_conf
+
+    - name: Reload NetworkManager config
+      ansible.builtin.command: nmcli general reload
+      when: dns_conf.changed
