@@ -24,6 +24,8 @@
       - 80:80     # http
       - 443:443   # https
       - 8080:8080 # traefik dashboard
+    dns_servers:
+      - "192.168.1.1"
     volumes:
       - /opt/traefik/traefik.yml:/etc/traefik/traefik.yml
     restart_policy: unless-stopped

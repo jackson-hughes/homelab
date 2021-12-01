@@ -30,6 +30,8 @@
     image: grafana/grafana
     ports:
       - 3000:3000
+    dns_servers:
+      - "192.168.1.1"
     volumes:
       - /opt/grafana/grafana.ini:/etc/grafana/grafana.ini
       - /opt/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml

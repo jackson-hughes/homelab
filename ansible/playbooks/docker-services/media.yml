@@ -41,7 +41,3 @@
   community.docker.docker_compose:
     project_src: "/opt/media/"
     state: present
-  register: output
-
-- ansible.builtin.assert:
-    that: "not output.changed"

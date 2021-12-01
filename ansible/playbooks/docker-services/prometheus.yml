@@ -22,6 +22,8 @@
     image: prom/prometheus
     ports:
       - 9090:9090
+    dns_servers:
+      - "192.168.1.1"
     volumes:
       - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     restart_policy: unless-stopped
