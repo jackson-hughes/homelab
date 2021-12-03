@@ -1,0 +1,18 @@
+# https://taskfile.dev
+
+version: '3'
+
+includes:
+  aws:
+    taskfile: ./aws/Taskfile.yml
+    dir: ./aws
+
+  kvm:
+    taskfile: ./kvm/Taskfile.yml
+    dir: ./kvm
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
