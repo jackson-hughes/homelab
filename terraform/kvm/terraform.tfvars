@@ -25,7 +25,7 @@ kvm_virtual_machines = [
   },
   {
     name : "garuda",
-    cpus : "6",
+    cpus : "12",
     memory : "4096",
     disk_size : 64424509440 # 60GB
   },
