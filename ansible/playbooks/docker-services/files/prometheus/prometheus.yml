@@ -23,7 +23,7 @@ scrape_configs:
     consul_sd_configs:
       - server: "consul-ui.svc.lan.jhcloud.io"
         # services: ["nginx", "cache", "mysql"] # if omitted all are scraped
-        # tags: ["canary", "v1"]
+        tags: ["metrics"]
         # node_meta:
         #   rack: "123"
         # allow_stale: true

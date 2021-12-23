@@ -13,6 +13,13 @@ consul_services:
         http: "http://localhost:8080"
         interval: "15s"
         timeout: "3s"
+  - name: "traefik-exporter"
+    tags:
+      - "traefik"
+      - "monitoring"
+      - "metrics"
+    port: "8080"
+    checks:
       - name: "Metrics endpoint check"
         http: "http://localhost:8080/metrics"
         interval: "15s"
@@ -21,6 +28,7 @@ consul_services:
     tags:
       - "prometheus"
       - "monitoring"
+      - "metrics"
       - "traefik.http.routers.prometheus.rule=Host(`prometheus.svc.lan.jhcloud.io`)"
       - "traefik.http.routers.prometheus.tls=true"
       - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
@@ -45,20 +53,22 @@ consul_services:
         http: "http://localhost:3000/metrics"
         interval: "15s"
         timeout: "3s"
-  - name: "node exporter"
+  - name: "node-exporter"
     tags:
       - "node exporter"
       - "monitoring"
+      - "metrics"
     port: "9100"
     checks:
       - name: 
         http: "http://localhost:9100/metrics"
         interval: "15s"
         timeout: "3s"
-  - name: "consul exporter"
+  - name: "consul-exporter"
     tags:
       - "consul exporter"
       - "monitoring"
+      - "metrics"
     port: "9107"
     checks:
       - name: "Metrics endpoint check"
