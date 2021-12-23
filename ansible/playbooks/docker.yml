@@ -45,3 +45,6 @@
 
     - name: traefik container
       include: docker-services/traefik.yml
+
+    - name: unifi-poller
+      include: docker-services/unifi-poller.yml

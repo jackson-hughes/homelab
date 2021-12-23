@@ -1,0 +1,33 @@
+---
+# - name: Create unifi-poller config directory
+#   ansible.builtin.file:
+#     path: /opt/unifi-poller
+#     state: directory
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+# - name: Ensure unifi-poller configuration present
+#   ansible.builtin.template:
+#     src: media-compose.yml.j2
+#     dest: /opt/unifi-poller/docker-compose.yml
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+- name: unifi-poller container
+  community.docker.docker_container:
+    name: unifi-poller
+    image: golift/unifi-poller
+    ports:
+      - 9130:9130
+    dns_servers:
+      - "192.168.1.1"
+    restart_policy: unless-stopped
+    env:
+      UP_UNIFI_DEFAULT_USER: "{{ unifi_poller_username }}"
+      UP_UNIFI_DEFAULT_PASS: "{{ unifi_poller_password }}"
+      UP_UNIFI_DEFAULT_URL: "https://192.168.1.1"
+      UP_UNIFI_DEFAULT_VERIFY_SSL: "false"
+      UP_UNIFI_DEFAULT_SAVE_DPI: "true"
+      UP_INFLUXDB_DISABLE: "true"
