@@ -47,7 +47,7 @@ services:
     network_mode: "service:gluetun"
     environment:
       - TZ=Europe/London
-      - PUID=1202
+      - PUID=1203
       - PGUD=1200
     volumes:
       - ./sonarr/data:/config
@@ -62,7 +62,7 @@ services:
     network_mode: "service:gluetun"
     environment:
       - TZ=Europe/London
-      - PUID=1201
+      - PUID=1202
       - PGUD=1200
     volumes:
       - ./radarr/data:/config
