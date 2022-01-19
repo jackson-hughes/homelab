@@ -128,6 +128,31 @@ consul_services:
         http: "http://localhost:9130/metrics"
         interval: "15s"
         timeout: "3s"
+  - name: "alertmanager"
+    tags:
+      - "alertmanager"
+      - "monitoring"
+      - "traefik.http.routers.alertmanager.rule=Host(`alerts.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.alertmanager.tls=true"
+      - "traefik.http.routers.alertmanager.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.alertmanager.tls.domains[0].main=*.svc.lan.jhcloud.io"
+    port: "9093"
+    checks:
+      - name: "UI check"
+        http: "http://localhost:9093"
+        interval: "15s"
+        timeout: "3s"
+  - name: "alertmanager-exporter"
+    tags:
+      - "alertmanager"
+      - "monitoring"
+      - "metrics"
+    port: "9093"
+    checks:
+      - name: "Metrics endpoint check"
+        http: "http://localhost:9093/metrics"
+        interval: "15s"
+        timeout: "3s"
 
 acme_aws_access_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
@@ -153,6 +178,22 @@ mullvad_user: !vault |
           33336637396135373435303433343532356263386663663039343833303730636630663933653361
           3266323130366232300a393134636266333164633639346461313266303964346235376433393534
           6332
+
+pushover_api_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          39643732343734353166323261626165333963353139386433356236326463383664333531316130
+          6232666364643766383664353233633563333734313863620a313139353162323861386264313262
+          34633335366431323639303662613434353534363230303131336232316632383532646466386438
+          3361626635393566630a346161613933383564366630363634353630326562653035336636643365
+          61663763623736613462613237353334623337653964663966663938386134333135
+
+pushover_prometheus_api_key: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          63343064393634396666376665323132393034666534633834643830653036326237633234363561
+          6463396136356264346562323865643161323634623537340a373464393036303039336161303537
+          30393863386166353062353764343661313462383830313764633963366333386434653432636234
+          6639616533623039650a346235313966366636623266386664653966333764313262306239323265
+          39356639343763303464653565326333666137646264636363353135326434343031
 
 unifi_poller_username: !vault |
           $ANSIBLE_VAULT;1.1;AES256

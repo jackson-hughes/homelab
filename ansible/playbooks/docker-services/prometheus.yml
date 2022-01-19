@@ -9,22 +9,30 @@
 
 - name: Prometheus configuration
   ansible.builtin.copy:
-    src: prometheus/prometheus.yml
-    dest: /opt/prometheus/prometheus.yml
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: root
     group: root
     mode: '0644'
+  loop:
+    - { src: "prometheus/prometheus.yml",     dest: "/opt/prometheus/prometheus.yml" }
+    - { src: "prometheus/alerting-rules.yml", dest: "/opt/prometheus/alerting-rules.yml"}
   register: prometheus_config
 
 - name: Prometheus container
   community.docker.docker_container:
     name: prometheus
     image: prom/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.external-url https://prometheus.svc.lan.jhcloud.io"
     ports:
       - 9090:9090
     dns_servers:
       - "192.168.1.1"
     volumes:
       - /opt/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - /opt/prometheus/alerting-rules.yml:/etc/prometheus/alerting-rules.yml
     restart_policy: unless-stopped
     restart: "{{ prometheus_config.changed }}"

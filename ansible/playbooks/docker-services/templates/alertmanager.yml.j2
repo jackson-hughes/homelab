@@ -1,0 +1,9 @@
+---
+route:
+  receiver: pushover
+
+receivers:
+  - name: pushover
+    pushover_configs:
+      - token: "{{ pushover_prometheus_api_key }}"
+        user_key: "{{ pushover_api_key }}"

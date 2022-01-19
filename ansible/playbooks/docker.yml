@@ -48,3 +48,6 @@
 
     - name: unifi-poller
       include: docker-services/unifi-poller.yml
+
+    - name: alertmanager
+      include: docker-services/alertmanager.yml

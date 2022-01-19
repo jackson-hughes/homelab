@@ -1,0 +1,33 @@
+---
+- name: Create alertmanager config directory
+  ansible.builtin.file:
+    path: /opt/alertmanager
+    state: directory
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: alertmanager configuration
+  ansible.builtin.template:
+    src: alertmanager.yml.j2
+    dest: /opt/alertmanager/alertmanager.yml
+    owner: root
+    group: root
+    mode: '0644'
+  register: alertmanager_config
+
+- name: alertmanager container
+  community.docker.docker_container:
+    name: alertmanager
+    image: prom/alertmanager
+    command:
+      - "--config.file=/etc/alertmanager/alertmanager.yml"
+      - "--web.external-url https://alerts.svc.lan.jhcloud.io"
+    ports:
+      - 9093:9093
+    dns_servers:
+      - "192.168.1.1"
+    volumes:
+      - /opt/alertmanager/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    restart_policy: unless-stopped
+    restart: "{{ alertmanager_config.changed }}"
