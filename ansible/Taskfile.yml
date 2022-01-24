@@ -17,6 +17,7 @@ tasks:
     desc: Creates a virtual environment called venv and installs dependencies
     cmds:
       - "{{.PYTHON_BIN}} -m venv venv"
+      - "{{.PYTHON_BIN_PATH}}/{{.PYTHON_BIN}} -m pip install --upgrade pip"
       - "{{.PYTHON_BIN_PATH}}/{{.PYTHON_BIN}} -m pip install -r requirements.txt"
     sources:
       - requirements.txt
@@ -49,9 +50,9 @@ tasks:
   apply:
     desc: Runs specified ansible playbook
     cmds:
-      - "{{.PYTHON_BIN_PATH}}/ansible-playbook playbooks/{{.CLI_ARGS}}.yml"
+      - "no_proxy='*' {{.PYTHON_BIN_PATH}}/ansible-playbook playbooks/{{.CLI_ARGS}}.yml"
 
   apply-all:
     desc: Runs site.yml ansible playbook
     cmds:
-      - "{{.PYTHON_BIN_PATH}}/ansible-playbook playbooks/site.yml"
+      - "no_proxy='*' {{.PYTHON_BIN_PATH}}/ansible-playbook playbooks/site.yml"
