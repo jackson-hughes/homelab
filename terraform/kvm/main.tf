@@ -27,6 +27,12 @@ resource "libvirt_cloudinit_disk" "main" {
   for_each  = { for vm in var.kvm_virtual_machines : vm.name => vm }
   name      = "${each.value.name}_cloud_init.iso"
   user_data = templatefile("${path.module}/templates/cloud_init.tpl", { hostname = each.value.name })
+
+  lifecycle {
+    ignore_changes = [
+      user_data
+    ]
+  }
 }
 
 resource "libvirt_domain" "main" {

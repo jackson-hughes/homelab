@@ -13,7 +13,7 @@ variable "libvirt_user" {
 variable "libvirt_ssh_key" {
   type        = string
   description = "SSH key for libvirt connections"
-  default     = "$HOME/.ssh/hv1.pem"
+  default     = "$HOME/.ssh/id_rsa"
 }
 
 variable "kvm_virtual_machines" {
