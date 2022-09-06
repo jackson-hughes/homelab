@@ -26,7 +26,7 @@
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
-      - "--web.external-url https://prometheus.svc.lan.jhcloud.io"
+      - "--web.external-url=https://prometheus.svc.lan.jhcloud.io"
     ports:
       - 9090:9090
     dns_servers:
