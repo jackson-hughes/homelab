@@ -28,5 +28,11 @@ kvm_virtual_machines = [
     cpus : "12",
     memory : "4096",
     disk_size : 64424509440 # 60GB
+  },
+  {
+    name : "zerotier",
+    cpus : "2",
+    memory : "2048",
+    disk_size : 17179869184 # 16GB
   }
 ]
