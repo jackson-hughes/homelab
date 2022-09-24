@@ -15,7 +15,7 @@ firewalld_active_services:
   - "ssh"
 
 consul_services:
-  - name: "node-exporter"
+  - name: "node-metrics"
     tags:
       - "node exporter"
       - "monitoring"

@@ -53,7 +53,7 @@ consul_services:
         http: "http://localhost:3000/metrics"
         interval: "15s"
         timeout: "3s"
-  - name: "node-exporter"
+  - name: "node-metrics"
     tags:
       - "node exporter"
       - "monitoring"

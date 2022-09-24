@@ -10,7 +10,7 @@ consul_services:
         http: "http://localhost:32400/web/index.html"
         interval: "15s"
         timeout: "3s"
-  - name: "node-exporter"
+  - name: "node-metrics"
     tags:
       - "node exporter"
       - "monitoring"
