@@ -29,10 +29,11 @@ kvm_virtual_machines = [
     memory : "1024",
     disk_size : 17179869184 # 16GB
   },
+  {
     name : "ifrit",
     cpus : "4",
     memory : "4096",
-    disk_size : 17179869184 # 16GB
+    disk_size : 64424509440 # 60GB
   },
   {
     name : "garuda",
@@ -41,6 +42,23 @@ kvm_virtual_machines = [
     disk_size : 64424509440 # 60GB
   },
   {
+    name : "shiva01",
+    cpus : "2",
+    memory : "4096",
+    disk_size : 64424509440 # 60GB
+  },
+  {
+    name : "shiva02",
+    cpus : "2",
+    memory : "4096",
+    disk_size : 64424509440 # 60GB
+  },
+  {
+    name : "shiva03",
+    cpus : "2",
+    memory : "4096",
+    disk_size : 64424509440 # 60GB
+  },
   {
     name : "ramuh01",
     cpus : "2",

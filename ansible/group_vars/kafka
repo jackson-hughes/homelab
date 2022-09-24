@@ -1,0 +1,43 @@
+---
+# Firewall variables
+firewalld_open_ports:
+  - 8300/tcp # consul rpc
+  - 8301/tcp # consul serf lan
+  - 8500/tcp # consul http
+  - 53/udp   # consul dns
+  - 9100/tcp # node exporter
+  - 9092/tcp # kafka listener port
+
+firewalld_active_services:
+  - "ssh"
+
+consul_services:
+  - name: "node-exporter"
+    tags:
+      - "node exporter"
+      - "monitoring"
+      - "metrics"
+    port: "9100"
+    checks:
+      - name: 
+        http: "http://localhost:9100/metrics"
+        interval: "15s"
+        timeout: "3s"
+  - name: "kafka"
+    tags:
+      - "kafka"
+    checks:
+      - name:
+        tcp: "localhost:9092"
+        interval: "15s"
+        timeout: "3s"
+  # - name: "zookeeper-metrics"
+  #   tags:
+  #     - "monitoring"
+  #     - "metrics"
+  #   port: "7000"
+  #   checks:
+  #     - name: 
+  #       http: "http://localhost:7000/metrics"
+  #       interval: "15s"
+  #       timeout: "3s"

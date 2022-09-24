@@ -33,5 +33,8 @@ roles:
   - src: sleighzy.zookeeper
     version: v1.2.5
 
+  - src: sleighzy.kafka
+    version: v3.1.0
+
 collections:
 - name: community.docker

@@ -1,0 +1,13 @@
+---
+- hosts: kafka
+  roles:
+  - geerlingguy.java
+  - sleighzy.kafka
+  vars:
+    java_packages: 
+      - java-17-openjdk
+    java_home: "/etc/java/java-17-openjdk"
+    kafka_version: "3.2.3"
+    kafka_root_dir: /opt
+    kafka_log_retention_hours: "336" # 2 weeks
+    kafka_zookeeper_connect: "ramuh01:2181/kafka;ramuh02:2181/kafka;ramuh03:2181/kafka"

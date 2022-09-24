@@ -21,3 +21,8 @@ ramuh01 zookeeper_id=1
 ramuh02 zookeeper_id=2
 ramuh03 zookeeper_id=3
 
+[kafka]
+shiva01 kafka_broker_id=1
+shiva02 kafka_broker_id=2
+shiva03 kafka_broker_id=3
+
