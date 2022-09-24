@@ -29,6 +29,7 @@
     docker_edition: 'ce'
     pip_install_packages:
     - name: docker
+    - name: docker-compose
 
   tasks:
     - name: consul exporter container
