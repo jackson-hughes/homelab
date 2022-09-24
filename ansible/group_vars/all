@@ -1,6 +1,6 @@
 ---
 # Firewall variables
-firewalld_open_ports:
+common_open_firewall_ports:
   - 53/udp   # dns
   - 53/tcp   # dns
   - 8300/tcp # consul rpc
@@ -11,7 +11,7 @@ firewalld_open_ports:
   - 8600/udp # consul dns
   - 9100/tcp # node exporter
 
-firewalld_active_services:
+common_open_firewall_services:
   - "ssh"
 
 node_exporter_version: "1.3.1"

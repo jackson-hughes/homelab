@@ -22,10 +22,7 @@ consul_services:
         interval: "15s"
         timeout: "3s"
 
-firewalld_active_services:
-  - "ssh"
-
-firewalld_open_ports:
+open_firewall_ports:
   - 32400/tcp # plex
   - 1900/udp  # plex
   - 3005/tcp  # plex
@@ -36,11 +33,3 @@ firewalld_open_ports:
   - 32413/udp # plex
   - 32414/udp # plex
   - 32469/tcp # plex
-  - 8600/udp  # consul dns
-  - 8600/tcp  # consul dns
-  - 53/udp    # consul dns
-  - 8500/tcp  # consul http
-  - 8400/tcp  # consul tcp
-  - 8301/tcp  # consul serf lan
-  - 8300/tcp  # consul rpc
-  - 9100/tcp  # node exporter

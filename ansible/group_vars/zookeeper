@@ -1,18 +1,10 @@
 ---
 # Firewall variables
-firewalld_open_ports:
-  - 8300/tcp # consul rpc
-  - 8301/tcp # consul serf lan
-  - 8500/tcp # consul http
-  - 53/udp   # consul dns
-  - 9100/tcp # node exporter
+open_firewall_ports:
   - 2181/tcp # zookeeper client connection port
   - 2888/tcp # zookeeper quorum port for clustering
   - 3888/tcp # zookeeper leader election port for clustering
   - 7000/tcp # zookeeper prometheus metrics
-
-firewalld_active_services:
-  - "ssh"
 
 consul_services:
   - name: "node-metrics"
