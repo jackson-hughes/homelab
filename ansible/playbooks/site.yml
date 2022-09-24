@@ -4,3 +4,4 @@
 - import_playbook: consul.yml
 - import_playbook: plex.yml
 - import_playbook: libvirt.yml
+- import_playbook: zookeeper.yml

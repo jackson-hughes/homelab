@@ -16,3 +16,8 @@ titan libvirt_rw_users=jhughes
 [plex]
 garuda
 
+[zookeeper]
+ramuh01 zookeeper_id=1
+ramuh02 zookeeper_id=2
+ramuh03 zookeeper_id=3
+

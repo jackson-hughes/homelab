@@ -41,9 +41,23 @@ kvm_virtual_machines = [
     disk_size : 64424509440 # 60GB
   },
   {
-    name : "zerotier",
+  {
+    name : "ramuh01",
     cpus : "2",
     memory : "2048",
     disk_size : 17179869184 # 16GB
+  },
+  {
+    name : "ramuh02",
+    cpus : "2",
+    memory : "2048",
+    disk_size : 17179869184 # 16GB
+  },
+  {
+    name : "ramuh03",
+    cpus : "2",
+    memory : "2048",
+    disk_size : 17179869184 # 16GB
+  },
   }
 ]

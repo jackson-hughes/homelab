@@ -1,0 +1,28 @@
+---
+- hosts: zookeeper
+  roles:
+  - geerlingguy.java
+  - sleighzy.zookeeper
+  vars:
+    java_packages: 
+      - java-11-openjdk
+    java_home: "/etc/java/java-11-openjdk"
+    zookeeper_servers:
+      - ramuh01
+      - ramuh02
+      - ramuh03
+    zookeeper_root_dir: /opt
+
+  tasks:
+    - name: Install netcat for health check
+      ansible.builtin.package:
+        name: "nc"
+        state: present
+
+    - name: Copy zookeeper health check script
+      ansible.builtin.copy:
+        src: "zookeeper/health-check.sh"
+        dest: "/home/consul/zookeeper-health-check.sh"
+        owner: consul
+        group: consul
+        mode: '0744'

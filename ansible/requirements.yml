@@ -27,5 +27,11 @@ roles:
   - src: https://github.com/jhughes01/ansible-role-libvirt
     version: main
 
+  - src: geerlingguy.java
+    version: 2.2.0
+
+  - src: sleighzy.zookeeper
+    version: v1.2.5
+
 collections:
 - name: community.docker
