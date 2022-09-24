@@ -7,6 +7,9 @@ vpn              consul_node_role=client
 shiva[01:03]     consul_node_role=client
 ramuh[01:03]     consul_node_role=client
 
+[consul_servers]
+leviathan[01:05]
+
 [docker]
 ifrit
 
