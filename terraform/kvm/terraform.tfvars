@@ -77,5 +77,10 @@ kvm_virtual_machines = [
     memory : "2048",
     disk_size : 17179869184 # 16GB
   },
+  {
+    name : "vpn",
+    cpus : "2",
+    memory : "4096",
+    disk_size : 34359738368 # 32GB
   }
 ]
