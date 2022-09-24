@@ -18,6 +18,17 @@ kvm_virtual_machines = [
     disk_size : 17179869184 # 16GB
   },
   {
+    name : "leviathan04",
+    cpus : "1",
+    memory : "1024",
+    disk_size : 17179869184 # 16GB
+  },
+  {
+    name : "leviathan05",
+    cpus : "1",
+    memory : "1024",
+    disk_size : 17179869184 # 16GB
+  },
     name : "ifrit",
     cpus : "4",
     memory : "4096",
