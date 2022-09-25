@@ -6,18 +6,7 @@ open_firewall_ports:
   - 3888/tcp # zookeeper leader election port for clustering
   - 7000/tcp # zookeeper prometheus metrics
 
-consul_services:
-  - name: "node-metrics"
-    tags:
-      - "node exporter"
-      - "monitoring"
-      - "metrics"
-    port: "9100"
-    checks:
-      - name: 
-        http: "http://localhost:9100/metrics"
-        interval: "15s"
-        timeout: "3s"
+consul_catalog_services:
   - name: "zookeeper"
     tags:
       - "zookeeper"

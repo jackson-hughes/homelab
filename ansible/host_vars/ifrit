@@ -1,5 +1,5 @@
 ---
-consul_services:
+consul_catalog_services:
   - name: "traefik"
     tags:
       - "traefik"
@@ -49,22 +49,22 @@ consul_services:
       - "traefik.http.routers.grafana.tls.domains[0].main=*.svc.lan.jhcloud.io"
     port: "3000"
     checks:
+      - name: "grafana check"
+        http: "http://localhost:3000"
+        interval: "15s"
+        timeout: "3s"
+  - name: "grafana-metrics"
+    tags:
+      - "grafana"
+      - "monitoring"
+      - "metrics"
+    port: "3000"
+    checks:
       - name: "Metrics endpoint check"
         http: "http://localhost:3000/metrics"
         interval: "15s"
         timeout: "3s"
-  - name: "node-metrics"
-    tags:
-      - "node exporter"
-      - "monitoring"
-      - "metrics"
-    port: "9100"
-    checks:
-      - name: 
-        http: "http://localhost:9100/metrics"
-        interval: "15s"
-        timeout: "3s"
-  - name: "consul-exporter"
+  - name: "consul-metrics"
     tags:
       - "consul exporter"
       - "monitoring"
@@ -117,7 +117,7 @@ consul_services:
         http: "http://localhost:8989"
         interval: "15s"
         timeout: "3s"
-  - name: "unifi-exporter"
+  - name: "unifi-metrics"
     tags:
       - "unifi-poller"
       - "monitoring"
@@ -142,7 +142,7 @@ consul_services:
         http: "http://localhost:9093"
         interval: "15s"
         timeout: "3s"
-  - name: "alertmanager-exporter"
+  - name: "alertmanager-metrics"
     tags:
       - "alertmanager"
       - "monitoring"

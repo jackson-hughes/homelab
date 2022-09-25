@@ -12,6 +12,7 @@
     consul_dnsmasq_enable: true
     consul_dnsmasq_servers: 
       - 192.168.1.1
+    consul_services: "{{ common_consul_catalog_services | union(consul_catalog_services | default([])) }}"
 
   tasks:
     - name: Ensure NetworkManager configured to lookup using dnsmasq

@@ -25,7 +25,7 @@ consul_raw_key: !vault |
           61643937336532663138353832633837386530633333386530353862633437333664343636653730
           6665303864633264393032323538306136306437313462626466
 
-consul_services:
+common_consul_catalog_services:
   - name: "node-metrics"
     tags:
       - "node exporter"

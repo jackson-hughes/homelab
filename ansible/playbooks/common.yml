@@ -3,7 +3,7 @@
   roles:
   - role: ansible-role-firewalld
     vars:
-      firewalld_open_ports: "{{ common_open_firewall_ports | union(open_firewall_ports|default([]))}}"
+      firewalld_open_ports: "{{ common_open_firewall_ports | union(open_firewall_ports|default([])) }}"
   - role: geerlingguy.repo-epel
     when: ansible_facts['distribution'] != "Fedora"
   - role: cloudalchemy.node_exporter
