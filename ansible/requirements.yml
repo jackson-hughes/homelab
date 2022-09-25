@@ -36,5 +36,8 @@ roles:
   - src: sleighzy.kafka
     version: v3.1.0
 
+  - src: https://github.com/bilalcaliskan/kafka_exporter-ansible-role
+    version: v0.0.14
+
 collections:
 - name: community.docker

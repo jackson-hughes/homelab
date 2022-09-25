@@ -6,7 +6,7 @@
   vars:
     java_packages: 
       - java-11-openjdk
-    java_home: "/etc/java/java-11-openjdk"
+    # java_home: "/etc/java/java-11-openjdk"
     zookeeper_servers:
       - ramuh01
       - ramuh02
