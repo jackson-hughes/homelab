@@ -7,6 +7,9 @@
   - role: geerlingguy.repo-epel
     when: ansible_facts['distribution'] != "Fedora"
   - role: cloudalchemy.node_exporter
+  - role: geerlingguy.filebeat 
+    vars: 
+      filebeat_template: "{{ playbook_dir }}/templates/filebeat.yml.j2"
 
   tasks:
   - name: Add my user account

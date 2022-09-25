@@ -37,3 +37,8 @@ common_consul_catalog_services:
         http: "http://localhost:9100/metrics"
         interval: "15s"
         timeout: "3s"
+
+filebeat_version: 8.x
+filebeat_inputs:
+  - type: journald
+    id: everything

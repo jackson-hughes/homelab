@@ -18,14 +18,15 @@
     group: root
     mode: '0644'
   loop:
-    - { src: "grafana/grafana.ini",                   dest: "/opt/grafana/grafana.ini"}
-    - { src: "grafana/datasources.yml",               dest: "/opt/grafana/datasources.yml"}
-    - { src: "grafana/dashboards.yml",                dest: "/opt/grafana/dashboards.yml"}
-    - { src: "grafana/dashboards/node_exporter.json", dest: "/opt/grafana/dashboards/node_exporter.json"}
-    - { src: "grafana/dashboards/unifi_clients.json", dest: "/opt/grafana/dashboards/unifi_clients.json"}
-    - { src: "grafana/dashboards/unifi_uap.json",     dest: "/opt/grafana/dashboards/unifi_uap.json"}
-    - { src: "grafana/dashboards/unifi_usg.json",     dest: "/opt/grafana/dashboards/unifi_usg.json"}
-    - { src: "grafana/dashboards/unifi_usw.json",     dest: "/opt/grafana/dashboards/unifi_usw.json"}
+    - { src: "grafana/grafana.ini",                    dest: "/opt/grafana/grafana.ini"}
+    - { src: "grafana/datasources.yml",                dest: "/opt/grafana/datasources.yml"}
+    - { src: "grafana/dashboards.yml",                 dest: "/opt/grafana/dashboards.yml"}
+    - { src: "grafana/dashboards/node_exporter.json",  dest: "/opt/grafana/dashboards/node_exporter.json"}
+    - { src: "grafana/dashboards/unifi_clients.json",  dest: "/opt/grafana/dashboards/unifi_clients.json"}
+    - { src: "grafana/dashboards/unifi_uap.json",      dest: "/opt/grafana/dashboards/unifi_uap.json"}
+    - { src: "grafana/dashboards/unifi_usg.json",      dest: "/opt/grafana/dashboards/unifi_usg.json"}
+    - { src: "grafana/dashboards/unifi_usw.json",      dest: "/opt/grafana/dashboards/unifi_usw.json"}
+    - { src: "grafana/dashboards/kafka_exporter.json", dest: "/opt/grafana/dashboards/kafka_exporter.json"}
   register: grafana_config
 
 - name: Grafana container
