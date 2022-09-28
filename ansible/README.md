@@ -20,3 +20,11 @@ To apply all:
 
     ansible-playbook --playbooks/site.yml
 
+## Useful commands
+
+### ansible-vault
+
+Encrypt string into secret var
+
+    ansible-vault encrypt_string "bar" --name "foo"
+
