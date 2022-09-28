@@ -2,7 +2,7 @@
 - hosts: kafka
   roles:
   - geerlingguy.java
-  - sleighzy.kafka
+  - ansible-role-kafka
   - kafka_exporter-ansible-role
   vars:
     java_packages: 

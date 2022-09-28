@@ -4,8 +4,9 @@ titan            consul_node_role=client
 ifrit            consul_node_role=client
 garuda           consul_node_role=client
 vpn              consul_node_role=client
-shiva[01:03]     consul_node_role=client
-ramuh[01:03]     consul_node_role=client
+shiva[01:05]     consul_node_role=client
+odin             consul_node_role=client
+; ravana[01:06]    consul_node_role=client
 
 [consul_servers]
 leviathan[01:05]
@@ -19,13 +20,16 @@ titan libvirt_rw_users=jhughes
 [plex]
 garuda
 
-[zookeeper]
-ramuh01 zookeeper_id=1
-ramuh02 zookeeper_id=2
-ramuh03 zookeeper_id=3
-
 [kafka]
-shiva01 kafka_broker_id=1
-shiva02 kafka_broker_id=2
-shiva03 kafka_broker_id=3
+shiva01 kafka_node_id=1 
+shiva02 kafka_node_id=2 
+shiva03 kafka_node_id=3 
+shiva04 kafka_node_id=4
+shiva05 kafka_node_id=5
 
+[loki]
+odin
+
+; [kubernetes]
+; ravana[01:03] kubernetes_role=master
+; ravana[04:06] kubernetes_role=node

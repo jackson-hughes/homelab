@@ -30,11 +30,8 @@ roles:
   - src: geerlingguy.java
     version: 2.2.0
 
-  - src: sleighzy.zookeeper
-    version: v1.2.5
-
-  - src: sleighzy.kafka
-    version: v3.1.0
+  - src: https://github.com/jhughes01/ansible-role-kafka
+    version: v0.0.1
 
   - src: https://github.com/bilalcaliskan/kafka_exporter-ansible-role
     version: v0.0.14
@@ -44,6 +41,12 @@ roles:
 
   - src: https://github.com/virtUOS/ansible-loki
     version: main
+
+  - src: geerlingguy.kubernetes
+    version: 7.1.1
+
+  - src: geerlingguy.containerd
+    version: 1.3.0
 
 collections:
 - name: community.docker

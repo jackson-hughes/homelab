@@ -1,0 +1,13 @@
+---
+# Firewall variables
+open_firewall_ports:
+# control plane
+  - 6443/tcp # control plane
+  - 2379/tcp # etcd server client api
+  - 2380/tcp # etcd server client api
+  - 10250/tcp # kubelet api
+  - 10259/tcp # kube-scheduler
+  - 10257/tcp # kube-controller-manager
+# worker nodes
+  - 10250/tcp # kubelet api
+  - 30000-32767/tcp # NodePort Services

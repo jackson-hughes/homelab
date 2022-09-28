@@ -6,3 +6,6 @@ datasources:
   url: https://prometheus.svc.lan.jhcloud.io
   access: proxy
   isDefault: true
+- name: Loki
+  type: loki
+  url: https://loki.svc.lan.jhcloud.io

@@ -60,27 +60,27 @@ kvm_virtual_machines = [
     disk_size : 64424509440 # 60GB
   },
   {
-    name : "ramuh01",
+    name : "shiva04",
     cpus : "2",
-    memory : "2048",
-    disk_size : 17179869184 # 16GB
+    memory : "4096",
+    disk_size : 64424509440 # 60GB
   },
   {
-    name : "ramuh02",
+    name : "shiva05",
     cpus : "2",
-    memory : "2048",
-    disk_size : 17179869184 # 16GB
-  },
-  {
-    name : "ramuh03",
-    cpus : "2",
-    memory : "2048",
-    disk_size : 17179869184 # 16GB
+    memory : "4096",
+    disk_size : 64424509440 # 60GB
   },
   {
     name : "vpn",
     cpus : "2",
     memory : "4096",
     disk_size : 34359738368 # 32GB
-  }
+  },
+  {
+    name : "odin",
+    cpus : "4",
+    memory : "8192",
+    disk_size : 64424509440 # 60GB
+  },
 ]

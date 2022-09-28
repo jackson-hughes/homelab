@@ -2,6 +2,7 @@
 # Firewall variables
 open_firewall_ports:
   - 9092/tcp # kafka listener port
+  - 9093/tcp # kafka controller port
   - 9308/tcp # kafka exporter port
 
 consul_catalog_services:
@@ -25,10 +26,10 @@ consul_catalog_services:
         interval: "15s"
         timeout: "3s"
 
+kafka_nodes: "{{ groups['kafka'] }}"
 kafka_version: "3.2.3"
 kafka_root_dir: /opt
 kafka_log_retention_hours: "336" # 2 weeks
-kafka_zookeeper_connect: "ramuh01:2181/kafka;ramuh02:2181/kafka;ramuh03:2181/kafka"
 
 install_kafka_exporter: true
 kafka_port: 9092
