@@ -1,0 +1,30 @@
+---
+- name: radarr exportarr container
+  community.docker.docker_container:
+    name: radarr-exportarr
+    image: ghcr.io/onedr0p/exportarr
+    command: "radarr"
+    ports:
+      - 9707:9707
+    env:
+      PORT: "9707"
+      URL: "https://movies.svc.lan.jhcloud.io"
+      APIKEY: "{{ radarr_api_key }}"
+    dns_servers:
+      - "192.168.1.1"
+    restart_policy: unless-stopped
+
+- name: sonarr exportarr container
+  community.docker.docker_container:
+    name: sonarr-exportarr
+    image: ghcr.io/onedr0p/exportarr
+    command: "sonarr"
+    ports:
+      - 9708:9708
+    env:
+      PORT: "9708"
+      URL: "https://tv.svc.lan.jhcloud.io"
+      APIKEY: "{{ sonarr_api_key }}"
+    dns_servers:
+      - "192.168.1.1"
+    restart_policy: unless-stopped

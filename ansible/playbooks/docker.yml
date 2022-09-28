@@ -52,3 +52,6 @@
 
     - name: alertmanager
       include: docker-services/alertmanager.yml
+
+    - name: exportarr
+      include: docker-services/exportarr.yml
