@@ -12,9 +12,10 @@
     uid: "{{ item.uid }}"
     group: media
   loop:
-    - { name: "nzbget", uid: 1201 }
-    - { name: "radarr", uid: 1202 }
-    - { name: "sonarr", uid: 1203 }
+    - { name: "nzbget",   uid: 1201 }
+    - { name: "radarr",   uid: 1202 }
+    - { name: "sonarr",   uid: 1203 }
+    - { name: "prowlarr", uid: 1204 }
 
 - name: Create media config directories
   ansible.builtin.file:
@@ -22,12 +23,13 @@
     state: directory
     owner: "{{ item.owner }}"
     group: "{{ item.group }}"
-    mode: '0664'
+    mode: '0774'
   loop:
-    - { path: "/opt/media",        owner: "root",   group: "media" }
-    - { path: "/opt/media/nzbget", owner: "nzbget", group: "media" }
-    - { path: "/opt/media/radarr", owner: "radarr", group: "media" }
-    - { path: "/opt/media/sonarr", owner: "sonarr", group: "media" }
+    - { path: "/opt/media",          owner: "root",     group: "media" }
+    - { path: "/opt/media/nzbget",   owner: "nzbget",   group: "media" }
+    - { path: "/opt/media/radarr",   owner: "radarr",   group: "media" }
+    - { path: "/opt/media/sonarr",   owner: "sonarr",   group: "media" }
+    - { path: "/opt/media/prowlarr", owner: "prowlarr", group: "media" }
 
 - name: Ensure media docker-compose.yml present
   ansible.builtin.template:
