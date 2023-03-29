@@ -6,7 +6,6 @@ garuda           consul_node_role=client
 vpn              consul_node_role=client
 shiva[01:05]     consul_node_role=client
 odin             consul_node_role=client
-; ravana[01:06]    consul_node_role=client
 
 [consul_servers]
 leviathan[01:05]
@@ -30,6 +29,3 @@ shiva05 kafka_node_id=5
 [loki]
 odin
 
-; [kubernetes]
-; ravana[01:03] kubernetes_role=master
-; ravana[04:06] kubernetes_role=node
