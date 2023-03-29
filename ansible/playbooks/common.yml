@@ -6,7 +6,7 @@
       firewalld_open_ports: "{{ common_open_firewall_ports | union(open_firewall_ports|default([])) }}"
   - role: geerlingguy.repo-epel
     when: ansible_facts['distribution'] != "Fedora"
-  - role: cloudalchemy.node_exporter
+  - role: prometheus.prometheus.node_exporter
   - role: geerlingguy.filebeat 
     vars: 
       filebeat_template: "{{ playbook_dir }}/templates/filebeat.yml.j2"
@@ -23,7 +23,7 @@
     authorized_key:
       user: jhughes
       state: present
-      key: https://github.com/jhughes01.keys
+      key: https://github.com/jackson-hughes.keys
 
   - name: Install packages
     ansible.builtin.package:
