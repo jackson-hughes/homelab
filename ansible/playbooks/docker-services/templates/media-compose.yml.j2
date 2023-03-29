@@ -13,6 +13,7 @@ services:
       - 6789:6789/tcp # NZBGet
       - 7878:7878/tcp # Radarr
       - 8989:8989/tcp # Sonarr
+      - 9696:9696/tcp # Prowlarr
     environment:
       - VPNSP=mullvad
       - PROTOCOL=udp
@@ -68,6 +69,19 @@ services:
       - ./radarr/data:/config
       - /data/plex-media/movies:/movies
       - /data/plex-media/downloads:/downloads
+    depends_on:
+      - gluetun
+    restart: unless-stopped
+  prowlarr:
+    image: linuxserver/prowlarr
+    container_name: prowlarr
+    network_mode: "service:gluetun"
+    environment:
+      - TZ=Europe/London
+      - PUID=1204
+      - PGUD=1200
+    volumes:
+      - ./prowlarr:/config
     depends_on:
       - gluetun
     restart: unless-stopped

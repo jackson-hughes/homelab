@@ -139,6 +139,20 @@ consul_catalog_services:
         http: "http://localhost:9708"
         interval: "15s"
         timeout: "3s"
+  - name: "prowlarr"
+    tags:
+      - "prowlarr"
+      - "media-stack"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.prowlarr.tls=true"
+      - "traefik.http.routers.prowlarr.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.prowlarr.tls.domains[0].main=*.svc.lan.jhcloud.io"
+    port: "9696"
+    checks:
+      - name: "HTTP check"
+        http: "http://localhost:9696"
+        interval: "15s"
+        timeout: "3s"
   - name: "unifi-metrics"
     tags:
       - "unifi-poller"
