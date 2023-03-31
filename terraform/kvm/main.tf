@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "libvirt" {
-  uri = "qemu+ssh://${var.libvirt_user}@${var.libvirt_hostname}/system?keyfile=${var.libvirt_ssh_key}"
+  uri = "qemu+ssh://${var.libvirt_user}@${var.libvirt_hostname}/system?keyfile=${var.libvirt_ssh_key}&sshauth=privkey"
 }
 
 resource "libvirt_volume" "fedora35_base" {
@@ -16,10 +16,22 @@ resource "libvirt_volume" "fedora35_base" {
   source = "https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/Fedora-Cloud-Base-35-1.2.x86_64.qcow2"
 }
 
+resource "libvirt_volume" "fedora37_base" {
+  name   = "fedora37_base.qcow2"
+  source = "https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2"
+}
+
+locals {
+  os_base_disk = {
+    fedora35 = libvirt_volume.fedora35_base.id
+    fedora37 = libvirt_volume.fedora37_base.id
+  }
+}
+
 resource "libvirt_volume" "main" {
   for_each       = { for vm in var.kvm_virtual_machines : vm.name => vm }
   name           = "${each.value.name}.qcow2"
-  base_volume_id = libvirt_volume.fedora35_base.id
+  base_volume_id = local.os_base_disk[each.value.os]
   size           = each.value.disk_size
 }
 
