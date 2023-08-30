@@ -84,17 +84,24 @@ kvm_virtual_machines = [
     os: "fedora37"
   },
   {
-    name : "vpn",
-    cpus : "2",
-    memory : "4096",
-    disk_size : 34359738368 # 32GB.
-    os: "fedora35"
-  },
-  {
     name : "odin",
     cpus : "4",
     memory : "8192",
     disk_size : 64424509440 # 60GB,
     os: "fedora35"
+  },
+  {
+    name : "consul-01",
+    cpus : "2",
+    memory : "2048",
+    disk_size : 64424509440 # 60GB,
+    os: "fedora38"
+  },
+  {
+    name : "salt",
+    cpus : "4",
+    memory : "4096",
+    disk_size : 64424509440 # 60GB,
+    os: "fedora38"
   }
 ]

@@ -21,10 +21,16 @@ resource "libvirt_volume" "fedora37_base" {
   source = "https://download.fedoraproject.org/pub/fedora/linux/releases/37/Cloud/x86_64/images/Fedora-Cloud-Base-37-1.7.x86_64.qcow2"
 }
 
+resource "libvirt_volume" "fedora38_base" {
+  name = "fedora38_base.qcow2"
+  source = "https://download.fedoraproject.org/pub/fedora/linux/releases/38/Cloud/x86_64/images/Fedora-Cloud-Base-38-1.6.x86_64.qcow2"
+}
+
 locals {
   os_base_disk = {
     fedora35 = libvirt_volume.fedora35_base.id
     fedora37 = libvirt_volume.fedora37_base.id
+    fedora38 = libvirt_volume.fedora38_base.id
   }
 }
 
