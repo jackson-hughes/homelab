@@ -1,3 +1,3 @@
 base:
   '*':
-    - local-users.sls
+    - local-users
