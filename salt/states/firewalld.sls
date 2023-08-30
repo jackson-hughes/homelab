@@ -2,10 +2,10 @@
 public:
   firewalld.present:
     - ports: {{ firewalld_allowed_ports }}
-{% endfor %}
+{% endif %}
 
 {% if pillar.firewalld_allowed_services %}
 public:
   firewalld.present:
     - services: {{ firewalld_allowed_services }}
-{% endfor %}
+{% endif %}
