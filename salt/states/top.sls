@@ -1,0 +1,3 @@
+base:
+  '*':
+    - local-users.sls
