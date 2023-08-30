@@ -10,3 +10,5 @@ manage_local_users:
     - group: jhughes
     - mode: 600
     - skip_verify: True
+    - require:
+      - user: jhughes
