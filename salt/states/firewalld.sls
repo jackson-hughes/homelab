@@ -1,11 +1,11 @@
 {% if pillar.firewalld_allowed_ports %}
 public:
   firewalld.present:
-    - ports: {{ firewalld_allowed_ports }}
+    - ports: {{ pillar.firewalld_allowed_ports }}
 {% endif %}
 
 {% if pillar.firewalld_allowed_services %}
 public:
   firewalld.present:
-    - services: {{ firewalld_allowed_services }}
+    - services: {{ pillar.firewalld_allowed_services }}
 {% endif %}
