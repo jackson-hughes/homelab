@@ -9,3 +9,4 @@ manage_local_users:
     - user: jhughes
     - group: jhughes
     - mode: 600
+    - skip_verify: True
