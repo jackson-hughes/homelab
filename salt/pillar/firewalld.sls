@@ -1,6 +1,7 @@
 firewalld_allowed_ports: 
-  - 4505/tcp
-  - 4506/tcp
+  common:
+    - 4505/tcp
+    - 4506/tcp
 
 firewalld_allowed_services:
   - ssh
