@@ -1,58 +1,58 @@
 ---
 - hosts: all
   roles:
-  - role: ansible-role-firewalld
-    vars:
-      firewalld_open_ports: "{{ common_open_firewall_ports | union(open_firewall_ports|default([])) }}"
-  - role: geerlingguy.repo-epel
-    when: ansible_facts['distribution'] != "Fedora"
-  - role: prometheus.prometheus.node_exporter
-  - role: geerlingguy.filebeat 
-    vars: 
-      filebeat_template: "{{ playbook_dir }}/templates/filebeat.yml.j2"
+    - role: ansible-role-firewalld
+      vars:
+        firewalld_open_ports: "{{ common_open_firewall_ports | union(open_firewall_ports|default([])) }}"
+    - role: geerlingguy.repo-epel
+      when: ansible_facts['distribution'] != "Fedora"
+    - role: prometheus.prometheus.node_exporter
+    - role: geerlingguy.filebeat
+      vars:
+        filebeat_template: "{{ playbook_dir }}/templates/filebeat.yml.j2"
 
   tasks:
-  - name: Add my user account
-    user:
-      name: jhughes
-      shell: /bin/bash
-      groups: wheel
-      append: yes
+    - name: Add my user account
+      user:
+        name: jhughes
+        shell: /bin/bash
+        groups: wheel
+        append: yes
 
-  - name: Add key for jhughes user
-    authorized_key:
-      user: jhughes
-      state: present
-      key: https://github.com/jackson-hughes.keys
+    - name: Add key for jhughes user
+      authorized_key:
+        user: jhughes
+        state: present
+        key: https://github.com/jackson-hughes.keys
 
-  - name: Install packages
-    ansible.builtin.package:
-      name: "{{ item }}"
-      state: present
-    with_items: 
-      - bind-utils
-      - xauth
+    - name: Install packages
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - bind-utils
+        - xauth
 
-  - name: Enable X11 forwarding
-    lineinfile:
-      dest: /etc/ssh/sshd_config
-      regexp: "X11Forwarding no"
-      line: "X11Forwarding yes"
-      firstmatch: yes
-      state: present
-    register: sshd_config
+    - name: Enable X11 forwarding
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "X11Forwarding no"
+        line: "X11Forwarding yes"
+        firstmatch: yes
+        state: present
+      register: sshd_config
 
-  - name: Disable password auth for SSH
-    lineinfile:
-      dest: /etc/ssh/sshd_config
-      regexp: "PasswordAuthentication yes"
-      line: "PasswordAuthentication no"
-      firstmatch: yes
-      state: present
-    register: sshd_config
+    - name: Disable password auth for SSH
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "PasswordAuthentication yes"
+        line: "PasswordAuthentication no"
+        firstmatch: yes
+        state: present
+      register: sshd_config
 
-  - name: Restart SSHD
-    service:
-      name: sshd
-      state: restarted
-    when: sshd_config.changed
+    - name: Restart SSHD
+      service:
+        name: sshd
+        state: restarted
+      when: sshd_config.changed
