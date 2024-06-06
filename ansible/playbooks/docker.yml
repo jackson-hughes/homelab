@@ -27,31 +27,37 @@
   - geerlingguy.pip
   vars:
     docker_edition: 'ce'
+    docker_packages: 
+      - docker-ce
+      - docker-ce-cli
+      - docker-ce-rootless-extras
+      - containerd.io
+    docker_install_compose_plugin: true
     pip_install_packages:
     - name: docker
     - name: docker-compose
 
   tasks:
     - name: consul exporter container
-      include: docker-services/consul-exporter.yml
+      include_tasks: docker-services/consul-exporter.yml
 
     - name: grafana container
-      include: docker-services/grafana.yml
+      include_tasks: docker-services/grafana.yml
 
     - name: media stack
-      include: docker-services/media.yml
+      include_tasks: docker-services/media.yml
 
     - name: prometheus container
-      include: docker-services/prometheus.yml
+      include_tasks: docker-services/prometheus.yml
 
     - name: traefik container
-      include: docker-services/traefik.yml
+      include_tasks: docker-services/traefik.yml
 
     - name: unifi-poller
-      include: docker-services/unifi-poller.yml
+      include_tasks: docker-services/unifi-poller.yml
 
     - name: alertmanager
-      include: docker-services/alertmanager.yml
+      include_tasks: docker-services/alertmanager.yml
 
     - name: exportarr
-      include: docker-services/exportarr.yml
+      include_tasks: docker-services/exportarr.yml
