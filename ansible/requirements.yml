@@ -4,7 +4,7 @@ roles:
     version: master
 
   - src: geerlingguy.docker
-    version: 4.0.0
+    version: 7.1.0
 
   - src: geerlingguy.pip
     version: 2.1.0
