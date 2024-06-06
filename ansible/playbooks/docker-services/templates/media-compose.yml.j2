@@ -28,7 +28,7 @@ services:
       - DNS_PLAINTEXT_ADDRESS=192.168.1.1
       - FIREWALL=on
       - EXTRA_SUBNETS=192.168.1.0/24
-    restart: always
+    restart: unless-stopped
   nzbget:
     image: linuxserver/nzbget
     container_name: nzbget
@@ -42,8 +42,9 @@ services:
       - /data/plex-media/downloads:/downloads
     depends_on:
       - gluetun
+    restart: unless-stopped
   sonarr:
-    image: linuxserver/sonarr
+    image: lscr.io/linuxserver/sonarr:latest
     container_name: sonarr
     network_mode: "service:gluetun"
     environment:
