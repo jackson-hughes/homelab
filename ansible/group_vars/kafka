@@ -21,13 +21,13 @@ consul_catalog_services:
       - "metrics"
     port: "{{ exporter_port }}"
     checks:
-      - name: 
+      - name:
         http: "http://localhost:{{ exporter_port }}/metrics"
         interval: "15s"
         timeout: "3s"
 
 kafka_nodes: "{{ groups['kafka'] }}"
-kafka_version: "3.2.3"
+kafka_version: "3.7.0"
 kafka_root_dir: /opt
 kafka_log_retention_hours: "336" # 2 weeks
 
