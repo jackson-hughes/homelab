@@ -1,0 +1,18 @@
+---
+- hosts: all
+  serial: 1
+  tasks:
+    - name: Ensure all packages are updated
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+
+    - name: Check if a reboot is required
+      ansible.builtin.command: dnf needs-restarting -r
+      changed_when: False
+      ignore_errors: True
+      register: reboot_required
+
+    - name: Reboot
+      ansible.builtin.reboot:
+      when: reboot_required.rc == 1
