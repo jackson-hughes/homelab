@@ -5,7 +5,7 @@
     state: directory
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
 
 - name: Traefik configuration
   ansible.builtin.copy:
@@ -13,16 +13,16 @@
     dest: /opt/traefik/traefik.yml
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   register: traefik_config
 
 - name: Traefik container
   community.docker.docker_container:
     name: traefik
-    image: traefik:v2.5.1
+    image: traefik:v3.4.1
     ports:
-      - 80:80     # http
-      - 443:443   # https
+      - 80:80 # http
+      - 443:443 # https
       - 8080:8080 # traefik dashboard
     dns_servers:
       - "192.168.1.1"
