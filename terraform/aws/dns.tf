@@ -26,10 +26,6 @@ resource "aws_route53_record" "svc_lan_jhcloud_ns" {
   records = aws_route53_zone.svc_lan_jhcloud.name_servers
 }
 
-resource "aws_route53_zone" "zentech" {
-  name = "zentech.xyz"
-}
-
 resource "aws_route53_record" "mx" {
   zone_id = aws_route53_zone.jhcloud.zone_id
   name    = "jhcloud.io"
@@ -51,4 +47,3 @@ resource "aws_route53_record" "docs_cname" {
   ttl     = 300
   records = ["jhughes01.github.io."]
 }
-
