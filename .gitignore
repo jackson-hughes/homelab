@@ -1,4 +1,6 @@
-**.terraform**
+**.terraform/
 **.tfstate**
 **venv**
 **node_modules**
+**DS_Store**
+AGENTS.md

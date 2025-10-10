@@ -4,104 +4,83 @@ kvm_virtual_machines = [
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "leviathan02",
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "leviathan03",
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "leviathan04",
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB,
-    os: "fedora37",
+    os : "fedora40",
   },
   {
     name : "leviathan05",
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB.
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "ifrit",
     cpus : "4",
     memory : "4096",
-    disk_size : 64424509440 # 60GB,
-    os: "fedora35"
+    disk_size : 120 * 1024 * 1024 * 1024 # 120GB
+    os : "fedora40"
   },
   {
     name : "garuda",
     cpus : "12",
     memory : "4096",
     disk_size : 107374182400 # not 60GB,
-    os: "fedora35"
+    os : "fedora40"
   },
   {
     name : "shiva01",
     cpus : "2",
     memory : "4096",
     disk_size : 64424509440 # 60GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "shiva02",
     cpus : "2",
     memory : "4096",
     disk_size : 64424509440 # 60GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "shiva03",
     cpus : "2",
     memory : "4096",
     disk_size : 64424509440 # 60GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "shiva04",
     cpus : "2",
     memory : "4096",
     disk_size : 64424509440 # 60GB,
-    os: "fedora37"
+    os : "fedora40"
   },
   {
     name : "shiva05",
     cpus : "2",
     memory : "4096",
     disk_size : 64424509440 # 60GB,
-    os: "fedora37"
-  },
-  {
-    name : "odin",
-    cpus : "4",
-    memory : "8192",
-    disk_size : 64424509440 # 60GB,
-    os: "fedora35"
-  },
-  {
-    name : "consul-01",
-    cpus : "2",
-    memory : "2048",
-    disk_size : 64424509440 # 60GB,
-    os: "fedora38"
-  },
-  {
-    name : "salt",
-    cpus : "4",
-    memory : "4096",
-    disk_size : 64424509440 # 60GB,
-    os: "fedora38"
+    os : "fedora40"
   }
 ]

@@ -10,12 +10,6 @@ variable "libvirt_user" {
   default     = "jhughes"
 }
 
-variable "libvirt_ssh_key" {
-  type        = string
-  description = "SSH key for libvirt connections"
-  default     = "$HOME/.ssh/id_rsa"
-}
-
 variable "kvm_virtual_machines" {
   type        = list(map(string))
   description = "List of hostnames for VMs"
