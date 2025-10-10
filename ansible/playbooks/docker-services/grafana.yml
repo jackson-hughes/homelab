@@ -43,4 +43,4 @@
       - /opt/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
       - /opt/grafana/dashboards:/var/lib/grafana/dashboards
     restart_policy: unless-stopped
-    restart: "{{ grafana_config.changed }}" 
+    restart: "{{ grafana_config.changed }}"

@@ -1,41 +1,42 @@
 ---
-- hosts: docker
+- name: Install docker and services
+  hosts: docker
   # Deprecation notice fix but option not yet available on latest ansible?
   # module_defaults:
   #   community.docker.docker_container:
   #     container_default_behaviour: no_defaults
 
   pre_tasks:
-  - name: Install packages
-    yum:
-      name: "{{ packages }}"
-    vars:
-      packages:
-      - python3
-      - nfs-utils
+    - name: Install packages
+      yum:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - python3
+          - nfs-utils
 
-  - name: Mount plex media
-    ansible.posix.mount:
-      src: storage:/volume1/plex-media/
-      path: /data/plex-media
-      opts: auto,rw,noatime,nolock,bg,soft
-      state: mounted
-      fstype: nfs
-  
+    - name: Mount plex media
+      ansible.posix.mount:
+        src: storage:/volume1/plex-media/
+        path: /data/plex-media
+        opts: auto,rw,noatime,nolock,bg,soft
+        state: mounted
+        fstype: nfs
+
   roles:
-  - geerlingguy.docker
-  - geerlingguy.pip
+    - geerlingguy.docker
+    - geerlingguy.pip
   vars:
-    docker_edition: 'ce'
-    docker_packages: 
+    docker_edition: "ce"
+    docker_packages:
       - docker-ce
       - docker-ce-cli
       - docker-ce-rootless-extras
       - containerd.io
     docker_install_compose_plugin: true
     pip_install_packages:
-    - name: docker
-    - name: docker-compose
+      - name: docker
+    # - name: docker-compose
 
   tasks:
     - name: consul exporter container

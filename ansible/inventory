@@ -3,9 +3,9 @@ leviathan[01:05] consul_node_role=server
 titan            consul_node_role=client
 ifrit            consul_node_role=client
 garuda           consul_node_role=client
-vpn              consul_node_role=client
+#vpn              consul_node_role=client
 shiva[01:05]     consul_node_role=client
-odin             consul_node_role=client
+#odin             consul_node_role=client
 
 [consul_servers]
 leviathan[01:05]
@@ -27,5 +27,5 @@ shiva04 kafka_node_id=4
 shiva05 kafka_node_id=5
 
 [loki]
-odin
+#odin
 

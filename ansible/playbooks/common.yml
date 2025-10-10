@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Common Playbook
+  hosts: all
   roles:
     - role: ansible-role-firewalld
       vars:
@@ -7,9 +8,9 @@
     - role: geerlingguy.repo-epel
       when: ansible_facts['distribution'] != "Fedora"
     - role: prometheus.prometheus.node_exporter
-    - role: geerlingguy.filebeat
-      vars:
-        filebeat_template: "{{ playbook_dir }}/templates/filebeat.yml.j2"
+    # - role: geerlingguy.filebeat
+    #  vars:
+    #    filebeat_template: "{{ playbook_dir }}/templates/filebeat.yml.j2"
 
   tasks:
     - name: Add my user account
@@ -17,7 +18,7 @@
         name: jhughes
         shell: /bin/bash
         groups: wheel
-        append: yes
+        append: true
 
     - name: Add key for jhughes user
       authorized_key:
@@ -38,7 +39,7 @@
         dest: /etc/ssh/sshd_config
         regexp: "X11Forwarding no"
         line: "X11Forwarding yes"
-        firstmatch: yes
+        firstmatch: true
         state: present
       register: sshd_config
 
@@ -47,7 +48,7 @@
         dest: /etc/ssh/sshd_config
         regexp: "PasswordAuthentication yes"
         line: "PasswordAuthentication no"
-        firstmatch: yes
+        firstmatch: true
         state: present
       register: sshd_config
 
