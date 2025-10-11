@@ -7,7 +7,6 @@ patches:
       kind: HelmRelease
       name: podinfo
     patch: |
-      - op: add
-        path: /spec/values/ingress/hosts
-        value:
-          - host: podinfo.orb.local
+      - op: replace
+        path: /spec/values/ingress/hosts/0/host
+        value: podinfo.orb.local
