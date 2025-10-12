@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: external-secrets-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: external-secrets-demo
+  template:
+    metadata:
+      labels:
+        app: external-secrets-demo
+    spec:
+      containers:
+        - name: demo
+          image: alpine:3.20
+          command:
+            - sh
+            - -c
+            - |
+              while true; do
+                echo "External secret value: ${DEMO_SECRET:-unset}";
+                sleep 60;
+              done
+          env:
+            - name: DEMO_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: external-secrets-demo
+                  key: message

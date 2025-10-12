@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ../base/ingress-nginx
   - ../base/cert-manager
+  - ../base/external-secrets

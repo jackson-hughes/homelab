@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../base/podinfo
   - ../base/sops-demo
+  - ../base/external-secrets-demo
 patches:
   - target:
       kind: HelmRelease
