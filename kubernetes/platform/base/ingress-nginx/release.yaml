@@ -13,5 +13,7 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
   interval: 1h
-  # Default values
-  #values:
+  values:
+    controller:
+      service:
+        type: NodePort
