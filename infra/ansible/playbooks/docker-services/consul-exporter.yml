@@ -7,5 +7,5 @@
       - 9107:9107
     dns_servers:
       - "192.168.1.1"
-    command: "--consul.server=https://consul-ui.svc.lan.jhcloud.io"
+    command: "--consul.server=https://consul-ui.svc.ducknet.io"
     restart_policy: unless-stopped

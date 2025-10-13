@@ -3,13 +3,13 @@ consul_catalog_services:
   - name: "consul-ui"
     tags:
       - "consul-ui"
-      - "traefik.http.routers.consul-ui.rule=Host(`consul-ui.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.consul-ui.rule=Host(`consul-ui.svc.ducknet.io`)"
       - "traefik.http.routers.consul-ui.tls=true"
       - "traefik.http.routers.consul-ui.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.consul-ui.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.consul-ui.tls.domains[0].main=*.svc.ducknet.io"
     port: "8500"
     checks:
-      - name: 
+      - name:
         http: "http://localhost:8500/ui"
         interval: "15s"
         timeout: "3s"

@@ -22,7 +22,7 @@
     image: prom/alertmanager
     command:
       - "--config.file=/etc/alertmanager/alertmanager.yml"
-      - "--web.external-url=https://alerts.svc.lan.jhcloud.io"
+      - "--web.external-url=https://alerts.svc.ducknet.io"
     ports:
       - 9093:9093
     dns_servers:

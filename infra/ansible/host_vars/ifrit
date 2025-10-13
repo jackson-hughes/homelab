@@ -3,10 +3,10 @@ consul_catalog_services:
   - name: "traefik"
     tags:
       - "traefik"
-      - "traefik.http.routers.traefik.rule=Host(`traefik.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.svc.ducknet.io`)"
       - "traefik.http.routers.traefik.tls=true"
       - "traefik.http.routers.traefik.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.traefik.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.traefik.tls.domains[0].main=*.svc.ducknet.io"
     port: "8080"
     checks:
       - name: "UI endpoint check"
@@ -29,10 +29,10 @@ consul_catalog_services:
       - "prometheus"
       - "monitoring"
       - "metrics"
-      - "traefik.http.routers.prometheus.rule=Host(`prometheus.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.prometheus.rule=Host(`prometheus.svc.ducknet.io`)"
       - "traefik.http.routers.prometheus.tls=true"
       - "traefik.http.routers.prometheus.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.prometheus.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.prometheus.tls.domains[0].main=*.svc.ducknet.io"
     port: "9090"
     checks:
       - name: "Metrics endpoint check"
@@ -43,10 +43,10 @@ consul_catalog_services:
     tags:
       - "grafana"
       - "monitoring"
-      - "traefik.http.routers.grafana.rule=Host(`grafana.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.grafana.rule=Host(`grafana.svc.ducknet.io`)"
       - "traefik.http.routers.grafana.tls=true"
       - "traefik.http.routers.grafana.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.grafana.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.grafana.tls.domains[0].main=*.svc.ducknet.io"
     port: "3000"
     checks:
       - name: "grafana check"
@@ -79,10 +79,10 @@ consul_catalog_services:
     tags:
       - "nzbget"
       - "media-stack"
-      - "traefik.http.routers.nzbget.rule=Host(`nzb.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.nzbget.rule=Host(`nzb.svc.ducknet.io`)"
       - "traefik.http.routers.nzbget.tls=true"
       - "traefik.http.routers.nzbget.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.nzbget.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.nzbget.tls.domains[0].main=*.svc.ducknet.io"
     port: "6789"
     checks:
       - name: "HTTP check"
@@ -93,10 +93,10 @@ consul_catalog_services:
     tags:
       - "radarr"
       - "media-stack"
-      - "traefik.http.routers.radarr.rule=Host(`movies.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.radarr.rule=Host(`movies.svc.ducknet.io`)"
       - "traefik.http.routers.radarr.tls=true"
       - "traefik.http.routers.radarr.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.radarr.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.radarr.tls.domains[0].main=*.svc.ducknet.io"
     port: "7878"
     checks:
       - name: "HTTP check"
@@ -118,10 +118,10 @@ consul_catalog_services:
     tags:
       - "sonarr"
       - "media-stack"
-      - "traefik.http.routers.sonarr.rule=Host(`tv.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.sonarr.rule=Host(`tv.svc.ducknet.io`)"
       - "traefik.http.routers.sonarr.tls=true"
       - "traefik.http.routers.sonarr.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.sonarr.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.sonarr.tls.domains[0].main=*.svc.ducknet.io"
     port: "8989"
     checks:
       - name: "HTTP check"
@@ -143,10 +143,10 @@ consul_catalog_services:
     tags:
       - "prowlarr"
       - "media-stack"
-      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.prowlarr.rule=Host(`prowlarr.svc.ducknet.io`)"
       - "traefik.http.routers.prowlarr.tls=true"
       - "traefik.http.routers.prowlarr.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.prowlarr.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.prowlarr.tls.domains[0].main=*.svc.ducknet.io"
     port: "9696"
     checks:
       - name: "HTTP check"
@@ -168,10 +168,10 @@ consul_catalog_services:
     tags:
       - "alertmanager"
       - "monitoring"
-      - "traefik.http.routers.alertmanager.rule=Host(`alerts.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.alertmanager.rule=Host(`alerts.svc.ducknet.io`)"
       - "traefik.http.routers.alertmanager.tls=true"
       - "traefik.http.routers.alertmanager.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.alertmanager.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.alertmanager.tls.domains[0].main=*.svc.ducknet.io"
     port: "9093"
     checks:
       - name: "UI check"
@@ -206,6 +206,23 @@ acme_aws_secret_key: !vault |
   6238363835323335300a343235633637333461323566393834303138363066626537633839343564
   36393932303531356537383764366166373261376334303838633833303361316435363531626666
   3136383237363036306262313734366531383461636534663464
+
+cloudflare_dns_api_token: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  62363434313439353632323131376463663230336532393161663066653631373734326335666132
+  3263656330376138636663333261333164623065613831650a303735393063336664613830333233
+  36656566623539636535386166323635363763386662616462373735353765376534386166303162
+  3733363966633933660a303535326562613261366238326136613866343334616566393630383435
+  62363163383762613862616137366165306634333166383234366461643533383439303361306636
+  6436363430653631656366393664653164313433353331366238
+
+cloudflare_email: !vault |
+  $ANSIBLE_VAULT;1.1;AES256
+  34393261623366326533633330343832623564616261316466613835643532303037306139323931
+  3030663837643365303463633864316539353265386336320a393336306536383236396635306563
+  34353065633234633938333062393738313262303430333838383464666337643335393533633038
+  6235356130353561380a383738613938666231333139623363626235333836393861626535646365
+  31666231343765366339663363356162303533316631623830323263643463373631
 
 mullvad_user: !vault |
   $ANSIBLE_VAULT;1.1;AES256

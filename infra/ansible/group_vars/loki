@@ -7,10 +7,10 @@ consul_catalog_services:
   - name: "loki"
     tags:
       - "loki"
-      - "traefik.http.routers.loki.rule=Host(`loki.svc.lan.jhcloud.io`)"
+      - "traefik.http.routers.loki.rule=Host(`loki.svc.ducknet.io`)"
       - "traefik.http.routers.loki.tls=true"
       - "traefik.http.routers.loki.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.loki.tls.domains[0].main=*.svc.lan.jhcloud.io"
+      - "traefik.http.routers.loki.tls.domains[0].main=*.svc.ducknet.io"
     port: 3100
     checks:
       - name:
@@ -24,7 +24,7 @@ consul_catalog_services:
       - "metrics"
     port: "3100"
     checks:
-      - name: 
+      - name:
         http: "http://localhost:3100/metrics"
         interval: "15s"
         timeout: "3s"

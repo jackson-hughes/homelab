@@ -25,10 +25,10 @@
     group: "{{ item.group }}"
     mode: "0774"
   loop:
-    - { path: "/opt/media", owner: "root", group: "media" }
-    - { path: "/opt/media/nzbget", owner: "nzbget", group: "media" }
-    - { path: "/opt/media/radarr", owner: "radarr", group: "media" }
-    - { path: "/opt/media/sonarr", owner: "sonarr", group: "media" }
+    - { path: "/opt/media",          owner: "root",     group: "media" }
+    - { path: "/opt/media/nzbget",   owner: "nzbget",   group: "media" }
+    - { path: "/opt/media/radarr",   owner: "radarr",   group: "media" }
+    - { path: "/opt/media/sonarr",   owner: "sonarr",   group: "media" }
     - { path: "/opt/media/prowlarr", owner: "prowlarr", group: "media" }
 
 - name: Ensure media docker-compose.yml present

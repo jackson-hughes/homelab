@@ -19,7 +19,7 @@
 - name: Traefik container
   community.docker.docker_container:
     name: traefik
-    image: traefik:v3.4.1
+    image: traefik:v3.5.3
     ports:
       - 80:80 # http
       - 443:443 # https
@@ -31,7 +31,5 @@
     restart_policy: unless-stopped
     restart: "{{ traefik_config.changed }}"
     env:
-      AWS_ACCESS_KEY_ID: "{{ acme_aws_access_key }}"
-      AWS_SECRET_ACCESS_KEY: "{{ acme_aws_secret_key }}"
-      AWS_REGION: eu-west-2
-      AWS_HOSTED_ZONE_ID: Z06622143R5WP36DLERL5
+      CLOUDFLARE_DNS_API_TOKEN: "{{ cloudflare_dns_api_token }}"
+      CLOUDFLARE_EMAIL: "{{ cloudflare_email }}"

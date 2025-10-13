@@ -28,8 +28,8 @@ certificatesResolvers:
       storage: acme.json
       dnsChallenge:
         resolvers:
-          - "8.8.8.8:53"
-        provider: route53
+          - "1.1.1.1:53"
+        provider: cloudflare
 
 metrics:
   prometheus: {}
