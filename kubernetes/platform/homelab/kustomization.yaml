@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - ../base/cert-manager
   - ../base/external-secrets
-  - ../metallb
+  - ../base/metallb
