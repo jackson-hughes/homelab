@@ -4,8 +4,8 @@ version: '3'
 
 includes:
   ansible:
-    taskfile: ./ansible/Taskfile.yml
-    dir: ./ansible
+    taskfile: ./infra/ansible/Taskfile.yml
+    dir: ./infra/ansible
 
 tasks:
   default:
