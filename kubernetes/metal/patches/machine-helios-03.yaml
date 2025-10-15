@@ -1,0 +1,16 @@
+---
+machine:
+  network:
+    hostname: helios-03
+    nameservers:
+      - 192.168.1.1
+    interfaces:
+      - interface: enp110s0
+        dhcp: false
+        addresses:
+          - 192.168.1.27/22
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 192.168.1.1
+  install:
+    disk: /dev/disk/by-id/nvme-eui.002538b921b6cf77
