@@ -4,4 +4,3 @@ resources:
   - ../base/cert-manager
   - ../base/external-secrets
   - ../base/metallb
-  - ../base/ingress-nginx
