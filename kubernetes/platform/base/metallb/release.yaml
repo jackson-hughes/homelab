@@ -12,6 +12,9 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: metallb
+  values:
+    speaker:
+      ignoreExcludeLB: true
   interval: 1h
   install:
     remediation:

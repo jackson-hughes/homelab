@@ -8,9 +8,12 @@ machine:
       - interface: enp110s0
         dhcp: false
         addresses:
-          - 192.168.1.25/22
+          - 192.168.1.25/24
         routes:
           - network: 0.0.0.0/0
             gateway: 192.168.1.1
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers:
+      $patch: delete
   install:
     disk: /dev/disk/by-id/nvme-eui.002538ba11b71889
