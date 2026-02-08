@@ -8,6 +8,7 @@ spec:
   chart:
     spec:
       chart: traefik
+      version: "^38.0.2"
       sourceRef:
         kind: HelmRepository
         name: traefik
@@ -28,9 +29,16 @@ spec:
     providers:
       kubernetesGateway:
         enabled: true
+        experimentalChannel: true # required for TLS listener (websecure Passthrough)
     gateway:
       listeners:
         web:
+          namespacePolicy:
+            from: All
+        websecure:
+          port: 443
+          protocol: TLS
+          mode: Passthrough
           namespacePolicy:
             from: All
     additionalArguments:
