@@ -4,9 +4,9 @@ resources:
   - ../base/podinfo
 patches:
   - target:
-      kind: HelmRelease
+      kind: HTTPRoute
       name: podinfo
     patch: |
       - op: replace
-        path: /spec/values/ingress/hosts/0/host
+        path: /spec/hostnames/0
         value: podinfo.ducknet.io

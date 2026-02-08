@@ -24,10 +24,4 @@ spec:
       repository: public.ecr.aws/docker/library/redis
       tag: 7.0.6
     ingress:
-      enabled: true
-      className: nginx
-      hosts:
-        - host: podinfo.example.local
-          paths:
-            - path: /
-              pathType: ImplementationSpecific
+      enabled: false
