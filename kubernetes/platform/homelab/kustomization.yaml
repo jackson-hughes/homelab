@@ -5,3 +5,12 @@ resources:
   - ../base/cert-manager
   - ../base/external-secrets
   - ../base/metallb
+patches:
+  - target:
+      kind: HelmRelease
+      name: traefik
+      namespace: traefik
+    patch: |
+      - op: replace
+        path: /spec/values/ingressRoute/dashboard/matchRule
+        value: Host(`traefik.ducknet.io`)
