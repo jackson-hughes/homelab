@@ -44,28 +44,13 @@ spec:
             from: All
         websecure:
           port: 443
-          protocol: TLS
-          mode: Passthrough
+          protocol: HTTPS
           namespacePolicy:
             from: All
+          certificateRefs:
+            - kind: Secret
+              name: traefik-ducknet-tls
     additionalArguments:
-      - --certificatesresolvers.cloudflare.acme.email=${CLOUDFLARE_EMAIL}
-      - --certificatesresolvers.cloudflare.acme.storage=/data/acme.json
-      - --certificatesresolvers.cloudflare.acme.dnschallenge.provider=cloudflare
-      - --entrypoints.websecure.http.tls.certresolver=cloudflare
-      - --entrypoints.websecure.http.tls.domains[0].main=ducknet.io
-      - --entrypoints.websecure.http.tls.domains[0].sans=*.ducknet.io
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.web.http.redirections.entryPoint.permanent=true
-    env:
-      - name: CLOUDFLARE_DNS_API_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: cloudflare-dns-credentials
-            key: CLOUDFLARE_DNS_API_TOKEN
-      - name: CLOUDFLARE_EMAIL
-        valueFrom:
-          secretKeyRef:
-            name: cloudflare-dns-credentials
-            key: CLOUDFLARE_EMAIL
