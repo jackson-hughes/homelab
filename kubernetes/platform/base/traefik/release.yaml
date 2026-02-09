@@ -20,6 +20,11 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    ports:
+      web:
+        port: 80
+      websecure:
+        port: 443
     ingressRoute:
       dashboard:
         enabled: true
