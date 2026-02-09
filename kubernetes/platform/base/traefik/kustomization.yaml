@@ -5,5 +5,5 @@ resources:
   - namespace.yaml
   - release.yaml
   - repository.yaml
-  - externalsecret.yaml
+
   - certificate.yaml
