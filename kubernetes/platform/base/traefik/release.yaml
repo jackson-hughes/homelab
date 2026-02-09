@@ -39,6 +39,7 @@ spec:
     gateway:
       listeners:
         web:
+          port: 80
           namespacePolicy:
             from: All
         websecure:
