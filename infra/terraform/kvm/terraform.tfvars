@@ -25,7 +25,7 @@ kvm_virtual_machines = [
     cpus : "1",
     memory : "1024",
     disk_size : 17179869184 # 16GB,
-    os : "fedora40",
+    os : "fedora40"
   },
   {
     name : "leviathan05",
