@@ -1,10 +1,12 @@
 ---
 services:
   gluetun:
-    image: qmcgaw/private-internet-access
+    image: qmcgaw/gluetun
     container_name: gluetun
     cap_add:
       - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
     network_mode: bridge
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=0
@@ -14,16 +16,11 @@ services:
       - 8989:8989/tcp # Sonarr
       - 9696:9696/tcp # Prowlarr
     environment:
-      - VPNSP=mullvad
-      - PROTOCOL=udp
-      - OPENVPN_VERBOSITY=1
-      - OPENVPN_ROOT=no
-      - TZ=Europe/London
-      # Mullvad
-      - USER={{ mullvad_user }}
-      - COUNTRY=UK
-      - CITY=Manchester
-      - ISP=M247
+      - VPN_SERVICE_PROVIDER=mullvad
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY={{ mullvad_wireguard_private_key }}
+      - WIREGUARD_ADDRESS=10.74.209.255/32
+      - SERVER_CITIES=Glasgow
       - DNS_PLAINTEXT_ADDRESS=192.168.1.1
       - FIREWALL=on
       - EXTRA_SUBNETS=192.168.1.0/24
