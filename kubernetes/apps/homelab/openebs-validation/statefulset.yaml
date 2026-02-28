@@ -4,6 +4,10 @@ metadata:
   name: openebs-validation
 spec:
   clusterIP: None
+  ports:
+    - name: dummy
+      port: 80
+      targetPort: 80
   selector:
     app.kubernetes.io/name: openebs-validation
 ---
