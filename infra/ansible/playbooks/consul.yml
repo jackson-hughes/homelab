@@ -3,7 +3,7 @@
   roles:
     - ansible-consul
   vars:
-    consul_version: 1.21.1
+    consul_version: 1.22.5
     consul_enable_local_script_checks: true
     consul_datacenter: homelab
     consul_install_upgrade: true
