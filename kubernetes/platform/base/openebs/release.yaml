@@ -23,6 +23,8 @@ spec:
       retries: 3
   values:
     mayastor:
+      io_engine:
+        envcontext: iova-mode=pa
       csi:
         node:
           initContainers:
