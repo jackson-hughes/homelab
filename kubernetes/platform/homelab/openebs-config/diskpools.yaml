@@ -1,0 +1,59 @@
+apiVersion: openebs.io/v1beta3
+kind: DiskPool
+metadata:
+  name: helios-01-a
+  namespace: openebs
+spec:
+  node: helios-01
+  disks:
+    - aio:///dev/disk/by-id/nvme-eui.002538ba11b7187a
+---
+apiVersion: openebs.io/v1beta3
+kind: DiskPool
+metadata:
+  name: helios-01-b
+  namespace: openebs
+spec:
+  node: helios-01
+  disks:
+    - aio:///dev/disk/by-id/nvme-eui.002538b821c1a2cc
+---
+apiVersion: openebs.io/v1beta3
+kind: DiskPool
+metadata:
+  name: helios-02-a
+  namespace: openebs
+spec:
+  node: helios-02
+  disks:
+    - aio:///dev/disk/by-id/nvme-eui.002538b821c1a2d5
+---
+apiVersion: openebs.io/v1beta3
+kind: DiskPool
+metadata:
+  name: helios-02-b
+  namespace: openebs
+spec:
+  node: helios-02
+  disks:
+    - aio:///dev/disk/by-id/nvme-eui.002538b921b6d762
+---
+apiVersion: openebs.io/v1beta3
+kind: DiskPool
+metadata:
+  name: helios-03-a
+  namespace: openebs
+spec:
+  node: helios-03
+  disks:
+    - aio:///dev/disk/by-id/nvme-eui.002538b921b6d76b
+---
+apiVersion: openebs.io/v1beta3
+kind: DiskPool
+metadata:
+  name: helios-03-b
+  namespace: openebs
+spec:
+  node: helios-03
+  disks:
+    - aio:///dev/disk/by-id/nvme-eui.002538b821c52313

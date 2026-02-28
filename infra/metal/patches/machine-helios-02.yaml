@@ -1,5 +1,7 @@
 ---
 machine:
+  sysctls:
+    vm.nr_hugepages: "1024"
   network:
     hostname: helios-02
     nameservers:
@@ -15,5 +17,15 @@ machine:
   nodeLabels:
     node.kubernetes.io/exclude-from-external-load-balancers:
       $patch: delete
+    openebs.io/engine: mayastor
+  kubelet:
+    extraMounts:
+      - destination: /var/local
+        type: bind
+        source: /var/local
+        options:
+          - bind
+          - rshared
+          - rw
   install:
     disk: /dev/disk/by-id/nvme-eui.002538b921b6d7a6
