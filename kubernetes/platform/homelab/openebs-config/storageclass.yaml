@@ -1,5 +1,3 @@
-# This cluster intentionally has no default StorageClass.
-# Workloads must opt in explicitly with storageClassName: mayastor-3.
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
