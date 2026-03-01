@@ -23,6 +23,9 @@ spec:
       retries: 3
   values:
     mayastor:
+      obs:
+        callhome:
+          enabled: false
       io_engine:
         envcontext: iova-mode=pa
       csi:
