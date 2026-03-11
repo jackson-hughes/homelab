@@ -77,7 +77,7 @@ spec:
                 requests:
                   storage: 100Gi
     prometheus-node-exporter:
-      enabled: true
+      enabled: false
     kube-state-metrics:
       enabled: true
     defaultRules:
