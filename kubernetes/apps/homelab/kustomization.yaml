@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../base/podinfo
   - ../base/kube-prometheus-stack
+  - ../base/prometheus-node-exporter
 patches:
   - target:
       kind: HTTPRoute
