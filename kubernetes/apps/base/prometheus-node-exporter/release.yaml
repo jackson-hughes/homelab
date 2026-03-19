@@ -22,6 +22,4 @@ spec:
   values:
     prometheus:
       monitor:
-        enabled: true
-        additionalLabels:
-          release: monitoring
+        enabled: false

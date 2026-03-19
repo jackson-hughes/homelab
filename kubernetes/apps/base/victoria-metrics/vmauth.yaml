@@ -1,0 +1,14 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAuth
+metadata:
+  name: victoria-metrics-query
+spec:
+  replicaCount: 2
+  unauthorizedUserAccessSpec:
+    disabled: true
+  userNamespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: victoria-metrics
+  userSelector:
+    matchLabels:
+      app.kubernetes.io/name: victoria-metrics-query

@@ -1,0 +1,126 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics
+  namespace: victoria-metrics
+spec:
+  releaseName: victoria-metrics
+  dependsOn:
+    - name: victoria-metrics-operator
+  chart:
+    spec:
+      chart: victoria-metrics-k8s-stack
+      version: "0.72.4"
+      sourceRef:
+        kind: HelmRepository
+        name: victoria-metrics
+  interval: 10m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    victoria-metrics-operator:
+      enabled: false
+      crds:
+        cleanup:
+          enabled: false
+    defaultDashboards:
+      enabled: true
+    defaultRules:
+      create: true
+    grafana:
+      enabled: true
+      admin:
+        existingSecret: victoria-metrics-grafana-admin
+        userKey: admin-user
+        passwordKey: admin-password
+      deploymentStrategy:
+        type: Recreate
+      ingress:
+        enabled: false
+      persistence:
+        enabled: true
+        type: pvc
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: mayastor-3
+        size: 20Gi
+      grafana.ini:
+        server:
+          domain: grafana.ducknet.io
+          root_url: https://grafana.ducknet.io
+    alertmanager:
+      enabled: true
+      route:
+        enabled: false
+      spec:
+        externalURL: https://alerts.ducknet.io
+        replicaCount: 1
+        storage:
+          volumeClaimTemplate:
+            spec:
+              accessModes:
+                - ReadWriteOnce
+              storageClassName: mayastor-3
+              resources:
+                requests:
+                  storage: 20Gi
+    vmauth:
+      enabled: false
+    vmagent:
+      enabled: true
+      spec:
+        replicaCount: 2
+    vmalert:
+      enabled: true
+      spec:
+        replicaCount: 2
+    vmcluster:
+      enabled: true
+      spec:
+        replicationFactor: 1
+        retentionPeriod: 90d
+        vmstorage:
+          replicaCount: 3
+          storage:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                storageClassName: mayastor-3
+                resources:
+                  requests:
+                    storage: 50Gi
+        vmselect:
+          replicaCount: 2
+          storage:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                storageClassName: mayastor-3
+                resources:
+                  requests:
+                    storage: 2Gi
+        vminsert:
+          replicaCount: 2
+    prometheus-node-exporter:
+      enabled: false
+    kube-state-metrics:
+      enabled: true
+    # TODO: may require a Talos config change.
+    kubeApiServer:
+      enabled: true
+    kubeControllerManager:
+      enabled: true
+    kubeScheduler:
+      enabled: true
+    kubeEtcd:
+      enabled: true
+    kubelet:
+      enabled: true
+    kubeProxy:
+      enabled: true

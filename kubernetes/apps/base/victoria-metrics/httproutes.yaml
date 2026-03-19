@@ -2,7 +2,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: grafana
-  namespace: monitoring
+  namespace: victoria-metrics
 spec:
   parentRefs:
     - name: traefik-gateway
@@ -16,35 +16,14 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: monitoring-grafana
+        - name: victoria-metrics-grafana
           port: 80
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: prometheus
-  namespace: monitoring
-spec:
-  parentRefs:
-    - name: traefik-gateway
-      namespace: traefik
-      sectionName: websecure
-  hostnames:
-    - prometheus.ducknet.io
-  rules:
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /
-      backendRefs:
-        - name: monitoring-kube-prometheus-prometheus
-          port: 9090
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: HTTPRoute
-metadata:
   name: alertmanager
-  namespace: monitoring
+  namespace: victoria-metrics
 spec:
   parentRefs:
     - name: traefik-gateway
@@ -58,5 +37,26 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: monitoring-kube-prometheus-alertmanager
+        - name: vmalertmanager-victoria-metrics
           port: 9093
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: metrics
+  namespace: victoria-metrics
+spec:
+  parentRefs:
+    - name: traefik-gateway
+      namespace: traefik
+      sectionName: websecure
+  hostnames:
+    - metrics.ducknet.io
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: vmauth-victoria-metrics-query
+          port: 8427
