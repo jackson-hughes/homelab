@@ -1,13 +1,13 @@
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMUser
 metadata:
-  name: vm-reader
+  name: vm-admin
   namespace: victoria-metrics
   labels:
     app.kubernetes.io/name: vm-query
 spec:
-  name: vm-reader
-  username: vm-reader
+  name: vm-admin
+  username: admin
   passwordRef:
     name: vm-query-auth
     key: password
