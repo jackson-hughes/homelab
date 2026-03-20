@@ -2,10 +2,10 @@
 
 This repo uses a 3-tier Flux layout for the Helios cluster:
 
-- `clusters/homelab`: Flux `Kustomization` objects only.
-- `infrastructure/controllers`: operators, controllers, namespaces, Helm repositories, and Helm releases.
-- `infrastructure/config`: custom resources and config that depend on those controllers being present.
-- `workloads`: applications and workload-specific resources that depend on infrastructure being ready.
+- `clusters/homelab`: Flux `Kustomization` objects only
+- `infrastructure/controllers`: operators, controllers, namespaces, Helm repositories, Helm releases
+- `infrastructure/config`: CRs and config that depend on those controllers
+- `workloads`: apps and workload-specific resources
 
 Reconcile order:
 
@@ -15,18 +15,12 @@ Reconcile order:
 
 Placement rules:
 
-- Put a resource in `infrastructure/controllers` if it installs or runs a controller.
-- Put a resource in `infrastructure/config` if it is a CR, shared secret source, or controller-owned config.
-- Put a resource in `workloads` if it is an app or a workload-specific dependency.
+- Put controller installs in `infrastructure/controllers`
+- Put controller config in `infrastructure/controllers` when it is required for that platform capability to become usable
+- Put CRs, shared secret sources, and controller-owned config in `infrastructure/config` when they depend on an already-usable controller
+- Put apps and workload-specific dependencies in `workloads`
 
 Examples:
 
-- `HelmRelease`, `HelmRepository`, controller namespace: `infrastructure/controllers`
-- `ClusterSecretStore`, `ClusterIssuer`, `DiskPool`, `IPAddressPool`, `Certificate`: `infrastructure/config`
-- `HTTPRoute`, app HelmRelease, VictoriaMetrics and VictoriaLogs workload resources: `workloads`
-
-Guidelines:
-
-- Prefer adding files to an existing tier over creating new top-level Flux dependencies.
-- Split controllers from their dependent CRs instead of creating one mixed bundle.
-- Only add a new Flux `dependsOn` edge when a real readiness boundary exists.
+- MetalLB `IPAddressPool` and `L2Advertisement`: `infrastructure/controllers`
+- `ClusterSecretStore`, `ClusterIssuer`, `Certificate`, `DiskPool`: `infrastructure/config`
