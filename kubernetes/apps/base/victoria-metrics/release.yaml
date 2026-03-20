@@ -70,6 +70,8 @@ spec:
                   storage: 20Gi
     vmauth:
       enabled: false
+    vmsingle:
+      enabled: false
     vmagent:
       enabled: true
       spec:
