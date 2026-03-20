@@ -30,6 +30,17 @@ spec:
           enabled: false
     defaultDashboards:
       enabled: true
+    defaultDatasources:
+      extra:
+        - name: VictoriaLogs
+          type: victoriametrics-logs-datasource
+          access: proxy
+          url: http://vlselect-vl.victoria-metrics.svc:9428/select
+          uid: VictoriaLogs
+          version: 1
+          orgId: 1
+          isDefault: false
+          editable: false
     defaultRules:
       create: true
     grafana:
@@ -38,6 +49,8 @@ spec:
         existingSecret: vm-grafana-admin
         userKey: admin-user
         passwordKey: admin-password
+      plugins:
+        - victoriametrics-logs-datasource
       deploymentStrategy:
         type: Recreate
       ingress:
@@ -114,16 +127,15 @@ spec:
       enabled: false
     kube-state-metrics:
       enabled: true
-    # TODO: may require a Talos config change.
     kubeApiServer:
       enabled: true
     kubeControllerManager:
-      enabled: true
+      enabled: false
     kubeScheduler:
-      enabled: true
+      enabled: false
     kubeEtcd:
       enabled: true
     kubelet:
       enabled: true
     kubeProxy:
-      enabled: true
+      enabled: false

@@ -1,0 +1,52 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VLCluster
+metadata:
+  name: vl
+  namespace: victoria-metrics
+spec:
+  vlstorage:
+    replicaCount: 3
+    retentionPeriod: 30d
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: vl
+                  app.kubernetes.io/name: vlstorage
+              topologyKey: kubernetes.io/hostname
+    storage:
+      volumeClaimTemplate:
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: mayastor-3
+          resources:
+            requests:
+              storage: 100Gi
+  vlselect:
+    replicaCount: 2
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: vl
+                  app.kubernetes.io/name: vlselect
+              topologyKey: kubernetes.io/hostname
+  vlinsert:
+    replicaCount: 2
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: vl
+                  app.kubernetes.io/name: vlinsert
+              topologyKey: kubernetes.io/hostname

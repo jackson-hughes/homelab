@@ -1,0 +1,27 @@
+apiVersion: operator.victoriametrics.com/v1
+kind: VLAgent
+metadata:
+  name: vl
+  namespace: victoria-metrics
+spec:
+  extraArgs:
+    envflag.enable: "true"
+  remoteWrite:
+    - url: http://vlinsert-vl.victoria-metrics.svc:9428/internal/insert
+  remoteWriteSettings:
+    tmpDataPath: /var/local/vlagent/queue
+    maxDiskUsagePerURL: 10GiB
+  k8sCollector:
+    enabled: true
+    checkpointsPath: /var/local/vlagent/checkpoints.json
+    excludeFilter: kubernetes.pod_name:=%{HOSTNAME}
+  tolerations:
+    - operator: Exists
+  volumes:
+    - name: vlagent-data
+      hostPath:
+        path: /var/local/vlagent
+        type: DirectoryOrCreate
+  volumeMounts:
+    - name: vlagent-data
+      mountPath: /var/local/vlagent
