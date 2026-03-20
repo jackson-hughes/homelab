@@ -35,7 +35,7 @@ spec:
         - name: VictoriaLogs
           type: victoriametrics-logs-datasource
           access: proxy
-          url: http://vlselect-vl.victoria-metrics.svc:9428
+          url: http://vlselect-vl.victoria-metrics.svc:9471
           uid: VictoriaLogs
           version: 1
           orgId: 1

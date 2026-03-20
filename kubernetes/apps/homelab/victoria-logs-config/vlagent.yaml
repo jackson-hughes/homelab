@@ -7,7 +7,7 @@ spec:
   extraArgs:
     envflag.enable: "true"
   remoteWrite:
-    - url: http://vlinsert-vl.victoria-metrics.svc:9428/internal/insert
+    - url: http://vlinsert-vl.victoria-metrics.svc:9481/internal/insert
   remoteWriteSettings:
     tmpDataPath: /var/local/vlagent/queue
     maxDiskUsagePerURL: 10GiB
