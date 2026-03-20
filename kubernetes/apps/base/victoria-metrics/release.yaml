@@ -1,19 +1,19 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: victoria-metrics
+  name: vm
   namespace: victoria-metrics
 spec:
-  releaseName: victoria-metrics
+  releaseName: vm
   dependsOn:
-    - name: victoria-metrics-operator
+    - name: vm-operator
   chart:
     spec:
       chart: victoria-metrics-k8s-stack
       version: "0.72.4"
       sourceRef:
         kind: HelmRepository
-        name: victoria-metrics
+        name: vm
   interval: 10m
   install:
     remediation:
@@ -22,6 +22,7 @@ spec:
     remediation:
       retries: 3
   values:
+    fullnameOverride: vm
     victoria-metrics-operator:
       enabled: false
       crds:
@@ -34,7 +35,7 @@ spec:
     grafana:
       enabled: true
       admin:
-        existingSecret: victoria-metrics-grafana-admin
+        existingSecret: vm-grafana-admin
         userKey: admin-user
         passwordKey: admin-password
       deploymentStrategy:

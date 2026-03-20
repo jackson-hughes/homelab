@@ -1,7 +1,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: HelmRepository
 metadata:
-  name: victoria-metrics
+  name: vm
   namespace: victoria-metrics
 spec:
   interval: 5m
