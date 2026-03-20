@@ -16,6 +16,6 @@ spec:
         kind: VMCluster/vmselect
         name: victoria-metrics
         namespace: victoria-metrics
-      target_path_suffix: /select/0
+      target_path_suffix: /select/0/prometheus
       paths:
         - /.*
