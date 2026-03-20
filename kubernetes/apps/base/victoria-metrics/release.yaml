@@ -73,11 +73,11 @@ spec:
     vmagent:
       enabled: true
       spec:
-        replicaCount: 2
+        replicaCount: 1
     vmalert:
       enabled: true
       spec:
-        replicaCount: 2
+        replicaCount: 1
     vmcluster:
       enabled: true
       spec:

@@ -4,7 +4,7 @@ metadata:
   name: victoria-metrics-query
   namespace: victoria-metrics
 spec:
-  replicaCount: 2
+  replicaCount: 1
   unauthorizedUserAccessSpec:
     disabled: true
   userNamespaceSelector:
