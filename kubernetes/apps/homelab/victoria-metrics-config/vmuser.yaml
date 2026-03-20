@@ -16,6 +16,14 @@ spec:
         kind: VMCluster/vmselect
         name: vm
         namespace: victoria-metrics
+      target_path_suffix: /select/0
+      paths:
+        - /vmui.*
+        - /prometheus/.*
+    - crd:
+        kind: VMCluster/vmselect
+        name: vm
+        namespace: victoria-metrics
       target_path_suffix: /select/0/prometheus
       paths:
-        - /.*
+        - /api/.*
