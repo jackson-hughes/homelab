@@ -1,0 +1,21 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMUser
+metadata:
+  name: vl-admin
+  namespace: victoria-metrics
+  labels:
+    app.kubernetes.io/name: vl-query
+spec:
+  name: vl-admin
+  username: admin
+  passwordRef:
+    name: vl-query-auth
+    key: password
+  targetRefs:
+    - crd:
+        kind: VLCluster/vlselect
+        name: vl
+        namespace: victoria-metrics
+      target_path_suffix: /select
+      paths:
+        - /.*
