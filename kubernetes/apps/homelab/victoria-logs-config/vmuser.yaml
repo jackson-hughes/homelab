@@ -16,6 +16,5 @@ spec:
         kind: VLCluster/vlselect
         name: vl
         namespace: victoria-metrics
-      target_path_suffix: /select
       paths:
-        - /.*
+        - /select/.*
