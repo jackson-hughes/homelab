@@ -2,6 +2,7 @@ apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMAuth
 metadata:
   name: victoria-metrics-query
+  namespace: victoria-metrics
 spec:
   replicaCount: 2
   unauthorizedUserAccessSpec:

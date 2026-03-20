@@ -9,6 +9,4 @@ resources:
   - query-auth-externalsecret.yaml
   - operator-release.yaml
   - release.yaml
-  - vmauth.yaml
-  - vmuser.yaml
   - httproutes.yaml
