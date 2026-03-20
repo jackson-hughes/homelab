@@ -5,8 +5,6 @@ metadata:
   namespace: victoria-metrics
 spec:
   replicaCount: 1
-  unauthorizedUserAccessSpec:
-    disabled: true
   userNamespaceSelector:
     matchLabels:
       kubernetes.io/metadata.name: victoria-metrics
