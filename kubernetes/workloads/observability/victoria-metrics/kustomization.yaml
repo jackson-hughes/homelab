@@ -4,6 +4,7 @@ namespace: victoria-metrics
 resources:
   - repository.yaml
   - grafana-admin-externalsecret.yaml
+  - kube-state-metrics-flux-values.yaml
   - query-auth-externalsecret.yaml
   - release.yaml
   - httproutes.yaml

@@ -21,6 +21,10 @@ spec:
   upgrade:
     remediation:
       retries: 3
+  valuesFrom:
+    - kind: ConfigMap
+      name: vm-kube-state-metrics-flux-values
+      valuesKey: values.yaml
   values:
     fullnameOverride: vm
     victoria-metrics-operator:
