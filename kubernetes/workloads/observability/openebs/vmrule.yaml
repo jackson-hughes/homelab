@@ -40,7 +40,7 @@ spec:
     - name: openebs-pool-capacity
       rules:
         - alert: OpenEBSPoolCapacityWarning
-          expr: disk_pool_total_size_bytes > 0 and (disk_pool_used_size_bytes / disk_pool_total_size_bytes) > 0.8
+          expr: (disk_pool_used_size_bytes / (disk_pool_total_size_bytes > 0)) > 0.8
           for: 10m
           labels:
             severity: warning
@@ -49,7 +49,7 @@ spec:
             description: "Pool {{ $labels.name }} on node {{ $labels.node }} is {{ $value | humanizePercentage }} full."
 
         - alert: OpenEBSPoolCapacityCritical
-          expr: disk_pool_total_size_bytes > 0 and (disk_pool_used_size_bytes / disk_pool_total_size_bytes) > 0.9
+          expr: (disk_pool_used_size_bytes / (disk_pool_total_size_bytes > 0)) > 0.9
           for: 5m
           labels:
             severity: critical
