@@ -1,0 +1,58 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: openebs-pool-health
+  namespace: openebs
+  labels:
+    app.kubernetes.io/part-of: openebs
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: openebs-pool-status
+      rules:
+        - alert: OpenEBSPoolDegraded
+          expr: disk_pool_status == 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OpenEBS pool {{ $labels.name }} is degraded"
+            description: "Pool {{ $labels.name }} on node {{ $labels.node }} has been in degraded state for more than 5 minutes."
+
+        - alert: OpenEBSPoolFaulted
+          expr: disk_pool_status == 3
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "OpenEBS pool {{ $labels.name }} is faulted"
+            description: "Pool {{ $labels.name }} on node {{ $labels.node }} has been in faulted state for more than 1 minute."
+
+        - alert: OpenEBSPoolUnknown
+          expr: disk_pool_status == 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OpenEBS pool {{ $labels.name }} status is unknown"
+            description: "Pool {{ $labels.name }} on node {{ $labels.node }} has been in unknown state for more than 5 minutes."
+
+    - name: openebs-pool-capacity
+      rules:
+        - alert: OpenEBSPoolCapacityWarning
+          expr: (disk_pool_used_size_bytes / (disk_pool_total_size_bytes > 0)) > 0.8
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "OpenEBS pool {{ $labels.name }} is over 80% full"
+            description: "Pool {{ $labels.name }} on node {{ $labels.node }} is {{ $value | humanizePercentage }} full."
+
+        - alert: OpenEBSPoolCapacityCritical
+          expr: (disk_pool_used_size_bytes / (disk_pool_total_size_bytes > 0)) > 0.9
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "OpenEBS pool {{ $labels.name }} is over 90% full"
+            description: "Pool {{ $labels.name }} on node {{ $labels.node }} is {{ $value | humanizePercentage }} full."
