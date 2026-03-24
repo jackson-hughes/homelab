@@ -8,6 +8,5 @@ resources:
   - query-auth-externalsecret.yaml
   - release.yaml
   - httproutes.yaml
-  - vmservicescrape.yaml
   - vmauth.yaml
   - vmuser.yaml

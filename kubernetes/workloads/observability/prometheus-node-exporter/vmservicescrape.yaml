@@ -4,7 +4,7 @@ metadata:
   name: node-exporter
   namespace: node-exporter
 spec:
-  jobLabel: app.kubernetes.io/name
+  jobLabel: app.kubernetes.io/instance
   namespaceSelector:
     matchNames:
       - node-exporter
