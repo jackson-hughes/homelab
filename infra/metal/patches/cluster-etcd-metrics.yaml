@@ -12,7 +12,9 @@ portSelector:
     - 2381
   protocol: tcp
 ingress:
-  # Flannel SNATs pod-to-node traffic to the source node IP on this cluster.
+  # Same-node pod traffic arrives from the pod CIDR, while cross-node traffic is
+  # SNATed to the source node IP by flannel on this cluster.
+  - subnet: 10.244.0.0/16
   - subnet: 192.168.1.25/32
   - subnet: 192.168.1.26/32
   - subnet: 192.168.1.27/32
