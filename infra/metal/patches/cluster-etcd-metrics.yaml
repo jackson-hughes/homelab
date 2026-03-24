@@ -1,0 +1,15 @@
+---
+cluster:
+  etcd:
+    extraArgs:
+      listen-metrics-urls: http://0.0.0.0:2381
+---
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
+name: etcd-metrics-ingress
+portSelector:
+  ports:
+    - 2381
+  protocol: tcp
+ingress:
+  - subnet: 10.244.0.0/16
