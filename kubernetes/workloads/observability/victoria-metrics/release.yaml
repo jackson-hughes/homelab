@@ -138,7 +138,7 @@ spec:
     kubeScheduler:
       enabled: false
     kubeEtcd:
-      enabled: true
+      enabled: false
     kubelet:
       enabled: true
     kubeProxy:
