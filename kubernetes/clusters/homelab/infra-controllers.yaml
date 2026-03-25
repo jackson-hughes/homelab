@@ -5,7 +5,8 @@ metadata:
   name: infra-controllers
   namespace: flux-system
 spec:
-  interval: 3m
+  interval: 30m
+  retryInterval: 1m
   sourceRef:
     kind: GitRepository
     name: flux-system

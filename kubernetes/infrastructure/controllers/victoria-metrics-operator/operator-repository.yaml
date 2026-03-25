@@ -4,5 +4,5 @@ metadata:
   name: vm-operator
   namespace: victoria-metrics
 spec:
-  interval: 5m
+  interval: 24h
   url: https://victoriametrics.github.io/helm-charts/

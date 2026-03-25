@@ -12,7 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: external-secrets
-  interval: 1h
+  interval: 24h
   install:
     crds: CreateReplace
     remediation:
