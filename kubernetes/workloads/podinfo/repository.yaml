@@ -5,5 +5,5 @@ metadata:
   namespace: podinfo
 spec:
   type: oci
-  interval: 5m
+  interval: 24h
   url: oci://ghcr.io/stefanprodan/charts

@@ -15,7 +15,7 @@ spec:
   values:
     speaker:
       ignoreExcludeLB: true
-  interval: 1h
+  interval: 24h
   install:
     remediation:
       retries: 3
