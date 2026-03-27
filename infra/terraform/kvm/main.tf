@@ -1,17 +1,3 @@
-terraform {
-  required_providers {
-    libvirt = {
-      source  = "dmacvicar/libvirt"
-      version = "0.7.6"
-    }
-  }
-}
-
-provider "libvirt" {
-  # Ensure SSH key is added to ssh-agent
-  uri = "qemu+ssh://${var.libvirt_user}@${var.libvirt_hostname}/system?sshauth=privkey"
-}
-
 resource "libvirt_volume" "fedora35_base" {
   name   = "fedora35_base.qcow2"
   source = "https://download.fedoraproject.org/pub/fedora/linux/releases/35/Cloud/x86_64/images/Fedora-Cloud-Base-35-1.2.x86_64.qcow2"
