@@ -47,6 +47,9 @@ spec:
           editable: false
     defaultRules:
       create: true
+      rules:
+        Watchdog:
+          create: false
     grafana:
       enabled: true
       admin:
