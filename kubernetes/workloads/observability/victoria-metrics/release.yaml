@@ -47,6 +47,9 @@ spec:
           editable: false
     defaultRules:
       create: true
+      rules:
+        Watchdog:
+          create: false
     grafana:
       enabled: true
       admin:
@@ -74,6 +77,32 @@ spec:
       enabled: true
       route:
         enabled: false
+      useManagedConfig: true
+      config:
+        route:
+          receiver: pushover
+          routes:
+            - matchers:
+                - alertname = InfoInhibitor
+              receiver: blackhole
+        receivers:
+          - name: blackhole
+          - name: pushover
+            pushover_configs:
+              - token:
+                  name: pushover-credentials
+                  key: vmalert_token
+                user_key:
+                  name: pushover-credentials
+                  key: user_key
+                send_resolved: true
+        inhibit_rules:
+          - source_matchers:
+              - alertname = InfoInhibitor
+            target_matchers:
+              - severity = info
+            equal:
+              - namespace
       spec:
         externalURL: https://alerts.ducknet.io
         replicaCount: 1
