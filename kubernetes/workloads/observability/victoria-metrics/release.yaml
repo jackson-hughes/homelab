@@ -127,6 +127,8 @@ spec:
       enabled: true
       spec:
         replicaCount: 1
+        extraArgs:
+          external.url: https://grafana.ducknet.io
     vmcluster:
       enabled: true
       spec:
