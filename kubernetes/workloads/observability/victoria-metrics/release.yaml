@@ -74,6 +74,22 @@ spec:
       enabled: true
       route:
         enabled: false
+      config:
+        route:
+          receiver: blackhole
+          routes:
+            - matchers:
+                - alertname = InfoInhibitor
+              receiver: blackhole
+        receivers:
+          - name: blackhole
+        inhibit_rules:
+          - source_matchers:
+              - alertname = InfoInhibitor
+            target_matchers:
+              - severity = info
+            equal:
+              - namespace
       spec:
         externalURL: https://alerts.ducknet.io
         replicaCount: 1
