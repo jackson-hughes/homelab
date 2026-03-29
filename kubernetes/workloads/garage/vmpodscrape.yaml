@@ -1,0 +1,21 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: garage
+  namespace: garage
+  labels:
+    app.kubernetes.io/part-of: garage
+    app.kubernetes.io/component: monitoring
+spec:
+  jobLabel: app
+  namespaceSelector:
+    matchNames:
+      - garage
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: garage
+      app.kubernetes.io/instance: garage
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
