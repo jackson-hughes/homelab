@@ -7,7 +7,7 @@ metadata:
     app.kubernetes.io/part-of: garage
     app.kubernetes.io/component: monitoring
 spec:
-  jobLabel: app
+  jobLabel: app.kubernetes.io/name
   namespaceSelector:
     matchNames:
       - garage
@@ -16,6 +16,6 @@ spec:
       app.kubernetes.io/name: garage
       app.kubernetes.io/instance: garage
   podMetricsEndpoints:
-    - port: metrics
+    - port: admin
       path: /metrics
       interval: 30s
