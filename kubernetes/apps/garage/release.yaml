@@ -28,10 +28,10 @@ spec:
       podManagementPolicy: Parallel
     persistence:
       meta:
-        storageClass: "openebs-single-replica"
+        storageClass: "mayastor-1"
         size: "2Gi"
       data:
-        storageClass: "openebs-single-replica"
+        storageClass: "mayastor-1"
         size: "32Gi"
     monitoring:
       metrics:

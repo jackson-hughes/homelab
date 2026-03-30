@@ -4,7 +4,7 @@ metadata:
   name: vl-query
   namespace: victoria-metrics
 spec:
-  replicaCount: 1
+  replicaCount: 2
   userNamespaceSelector:
     matchLabels:
       kubernetes.io/metadata.name: victoria-metrics
