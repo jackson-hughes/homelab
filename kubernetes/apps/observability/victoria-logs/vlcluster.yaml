@@ -5,24 +5,22 @@ metadata:
   namespace: victoria-metrics
 spec:
   vlstorage:
-    replicaCount: 3
-    retentionPeriod: 30d
+    replicaCount: 2
+    retentionPeriod: 60d
     affinity:
       podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: vl
-                  app.kubernetes.io/name: vlstorage
-              topologyKey: kubernetes.io/hostname
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: vl
+                app.kubernetes.io/name: vlstorage
+            topologyKey: kubernetes.io/hostname
     storage:
       volumeClaimTemplate:
         spec:
           accessModes:
             - ReadWriteOnce
-          storageClassName: mayastor-3
+          storageClassName: mayastor-2
           resources:
             requests:
               storage: 100Gi
@@ -30,23 +28,19 @@ spec:
     replicaCount: 2
     affinity:
       podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: vl
-                  app.kubernetes.io/name: vlselect
-              topologyKey: kubernetes.io/hostname
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: vl
+                app.kubernetes.io/name: vlselect
+            topologyKey: kubernetes.io/hostname
   vlinsert:
     replicaCount: 2
     affinity:
       podAntiAffinity:
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 100
-            podAffinityTerm:
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: vl
-                  app.kubernetes.io/name: vlinsert
-              topologyKey: kubernetes.io/hostname
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchLabels:
+                app.kubernetes.io/instance: vl
+                app.kubernetes.io/name: vlinsert
+            topologyKey: kubernetes.io/hostname
