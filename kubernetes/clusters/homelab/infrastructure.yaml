@@ -13,7 +13,7 @@ spec:
   path: ./kubernetes/infrastructure/controllers
   prune: true
   wait: true
-  timeout: 5m0s
+  timeout: 15m
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -31,4 +31,4 @@ spec:
   path: ./kubernetes/infrastructure/config
   prune: true
   wait: true
-  timeout: 5m0s
+  timeout: 5m
