@@ -64,18 +64,8 @@ spec:
                 description: Logs
 
       widgets:
-        - kubernetes:
-            cluster:
-              show: true
-              cpu: false
-              memory: false
-              showLabel: true
-              label: homelab
-            nodes:
-              show: true
-              cpu: false
-              memory: false
-              showLabel: true
+        # The kubernetes widget queries metrics-server unconditionally; re-enable
+        # it once metrics-server is installed on the cluster.
         - search:
             provider: google
             target: _blank
