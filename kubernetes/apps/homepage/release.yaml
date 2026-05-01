@@ -1,0 +1,81 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: homepage
+  namespace: homepage
+spec:
+  releaseName: homepage
+  chart:
+    spec:
+      chart: homepage
+      version: "^2.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: homepage
+  interval: 24h
+  install:
+    remediation:
+      retries: 3
+  values:
+    enableRbac: true
+    serviceAccount:
+      create: true
+
+    # HOMEPAGE_ALLOWED_HOSTS is required; this value replaces the chart default
+    env:
+      - name: HOMEPAGE_ALLOWED_HOSTS
+        value: "home.ducknet.io"
+
+    # We use HTTPRoute instead of the chart's ingress
+    ingress:
+      main:
+        enabled: false
+
+    config:
+      kubernetes:
+        mode: cluster
+        gateway: true
+
+      settings:
+        title: Homelab
+
+      bookmarks:
+        - Cluster:
+            - GitHub:
+                - abbr: GH
+                  href: https://github.com/jackson-hughes/homelab
+
+      services:
+        - Infrastructure:
+            - Garage (S3):
+                href: https://s3.ducknet.io
+                description: Object storage
+            - Grafana:
+                href: https://grafana.ducknet.io
+                description: Dashboards
+            - Alertmanager:
+                href: https://alerts.ducknet.io
+                description: Alerts
+            - Victoria Metrics:
+                href: https://metrics.ducknet.io
+                description: Time-series database
+            - Victoria Logs:
+                href: https://logs.ducknet.io
+                description: Logs
+
+      widgets:
+        - kubernetes:
+            cluster:
+              show: true
+              cpu: false
+              memory: false
+              showLabel: true
+              label: homelab
+            nodes:
+              show: true
+              cpu: false
+              memory: false
+              showLabel: true
+        - search:
+            provider: google
+            target: _blank
