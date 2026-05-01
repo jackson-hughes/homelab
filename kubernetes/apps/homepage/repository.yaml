@@ -4,6 +4,5 @@ metadata:
   name: homepage
   namespace: homepage
 spec:
-  type: oci
   interval: 24h
-  url: oci://ghcr.io/jameswynn/helm-charts
+  url: https://jameswynn.github.io/helm-charts
