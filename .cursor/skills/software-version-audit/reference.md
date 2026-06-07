@@ -45,10 +45,18 @@ curl -sL "https://artifacthub.io/api/v1/packages/helm/jetstack/cert-manager" | j
 curl -sL "https://artifacthub.io/api/v1/packages/helm/victoriametrics/victoria-metrics-k8s-stack" | jq -r .version
 ```
 
-Homepage chart (jameswynn — not generic search):
+Homepage chart (jameswynn — not generic search). Helm `index.yaml` lists each chart under a two-space key with `-` list items; chart `version` may be on the `-` line or indented with four spaces (dependency `version` fields use six). Scope to the `homepage` section and read the first (newest) entry only:
 
 ```bash
-curl -sL https://jameswynn.github.io/helm-charts/index.yaml | awk '/^  homepage:/{f=1} f && /^    version:/{print; exit}'
+curl -sL https://jameswynn.github.io/helm-charts/index.yaml | awk '
+  /^  homepage:/ { in_chart=1; next }
+  in_chart && /^  [a-zA-Z0-9_-]+:$/ { exit }
+  in_chart && /^  - / && !entry {
+    entry=1
+    if (match($0, /version:[[:space:]]*/)) { print substr($0, RSTART+RLENGTH); exit }
+  }
+  in_chart && entry && /^    version:/ { print $2; exit }
+'
 ```
 
 ## GitHub (authenticated via gh)
