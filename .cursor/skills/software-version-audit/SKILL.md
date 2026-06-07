@@ -55,7 +55,7 @@ Use the right source per artifact. Never guess.
 | Terraform providers | `registry.terraform.io/v1/providers/{namespace}/{name}/versions` | Filter stable `x.y.z`, sort numerically. **Never use `.versions[-1]` unsorted.** |
 | Terraform CLI | HashiCorp Checkpoint API or `gh release list --repo hashicorp/terraform` | Prefer latest stable, not pre-release |
 | Helm charts | Artifact Hub ` /api/v1/packages/helm/{repo}/{chart}` | Direct package endpoint |
-| GitHub releases/tags | `gh api` / `gh release view` | **Use authenticated `gh`**, not unauthenticated curl |
+| GitHub releases/tags | `gh api` / `gh release view` | **Use authenticated `gh`**, not unauthenticated curl. Tag lists are not semver-ordered — sort numerically before picking latest |
 | PyPI packages | `pypi.org/pypi/{package}/json` | Ansible toolchain |
 | Ansible Galaxy roles | `galaxy.ansible.com/api/v1/roles/` | Role version ≠ app version |
 | Garage | `git.deuxfleurs.fr` API or repo tag from `kubernetes/apps/garage/repository.yaml` | Not github.com |

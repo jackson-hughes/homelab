@@ -56,7 +56,11 @@ curl -sL https://jameswynn.github.io/helm-charts/index.yaml | awk '/^  homepage:
 ```bash
 gh release view --repo fluxcd/flux2 --json tagName -q .tagName
 gh release view --repo hashicorp/consul --json tagName -q .tagName
-gh api repos/apache/kafka/tags --paginate -q '.[] | select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' | head -1
+# Kafka has no GitHub releases; use tags. Sort semver numerically — never `head -1` (API/lex order ≠ latest).
+gh api repos/apache/kafka/tags --paginate -q '.[] | select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' \
+  | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
+gh api repos/apache/kafka/tags --paginate -q '.[] | select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' \
+  | sort -t. -k1,1n -k2,2n -k3,3n | grep '^3\.' | tail -1  # latest 3.x (same-major)
 gh release list --repo hashicorp/consul --limit 20 | awk '/^v1\./{print $1; exit}'  # latest 1.x
 ```
 
@@ -98,6 +102,7 @@ docker inspect -f '{{.Config.Image}}' prometheus
 | Docker Hub tag looks wrong (e.g. prometheus `0.15.0`) | Switch to GitHub releases |
 | GitHub 403 rate limit | Use `gh api` with auth, or wait/retry |
 | Registry `.versions[-1]` ≠ expected | Re-sort — array is not semver-ordered |
+| GitHub tags `head -1` or API page order | Semver-sort numerically (`sort -t. -k1,1n …`) before taking latest |
 | Ansible `*_version` var | Confirm whether it's app binary, role default, or collection pin |
 
 ## HelmRelease files in this repo
