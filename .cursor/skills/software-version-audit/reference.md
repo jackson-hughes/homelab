@@ -69,7 +69,9 @@ gh api repos/apache/kafka/tags --paginate -q '.[] | select(.name | test("^[0-9]+
   | sort -t. -k1,1n -k2,2n -k3,3n | tail -1
 gh api repos/apache/kafka/tags --paginate -q '.[] | select(.name | test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) | .name' \
   | sort -t. -k1,1n -k2,2n -k3,3n | grep '^3\.' | tail -1  # latest 3.x (same-major)
-gh release list --repo hashicorp/consul --limit 20 | awk '/^v1\./{print $1; exit}'  # latest 1.x
+# Same-major: filter tagName, not tabular column 1 (release title). Paginate — list order ≠ semver.
+gh api repos/hashicorp/consul/releases --paginate -q '.[] | select(.prerelease == false) | .tag_name' \
+  | grep -E '^v1\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1  # latest 1.x
 ```
 
 ## PyPI & Galaxy
@@ -111,6 +113,7 @@ docker inspect -f '{{.Config.Image}}' prometheus
 | GitHub 403 rate limit | Use `gh api` with auth, or wait/retry |
 | Registry `.versions[-1]` ≠ expected | Re-sort — array is not semver-ordered |
 | GitHub tags `head -1` or API page order | Semver-sort numerically (`sort -t. -k1,1n …`) before taking latest |
+| `gh release list` tabular output for same-major | Column 1 is release **title** (`name`), not `tagName`; use `--json tagName` or `gh api …/releases` |
 | Ansible `*_version` var | Confirm whether it's app binary, role default, or collection pin |
 
 ## HelmRelease files in this repo
