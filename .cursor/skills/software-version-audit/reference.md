@@ -25,7 +25,8 @@ def latest_stable_provider(namespace, name, declared_major=None):
     latest = stable[-1]
     same_major = None
     if declared_major is not None:
-        in_major = [v for v in stable if v.startswith(f"{declared_major}.")]
+        major = str(declared_major)
+        in_major = [v for v in stable if v.split(".", 1)[0] == major]
         same_major = in_major[-1] if in_major else None
     return {"latest": latest, "same_major": same_major, "all_stable": stable}
 
