@@ -3,7 +3,9 @@ kind: Kustomization
 resources:
   - cert-manager
   - external-secrets
+  - intel-device-plugins
   - metallb
+  - node-feature-discovery
   - openebs
   - traefik
   - victoria-metrics-operator
