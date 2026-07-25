@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: media-nfs
+spec:
+  # Nominal. Capacity is not enforced for NFS; the real limit is the Synology
+  # volume.
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  # Empty string opts out of the default StorageClass (mayastor-1), which would
+  # otherwise intercept the claim and leave it unbound.
+  storageClassName: ""
+  # Pre-binds this volume to the claim below so nothing else can take it.
+  claimRef:
+    namespace: media
+    name: media-nfs
+  # Matches the mount garuda has been using (nfsstat -m), except `soft` is
+  # replaced by `hard`: on a timeout `soft` returns EIO, which Plex sees as
+  # unreadable files and reacts to by marking library items missing.
+  # `nolock` is required because Talos has no rpc.statd.
+  mountOptions:
+    - nfsvers=3
+    - nolock
+    - hard
+    - noatime
+    - proto=tcp
+    - timeo=600
+    - retrans=2
+    - rsize=131072
+    - wsize=131072
+  nfs:
+    # Resolved by the kubelet on the node, not by cluster DNS. The Talos nodes
+    # have no search domain, so this must be fully qualified.
+    server: storage.ducknet.io
+    path: /volume1/plex-media

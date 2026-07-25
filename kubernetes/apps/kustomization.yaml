@@ -4,5 +4,6 @@ resources:
   - garage
   - garage/dashboards
   - homepage
+  - media
   - observability
   - podinfo
