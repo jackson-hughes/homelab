@@ -5,10 +5,6 @@ metadata:
   namespace: media
 spec:
   releaseName: plex
-  # Suspended until garuda's config directory has been restored into the
-  # plex-config PVC. Starting against an empty volume makes Plex register as a
-  # new server with a new machine identifier and no libraries.
-  suspend: true
   chart:
     spec:
       chart: plex-media-server
