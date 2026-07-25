@@ -16,5 +16,10 @@ spec:
   relabelConfigs:
     - action: labelmap
       regex: __meta_kubernetes_node_label_(.+)
+    # NFD publishes ~78 feature.node.kubernetes.io labels per node. Without this
+    # drop they land on every etcd series and exceed vminsert's
+    # -maxLabelsPerTimeseries (40), which silently discards the whole job.
+    - action: labeldrop
+      regex: feature_node_kubernetes_io_.+
     - replacement: etcd
       targetLabel: job
