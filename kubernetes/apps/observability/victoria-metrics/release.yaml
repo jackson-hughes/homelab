@@ -208,5 +208,20 @@ spec:
       enabled: false
     kubelet:
       enabled: true
+      # The chart maps every node label onto every kubelet/cadvisor series. NFD
+      # publishes ~78 feature.node.kubernetes.io labels per node, which pushed
+      # series past vminsert's -maxLabelsPerTimeseries (40) and silently dropped
+      # the whole kubelet job. Drop them back off; nothing queries them.
+      vmScrape:
+        spec:
+          relabelConfigs:
+            - action: labelmap
+              regex: __meta_kubernetes_node_label_(.+)
+            - action: labeldrop
+              regex: feature_node_kubernetes_io_.+
+            - sourceLabels: [__metrics_path__]
+              targetLabel: metrics_path
+            - targetLabel: job
+              replacement: kubelet
     kubeProxy:
       enabled: false
