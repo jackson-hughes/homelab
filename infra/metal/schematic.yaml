@@ -1,0 +1,30 @@
+# Talos Image Factory schematic for the helios nodes.
+#
+# Schematic ID: 4577aa51b259ad4719a2005c9ec4a74e1e40b04ccdd351a1b624562e51d4ff9e
+#
+# The ID is a content hash of this schematic, so committing the definition is
+# equivalent to committing the ID. Verify with (comments stripped, since only the
+# schematic body is hashed):
+#
+#   grep -v '^#' infra/metal/schematic.yaml \
+#     | curl -s -X POST --data-binary @- https://factory.talos.dev/schematics
+#
+# which must return the ID above. Installer image for talosctl upgrade:
+#
+#   factory.talos.dev/installer/4577aa51b259ad4719a2005c9ec4a74e1e40b04ccdd351a1b624562e51d4ff9e:<talos-version>
+#
+# The body below is reproduced as the factory returns it
+# (GET https://factory.talos.dev/schematics/<id>).
+#
+# siderolabs/i915             Intel GPU driver + firmware. Since Talos 1.9 the
+#                             i915 driver is not in the base image.
+# siderolabs/intel-ice-firmware  Firmware for the Intel `ice` driver (E810-series
+#                             NICs), unused on these nodes. Removing it would
+#                             change the schematic ID.
+# siderolabs/intel-ucode      Intel CPU microcode.
+customization:
+    systemExtensions:
+        officialExtensions:
+            - siderolabs/i915
+            - siderolabs/intel-ice-firmware
+            - siderolabs/intel-ucode

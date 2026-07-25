@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: intel-device-plugins-gpu
+  namespace: inteldeviceplugins-system
+spec:
+  releaseName: intel-device-plugins-gpu
+  # Creates a GpuDevicePlugin CR, so the operator (which owns that CRD) must be
+  # reconciled first.
+  dependsOn:
+    - name: intel-device-plugins-operator
+  chart:
+    spec:
+      chart: intel-device-plugins-gpu
+      version: "0.36.0"
+      sourceRef:
+        kind: HelmRepository
+        name: intel
+  interval: 24h
+  install:
+    remediation:
+      retries: 3
+  values:
+    # Name of the GpuDevicePlugin CR; chart default is "gpudeviceplugin-sample".
+    name: intel-gpu
+    # Number of containers that may share a single GPU.
+    sharedDevNum: 1
+    # Creates Intel's NodeFeatureRule, which is what makes NFD apply the
+    # intel.feature.node.kubernetes.io/gpu label this chart's nodeSelector needs.
+    # The rule matches PCI vendor 8086 class 0300/0380 and requires the i915
+    # kernel module loaded, provided by the siderolabs/i915 extension
+    # (see infra/metal/schematic.yaml).
+    nodeFeatureRule: true
