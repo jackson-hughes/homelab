@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: plex
+  namespace: media
+  labels:
+    app.kubernetes.io/part-of: plex
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: plex-availability
+      rules:
+        - alert: PlexUnavailable
+          expr: kube_statefulset_status_replicas_ready{namespace="media",statefulset="plex"} == 0
+          # Generous: on a restart the container re-checks ownership across the
+          # whole config volume before Plex starts listening.
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Plex has no ready replica"
+            description: "The plex statefulset in the media namespace has had no ready replica for more than 15 minutes."

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config
+  namespace: media
+spec:
+  accessModes:
+    - ReadWriteOnce
+  # repl-2: this holds the library database, watch history and metadata, which
+  # is the only state here that cannot be regenerated.
+  storageClassName: mayastor-2
+  resources:
+    requests:
+      storage: 32Gi

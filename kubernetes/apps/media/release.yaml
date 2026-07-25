@@ -1,0 +1,84 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: plex
+  namespace: media
+spec:
+  releaseName: plex
+  # Suspended until garuda's config directory has been restored into the
+  # plex-config PVC. Starting against an empty volume makes Plex register as a
+  # new server with a new machine identifier and no libraries.
+  suspend: true
+  chart:
+    spec:
+      chart: plex-media-server
+      version: "1.6.0"
+      sourceRef:
+        kind: HelmRepository
+        name: plex
+  interval: 24h
+  install:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: plex
+
+    image:
+      # Pinned to the version running on garuda. The rolling tags (latest,
+      # public) download and install the newest Plex at container startup, which
+      # advances the database schema and prevents falling back to garuda.
+      tag: "1.43.2.10687-563d026ea"
+
+    extraEnv:
+      # Inside a pod Plex only sees the pod IP, which is unroutable from the LAN;
+      # without this, clients fall back to the WAN route or Plex Relay. The chart
+      # maps this to the customConnections preference on every start, so it must
+      # be set here rather than in the UI.
+      ADVERTISE_IP: "https://192.168.1.41:32400,https://plex.ducknet.io:443"
+      TZ: "Europe/London"
+
+    service:
+      type: LoadBalancer
+      annotations:
+        # spec.loadBalancerIP is deprecated in Kubernetes and in this chart;
+        # MetalLB reads this annotation instead.
+        metallb.io/loadBalancerIPs: 192.168.1.41
+      # Preserves client source IPs. Plex uses them to distinguish LAN from
+      # remote clients, which drives remote quality limits.
+      externalTrafficPolicy: Local
+
+    httpRoute:
+      enabled: true
+      parentRefs:
+        - name: traefik-gateway
+          namespace: traefik
+          sectionName: websecure
+      hostnames:
+        - plex.ducknet.io
+
+    pms:
+      configExistingClaim: plex-config
+      resources:
+        requests:
+          cpu: 500m
+          memory: 2Gi
+          ephemeral-storage: 4Gi
+        limits:
+          # No CPU limit: throttling causes transcode stutter.
+          memory: 8Gi
+          # The chart mounts an emptyDir at /transcode, which counts against
+          # ephemeral-storage. Exceeding this evicts the pod, and the emptyDir is
+          # discarded on reschedule.
+          ephemeral-storage: 32Gi
+          gpu.intel.com/i915: 1
+
+    extraVolumes:
+      - name: media
+        persistentVolumeClaim:
+          claimName: media-nfs
+
+    extraVolumeMounts:
+      # Must match garuda's mount path exactly. Plex stores absolute file paths
+      # in the library database; any other path and every item reads as missing.
+      - name: media
+        mountPath: /data/plex-media

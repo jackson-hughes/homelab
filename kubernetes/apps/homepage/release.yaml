@@ -62,6 +62,12 @@ spec:
             - Victoria Logs:
                 href: https://logs.ducknet.io
                 description: Logs
+        - Media:
+            # Link only. The homepage Plex widget needs an X-Plex-Token, and a
+            # missing secret would stop the homepage pod starting.
+            - Plex:
+                href: https://plex.ducknet.io
+                description: Media server
 
       widgets:
         # The kubernetes widget queries metrics-server unconditionally; re-enable
