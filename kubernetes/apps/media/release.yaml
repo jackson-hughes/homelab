@@ -20,10 +20,11 @@ spec:
     fullnameOverride: plex
 
     image:
-      # Pinned to the version running on garuda. The rolling tags (latest,
-      # public) download and install the newest Plex at container startup, which
-      # advances the database schema and prevents falling back to garuda.
-      tag: "1.43.2.10687-563d026ea"
+      tag: "latest"
+      # The chart defaults to IfNotPresent, which would keep serving whichever
+      # `latest` the node first cached. Always makes each pod start re-resolve
+      # the tag; updates therefore land on pod restart, not on a timer.
+      pullPolicy: Always
 
     extraEnv:
       # Inside a pod Plex only sees the pod IP, which is unroutable from the LAN;
