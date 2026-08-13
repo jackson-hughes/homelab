@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: victoria-metrics-k8s-stack
-      version: "0.72.4"
+      version: "0.90.2"
       sourceRef:
         kind: HelmRepository
         name: vm
@@ -46,10 +46,10 @@ spec:
           isDefault: false
           editable: false
     defaultRules:
-      create: true
+      enabled: true
       rules:
         Watchdog:
-          create: false
+          enabled: false
     grafana:
       enabled: true
       admin:
