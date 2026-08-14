@@ -200,10 +200,33 @@ spec:
       enabled: true
     kubeApiServer:
       enabled: true
+    # Both are reachable only because infra/metal/patches/cluster-controlplane-metrics.yaml
+    # sets bind-address=0.0.0.0; Talos defaults them to 127.0.0.1. The chart's default
+    # selector (component: kube-*) already matches the Talos static pods.
+    #
+    # Talos runs these without --tls-cert-file, so each generates a self-signed serving
+    # cert that the cluster CA cannot verify. Replace the chart's default caFile with
+    # insecureSkipVerify; the scrape is still authenticated by the bearer token.
     kubeControllerManager:
-      enabled: false
+      enabled: true
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
     kubeScheduler:
-      enabled: false
+      enabled: true
+      vmScrape:
+        spec:
+          endpoints:
+            - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+              port: http-metrics
+              scheme: https
+              tlsConfig:
+                insecureSkipVerify: true
     kubeEtcd:
       enabled: false
     kubelet:
