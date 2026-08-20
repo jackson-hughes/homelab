@@ -55,6 +55,10 @@ spec:
       # Route dashboards to folders by ConfigMap annotation.
       sidecar:
         dashboards:
+          # The VM stack overrides this onto /var/lib/grafana/dashboards, where
+          # its emptyDir shadows the directory the chart reserves for
+          # dashboardProviders. Restore the chart default.
+          folder: /tmp/dashboards
           folderAnnotation: grafana_folder
           provider:
             foldersFromFilesStructure: true
