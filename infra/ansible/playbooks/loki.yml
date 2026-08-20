@@ -1,7 +1,0 @@
----
-- hosts: loki
-  roles:
-  - ansible-loki
-  vars:
-    has_promtail: true
-    has_loki: true
