@@ -1,0 +1,21 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: unpoller
+  namespace: unpoller
+  labels:
+    app.kubernetes.io/part-of: unpoller
+    app.kubernetes.io/component: monitoring
+spec:
+  jobLabel: app.kubernetes.io/name
+  namespaceSelector:
+    matchNames:
+      - unpoller
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: unpoller
+      app.kubernetes.io/instance: unpoller
+  podMetricsEndpoints:
+    - port: tcp
+      path: /metrics
+      interval: 30s

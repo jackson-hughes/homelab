@@ -54,9 +54,6 @@
     - name: traefik container
       include_tasks: docker-services/traefik.yml
 
-    - name: unifi-poller
-      include_tasks: docker-services/unifi-poller.yml
-
     - name: alertmanager
       include_tasks: docker-services/alertmanager.yml
 
