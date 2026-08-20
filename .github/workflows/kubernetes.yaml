@@ -1,0 +1,118 @@
+---
+name: kubernetes
+
+on:
+  pull_request:
+    paths:
+      - kubernetes/**
+      - scripts/validate-kubernetes.sh
+      - .github/workflows/kubernetes.yaml
+  push:
+    branches: [main]
+    paths:
+      - kubernetes/**
+      - scripts/validate-kubernetes.sh
+      - .github/workflows/kubernetes.yaml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  KUBECONFORM_VERSION: v0.8.0
+  KUSTOMIZE_VERSION: v5.8.1
+
+jobs:
+  # Schema validation: every resource in the four kustomize trees is checked
+  # against its JSON schema (core k8s + Flux CRDs + datree CRD catalog).
+  kubeconform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install kustomize and kubeconform
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin" && cd "$RUNNER_TEMP/bin"
+          curl -sfL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar xz kubeconform
+          curl -sfL "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2F${KUSTOMIZE_VERSION}/kustomize_${KUSTOMIZE_VERSION}_linux_amd64.tar.gz" | tar xz kustomize
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - run: ./scripts/validate-kubernetes.sh
+
+  # Render validation: flate reconciles the whole Flux graph offline, templating
+  # every HelmRelease against its real chart, so a chart version that doesn't
+  # exist or values the chart can't render fail here instead of in-cluster.
+  flate-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: home-operations/flate/action@2862e47ed4d6efebeffb43c7691ee6df06b4536c # v0.5.0
+        with:
+          cache: true
+          # The SHA pin alone doesn't pin the CLI: the action resolves the SHA
+          # to a tag via the GitHub API and falls back to "latest" on failure.
+          version: "0.5.0"
+
+      # --base= forces full-tree mode: without it the action's exported
+      # FLATE_BASE (defaulting to main) flips test into changed-only mode,
+      # which errors on shallow PR checkouts and tests nothing on main.
+      - run: flate test all --base= --path kubernetes/clusters/homelab --no-progress
+
+  # PR review aid: diff the rendered cluster state against the PR's base, so
+  # review sees what actually changes in the cluster, not just the file diff.
+  flate-diff:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: home-operations/flate/action@2862e47ed4d6efebeffb43c7691ee6df06b4536c # v0.5.0
+        with:
+          cache: true
+          base: ${{ github.event.pull_request.base.sha }}
+          version: "0.5.0"
+
+      - name: Diff rendered manifests against base
+        run: |
+          flate diff all --path kubernetes/clusters/homelab -o github --no-progress > "$RUNNER_TEMP/flate-diff.txt"
+          {
+            echo "## Rendered cluster diff"
+            echo
+            if [ -s "$RUNNER_TEMP/flate-diff.txt" ]; then
+              echo '```diff'
+              cat "$RUNNER_TEMP/flate-diff.txt"
+              echo '```'
+            else
+              echo "No rendered changes."
+            fi
+          } > "$RUNNER_TEMP/flate-diff.md"
+          cat "$RUNNER_TEMP/flate-diff.md" >> "$GITHUB_STEP_SUMMARY"
+          # GitHub rejects comment bodies over 65536 characters (large chart
+          # or Flux upgrades get there); the full diff stays in the step
+          # summary, whose limit is 1MiB.
+          if [ "$(wc -c < "$RUNNER_TEMP/flate-diff.md")" -gt 60000 ]; then
+            {
+              head -c 60000 "$RUNNER_TEMP/flate-diff.md"
+              printf '\n```\n\n'
+              echo "_Diff truncated — the full rendered diff is in the flate-diff job's [step summary](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})._"
+            } > "$RUNNER_TEMP/flate-comment.md"
+          else
+            cp "$RUNNER_TEMP/flate-diff.md" "$RUNNER_TEMP/flate-comment.md"
+          fi
+
+      - uses: marocchino/sticky-pull-request-comment@5770ad5eb8f42dd2c4f34da00c94c5381e49af88 # v3.0.5
+        with:
+          header: flate-diff
+          path: ${{ runner.temp }}/flate-comment.md
