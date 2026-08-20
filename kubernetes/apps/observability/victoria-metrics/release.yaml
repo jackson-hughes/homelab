@@ -52,6 +52,78 @@ spec:
           enabled: false
     grafana:
       enabled: true
+      # Route dashboards to folders by ConfigMap annotation.
+      sidecar:
+        dashboards:
+          folderAnnotation: grafana_folder
+          provider:
+            foldersFromFilesStructure: true
+
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: unifi
+              orgId: 1
+              folder: Unifi
+              type: file
+              disableDeletion: false
+              allowUiUpdates: false
+              options:
+                path: /var/lib/grafana/dashboards/unifi
+            - name: garage
+              orgId: 1
+              folder: Garage
+              type: file
+              disableDeletion: false
+              allowUiUpdates: false
+              options:
+                path: /var/lib/grafana/dashboards/garage
+      dashboards:
+        unifi:
+          # DS_UNIFI_POLLER is an undefined variable left by upstream.
+          unifi-clients:
+            gnetId: 11315
+            revision: 9
+            title: "UniFi-Poller: Client Insights"
+            datasource:
+              - name: DS_PROMETHEUS
+                value: VictoriaMetrics
+              - name: DS_UNIFI_POLLER
+                value: VictoriaMetrics
+          unifi-uap:
+            gnetId: 11314
+            revision: 10
+            title: "UniFi-Poller: UAP Insights"
+            datasource:
+              - name: DS_PROMETHEUS
+                value: VictoriaMetrics
+              - name: DS_UNIFI_POLLER
+                value: VictoriaMetrics
+          unifi-usg:
+            gnetId: 11313
+            revision: 9
+            title: "UniFi-Poller: USG Insights"
+            datasource:
+              - name: DS_PROMETHEUS
+                value: VictoriaMetrics
+              - name: DS_UNIFI_POLLER
+                value: VictoriaMetrics
+          unifi-usw:
+            gnetId: 11312
+            revision: 9
+            title: "UniFi-Poller: USW Insights"
+            datasource:
+              - name: DS_PROMETHEUS
+                value: VictoriaMetrics
+              - name: DS_UNIFI_POLLER
+                value: VictoriaMetrics
+        garage:
+          garage:
+            url: https://raw.githubusercontent.com/deuxfleurs-org/garage/v2.3.0/script/telemetry/grafana-garage-dashboard-prometheus.json
+            datasource:
+              - name: DS_DS_PROMETHEUS
+                value: VictoriaMetrics
       admin:
         existingSecret: vm-grafana-admin
         userKey: admin-user

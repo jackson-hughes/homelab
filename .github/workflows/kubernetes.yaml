@@ -87,13 +87,20 @@ jobs:
       - name: Diff rendered manifests against base
         run: |
           flate diff all --path kubernetes/clusters/homelab -o github --no-progress > "$RUNNER_TEMP/flate-diff.txt"
+          # The blank line after </summary> is required: without it GitHub
+          # treats the fenced block as raw text inside the HTML element.
           {
             echo "## Rendered cluster diff"
             echo
             if [ -s "$RUNNER_TEMP/flate-diff.txt" ]; then
+              echo "<details>"
+              echo "<summary>$(wc -l < "$RUNNER_TEMP/flate-diff.txt" | tr -d '[:space:]') changed lines</summary>"
+              echo
               echo '```diff'
               cat "$RUNNER_TEMP/flate-diff.txt"
               echo '```'
+              echo
+              echo "</details>"
             else
               echo "No rendered changes."
             fi
@@ -105,7 +112,7 @@ jobs:
           if [ "$(wc -c < "$RUNNER_TEMP/flate-diff.md")" -gt 60000 ]; then
             {
               head -c 60000 "$RUNNER_TEMP/flate-diff.md"
-              printf '\n```\n\n'
+              printf '\n```\n\n</details>\n\n'
               echo "_Diff truncated — the full rendered diff is in the flate-diff job's [step summary](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})._"
             } > "$RUNNER_TEMP/flate-comment.md"
           else
