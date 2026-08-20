@@ -1,0 +1,56 @@
+---
+name: terraform
+
+on:
+  pull_request:
+    paths:
+      - infra/terraform/**
+      - .github/workflows/terraform.yaml
+  push:
+    branches: [main]
+    paths:
+      - infra/terraform/**
+      - .github/workflows/terraform.yaml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        root: [kvm, aws]
+    defaults:
+      run:
+        working-directory: infra/terraform/${{ matrix.root }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # A bare assignment fails loudly if the file is missing, and the test
+      # rejects an empty pin — either would otherwise make setup-terraform
+      # silently install latest.
+      - name: Read pinned terraform version
+        id: version
+        run: |
+          version="$(cat .terraform-version)"
+          test -n "${version}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: ${{ steps.version.outputs.version }}
+          terraform_wrapper: false
+
+      - run: terraform fmt -check -recursive -diff
+
+      # -backend=false skips the S3 backend, so no AWS credentials are needed.
+      - run: terraform init -backend=false -input=false
+
+      - run: terraform validate
