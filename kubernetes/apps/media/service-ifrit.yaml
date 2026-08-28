@@ -1,7 +1,3 @@
-# The *arr stack and nzbget still run as Docker containers on ifrit, sharing
-# gluetun's network namespace; gluetun publishes their ports on ifrit's host
-# interface. These two objects let the cluster treat that host as an ordinary
-# backend so the routes below can be plain HTTPRoutes.
 apiVersion: v1
 kind: Service
 metadata:
@@ -37,13 +33,9 @@ addressType: IPv4
 endpoints:
   - addresses:
       - 192.168.1.123 # ifrit
-    # Nothing health-checks a hand-written slice, unlike the Consul registration
-    # this replaces. If ifrit is down the route stays programmed and returns 502.
     conditions:
       ready: true
 ports:
-  # Port names must match the Service's; Traefik resolves the backendRef to a
-  # Service port and then looks up the same name here.
   - name: nzbget
     port: 6789
   - name: radarr
