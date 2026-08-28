@@ -39,23 +39,6 @@
     # - name: docker-compose
 
   tasks:
-    - name: consul exporter container
-      include_tasks: docker-services/consul-exporter.yml
-
-    - name: grafana container
-      include_tasks: docker-services/grafana.yml
-
     - name: media stack
       include_tasks: docker-services/media.yml
 
-    - name: prometheus container
-      include_tasks: docker-services/prometheus.yml
-
-    - name: traefik container
-      include_tasks: docker-services/traefik.yml
-
-    - name: alertmanager
-      include_tasks: docker-services/alertmanager.yml
-
-    - name: exportarr
-      include_tasks: docker-services/exportarr.yml
