@@ -11,6 +11,7 @@ tap "home-operations/tap", trusted: { casks: ["flate"] }
 brew "fluxcd/tap/flux" # fully qualified: homebrew/core has an unrelated "flux"
 brew "kubernetes-cli"
 brew "talosctl"
+brew "virtctl"
 cask "headlamp"
 
 # Task running and repo scripts
