@@ -1,13 +1,5 @@
-[consul_instances]
-leviathan[01:05] consul_node_role=server
-titan            consul_node_role=client
-ifrit            consul_node_role=client
-
-[consul_servers]
-leviathan[01:05]
-
 [docker]
-ifrit
+usenet ansible_host=usenet.ducknet.io
 
 [libvirt_hosts]
 titan libvirt_rw_users=jhughes
