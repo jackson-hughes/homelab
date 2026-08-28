@@ -16,7 +16,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: ifrit-media
+        - name: usenet
           port: 6789
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -37,7 +37,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: ifrit-media
+        - name: usenet
           port: 7878
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -58,7 +58,7 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: ifrit-media
+        - name: usenet
           port: 8989
 ---
 apiVersion: gateway.networking.k8s.io/v1
@@ -79,5 +79,5 @@ spec:
             type: PathPrefix
             value: /
       backendRefs:
-        - name: ifrit-media
+        - name: usenet
           port: 9696
