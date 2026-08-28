@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: homepage
 resources:
   - namespace.yaml
+  - externalsecret.yaml
   - release.yaml
   - repository.yaml
   - httproute.yaml

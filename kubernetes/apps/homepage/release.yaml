@@ -25,6 +25,35 @@ spec:
     env:
       - name: HOMEPAGE_ALLOWED_HOSTS
         value: "home.ducknet.io"
+      # Widget credentials. Homepage substitutes {{HOMEPAGE_VAR_*}} when it
+      # reads services.yaml, so the values stay in the pod environment and
+      # never land in the chart's ConfigMap. The placeholder must spell out the
+      # full variable name, prefix included.
+      - name: HOMEPAGE_VAR_SONARR_KEY
+        valueFrom:
+          secretKeyRef:
+            name: homepage-widget-secrets
+            key: sonarr-api-key
+      - name: HOMEPAGE_VAR_RADARR_KEY
+        valueFrom:
+          secretKeyRef:
+            name: homepage-widget-secrets
+            key: radarr-api-key
+      - name: HOMEPAGE_VAR_PROWLARR_KEY
+        valueFrom:
+          secretKeyRef:
+            name: homepage-widget-secrets
+            key: prowlarr-api-key
+      - name: HOMEPAGE_VAR_NZBGET_USERNAME
+        valueFrom:
+          secretKeyRef:
+            name: homepage-widget-secrets
+            key: nzbget-username
+      - name: HOMEPAGE_VAR_NZBGET_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: homepage-widget-secrets
+            key: nzbget-password
 
     # We use HTTPRoute instead of the chart's ingress
     ingress:
@@ -63,26 +92,47 @@ spec:
                 href: https://logs.ducknet.io
                 description: Logs
         - Media:
-            # Link only, no widgets. Each would need an API key or an
-            # X-Plex-Token, and a missing secret stops the homepage pod starting.
+            # Link only: the Plex widget needs an X-Plex-Token, which is not in
+            # the vault. A missing secret stops the homepage pod starting.
             - Plex:
                 href: https://plex.ducknet.io
                 description: Media server
             # The four below still run as Docker containers on ifrit, sharing
             # gluetun's network namespace. The cluster only fronts them; see
-            # apps/media/httproutes-ifrit.yaml.
+            # apps/media/httproutes-ifrit.yaml. Widgets address the same
+            # backing Service directly rather than hairpinning out through the
+            # gateway and back.
             - Sonarr:
                 href: https://tv.ducknet.io
                 description: TV
+                widget:
+                  type: sonarr
+                  url: http://ifrit-media.media.svc.cluster.local:8989
+                  key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
             - Radarr:
                 href: https://movies.ducknet.io
                 description: Movies
+                widget:
+                  type: radarr
+                  url: http://ifrit-media.media.svc.cluster.local:7878
+                  key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
             - Prowlarr:
                 href: https://prowlarr.ducknet.io
                 description: Indexers
+                widget:
+                  type: prowlarr
+                  url: http://ifrit-media.media.svc.cluster.local:9696
+                  key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
+            # NZBGet authenticates the widget with ControlUsername and
+            # ControlPassword over basic auth, not an API key.
             - NZBGet:
                 href: https://nzb.ducknet.io
                 description: Usenet downloader
+                widget:
+                  type: nzbget
+                  url: http://ifrit-media.media.svc.cluster.local:6789
+                  username: "{{HOMEPAGE_VAR_NZBGET_USERNAME}}"
+                  password: "{{HOMEPAGE_VAR_NZBGET_PASSWORD}}"
 
       widgets:
         # The kubernetes widget queries metrics-server unconditionally; re-enable
