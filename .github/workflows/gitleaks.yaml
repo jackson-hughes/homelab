@@ -1,11 +1,9 @@
 ---
 name: gitleaks
 
-# No paths filter: secrets can land anywhere, so every PR and push is scanned.
+# No paths filter: secrets can land anywhere, so every PR is scanned.
 on:
   pull_request:
-  push:
-    branches: [main]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

@@ -7,12 +7,6 @@ on:
       - kubernetes/**
       - scripts/validate-kubernetes.sh
       - .github/workflows/kubernetes.yaml
-  push:
-    branches: [main]
-    paths:
-      - kubernetes/**
-      - scripts/validate-kubernetes.sh
-      - .github/workflows/kubernetes.yaml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -61,7 +55,7 @@ jobs:
 
       # --base= forces full-tree mode: without it the action's exported
       # FLATE_BASE (defaulting to main) flips test into changed-only mode,
-      # which errors on shallow PR checkouts and tests nothing on main.
+      # which errors on shallow PR checkouts.
       - run: flate test all --base= --path kubernetes/clusters/homelab --no-progress
 
   # PR review aid: diff the rendered cluster state against the PR's base, so
