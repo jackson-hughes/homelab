@@ -6,11 +6,6 @@ on:
     paths:
       - infra/terraform/**
       - .github/workflows/terraform.yaml
-  push:
-    branches: [main]
-    paths:
-      - infra/terraform/**
-      - .github/workflows/terraform.yaml
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
