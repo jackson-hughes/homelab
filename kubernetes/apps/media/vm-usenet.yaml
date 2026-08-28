@@ -1,0 +1,83 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  name: usenet
+  namespace: media
+spec:
+  runStrategy: Always
+  dataVolumeTemplates:
+    - metadata:
+        name: usenet-root
+      spec:
+        storage:
+          storageClassName: mayastor-2
+          accessModes:
+            - ReadWriteOnce
+          volumeMode: Block
+          resources:
+            requests:
+              storage: 32Gi
+        source:
+          http:
+            url: https://download.fedoraproject.org/pub/fedora/linux/releases/44/Cloud/x86_64/images/Fedora-Cloud-Base-Generic-44-1.7.x86_64.qcow2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: usenet
+    spec:
+      evictionStrategy: None
+      domain:
+        cpu:
+          cores: 4
+        memory:
+          guest: 8Gi
+        devices:
+          disks:
+            - name: root
+              bootOrder: 1
+              disk:
+                bus: virtio
+            - name: data
+              serial: media-data
+              disk:
+                bus: virtio
+            - name: cloudinit
+              disk:
+                bus: virtio
+          interfaces:
+            - name: default
+              masquerade: {}
+      networks:
+        - name: default
+          pod: {}
+      volumes:
+        - name: root
+          dataVolume:
+            name: usenet-root
+        - name: data
+          persistentVolumeClaim:
+            claimName: usenet-data
+        - name: cloudinit
+          cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              hostname: usenet
+              users:
+                - name: jhughes
+                  groups: wheel
+                  sudo: ALL=(ALL) NOPASSWD:ALL
+              packages:
+                - qemu-guest-agent
+              fs_setup:
+                - label: media-data
+                  filesystem: xfs
+                  device: /dev/disk/by-id/virtio-media-data
+              mounts:
+                - ["LABEL=media-data", "/opt/media", "xfs", "defaults,nofail", "0", "2"]
+              runcmd:
+                - systemctl enable --now qemu-guest-agent
+                - mkdir -p /home/jhughes/.ssh
+                - curl -fsSL --retry 5 --retry-all-errors https://github.com/jackson-hughes.keys -o /home/jhughes/.ssh/authorized_keys
+                - chown -R jhughes:jhughes /home/jhughes/.ssh
+                - chmod 700 /home/jhughes/.ssh
+                - chmod 600 /home/jhughes/.ssh/authorized_keys

@@ -8,6 +8,9 @@ resources:
   - pvc-plex-config.yaml
   - service-ifrit.yaml
   - httproutes-ifrit.yaml
+  - vm-usenet.yaml
+  - pvc-usenet-data.yaml
+  - service-usenet-ssh.yaml
   - repository.yaml
   - release.yaml
   - vmrule.yaml

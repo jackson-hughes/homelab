@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: usenet-ssh
+  namespace: media
+  annotations:
+    metallb.io/loadBalancerIPs: 192.168.1.42
+    external-dns.alpha.kubernetes.io/hostname: usenet.ducknet.io
+spec:
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: usenet
+  ports:
+    - name: ssh
+      port: 22
+      targetPort: 22

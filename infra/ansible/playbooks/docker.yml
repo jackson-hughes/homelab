@@ -17,7 +17,7 @@
 
     - name: Mount plex media
       ansible.posix.mount:
-        src: storage:/volume1/plex-media/
+        src: storage.ducknet.io:/volume1/plex-media/
         path: /data/plex-media
         opts: auto,rw,noatime,nolock,bg,soft
         state: mounted
