@@ -3,5 +3,16 @@
   "extends": ["config:recommended"],
   "ignorePaths": ["infra/ansible/**"],
   "minimumReleaseAge": "10 days",
-  "internalChecksFilter": "strict"
+  "internalChecksFilter": "strict",
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "KubeVirt/CDI ship release YAML, not charts; bump the version pinned in the kustomize remote resource URLs",
+      "managerFilePatterns": ["/^kubernetes/infrastructure/controllers/(kubevirt|cdi)/kustomization\\.yaml$/"],
+      "matchStrings": [
+        "https://github\\.com/(?<depName>kubevirt/kubevirt|kubevirt/containerized-data-importer)/releases/download/(?<currentValue>v[\\d.]+)/"
+      ],
+      "datasourceTemplate": "github-releases"
+    }
+  ]
 }

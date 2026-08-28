@@ -6,3 +6,5 @@ resources:
   - openebs
   - traefik
   - external-dns
+  - kubevirt
+  - cdi
