@@ -3,12 +3,6 @@
 common_open_firewall_ports:
   - 53/udp # dns
   - 53/tcp # dns
-  - 8300/tcp # consul rpc
-  - 8301/tcp # consul serf lan
-  - 8302/tcp # consul serf wan
-  - 8500/tcp # consul http
-  - 8600/tcp # consul dns
-  - 8600/udp # consul dns
   - 9100/tcp # node exporter
 
 common_open_firewall_services:
