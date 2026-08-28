@@ -1,8 +1,3 @@
-# Replaces the Consul-catalog tags that used to drive the Traefik instance on
-# ifrit. Hostnames move from *.svc.ducknet.io to *.ducknet.io so they fall under
-# the gateway's existing wildcard certificate; a *.ducknet.io wildcard would not
-# have matched the extra label. external-dns picks these up from the
-# gateway-httproute source and points them at the gateway.
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
