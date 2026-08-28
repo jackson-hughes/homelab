@@ -6,6 +6,8 @@ resources:
   - pv-media.yaml
   - pvc-media.yaml
   - pvc-plex-config.yaml
+  - service-ifrit.yaml
+  - httproutes-ifrit.yaml
   - repository.yaml
   - release.yaml
   - vmrule.yaml
