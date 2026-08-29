@@ -6,8 +6,8 @@ resources:
   - pv-media.yaml
   - pvc-media.yaml
   - pvc-plex-config.yaml
-  - service-ifrit.yaml
-  - httproutes-ifrit.yaml
+  - service-usenet.yaml
+  - httproutes-usenet.yaml
   - vm-usenet.yaml
   - pvc-usenet-data.yaml
   - service-usenet-ssh.yaml

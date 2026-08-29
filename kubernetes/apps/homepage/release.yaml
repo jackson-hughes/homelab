@@ -100,35 +100,33 @@ spec:
                   type: plex
                   url: http://plex.media.svc.cluster.local:32400
                   key: "{{HOMEPAGE_VAR_PLEX_TOKEN}}"
-            # The four below still run as Docker containers on ifrit. Widgets
-            # address the same backing service directly rather than hairpinning.
             - Sonarr:
                 href: https://tv.ducknet.io
                 description: TV
                 widget:
                   type: sonarr
-                  url: http://ifrit-media.media.svc.cluster.local:8989
+                  url: http://usenet.media.svc.cluster.local:8989
                   key: "{{HOMEPAGE_VAR_SONARR_KEY}}"
             - Radarr:
                 href: https://movies.ducknet.io
                 description: Movies
                 widget:
                   type: radarr
-                  url: http://ifrit-media.media.svc.cluster.local:7878
+                  url: http://usenet.media.svc.cluster.local:7878
                   key: "{{HOMEPAGE_VAR_RADARR_KEY}}"
             - Prowlarr:
                 href: https://prowlarr.ducknet.io
                 description: Indexers
                 widget:
                   type: prowlarr
-                  url: http://ifrit-media.media.svc.cluster.local:9696
+                  url: http://usenet.media.svc.cluster.local:9696
                   key: "{{HOMEPAGE_VAR_PROWLARR_KEY}}"
             - NZBGet:
                 href: https://nzb.ducknet.io
                 description: Usenet downloader
                 widget:
                   type: nzbget
-                  url: http://ifrit-media.media.svc.cluster.local:6789
+                  url: http://usenet.media.svc.cluster.local:6789
                   username: "{{HOMEPAGE_VAR_NZBGET_USERNAME}}"
                   password: "{{HOMEPAGE_VAR_NZBGET_PASSWORD}}"
 
