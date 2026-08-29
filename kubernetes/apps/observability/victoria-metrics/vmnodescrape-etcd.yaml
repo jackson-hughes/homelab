@@ -13,13 +13,11 @@ spec:
     matchExpressions:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
+  # Deliberately no `labelmap __meta_kubernetes_node_label_(.+)`: mapping node
+  # labels onto every etcd series pushes it past vminsert's
+  # -maxLabelsPerTimeseries (40), which silently discards the whole job. NFD
+  # (~78 labels) and KubeVirt's node-labeller (~405) each did it. The operator
+  # sets `node` from __meta_kubernetes_node_name regardless.
   relabelConfigs:
-    - action: labelmap
-      regex: __meta_kubernetes_node_label_(.+)
-    # NFD publishes ~78 feature.node.kubernetes.io labels per node. Without this
-    # drop they land on every etcd series and exceed vminsert's
-    # -maxLabelsPerTimeseries (40), which silently discards the whole job.
-    - action: labeldrop
-      regex: feature_node_kubernetes_io_.+
     - replacement: etcd
       targetLabel: job
