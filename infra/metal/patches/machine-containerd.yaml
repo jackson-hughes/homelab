@@ -1,0 +1,11 @@
+---
+# containerd only chowns raw-block PVC device nodes to the pod's runAsUser
+# when this is enabled; without it CDI's non-root importer cannot open
+# volumeMode: Block volumes.
+machine:
+  files:
+    - content: |
+        [plugins."io.containerd.cri.v1.runtime"]
+          device_ownership_from_security_context = true
+      path: /etc/cri/conf.d/20-customization.part
+      op: create
