@@ -13,6 +13,7 @@
       vars:
         packages:
           - python3
+          - python3-packaging
           - nfs-utils
 
     - name: Mount plex media
