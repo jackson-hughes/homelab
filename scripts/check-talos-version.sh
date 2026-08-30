@@ -55,7 +55,12 @@ extensions=()
 while IFS= read -r ext; do
   [ -n "${ext}" ] && extensions+=("${ext}")
 done <<EOF
-$(grep -v '^#' "${schematic_file}" | grep -oE 'siderolabs/[-a-z0-9]+' | sort -u)
+$(awk '
+  /^[[:space:]]*#/ { next }
+  $1 == "officialExtensions:" { in_ext=1; next }
+  in_ext && $1 == "-" { print $2; next }
+  in_ext && NF { exit }
+' "${schematic_file}")
 EOF
 if [ "${#extensions[@]}" -eq 0 ]; then
   echo "error: no officialExtensions found in ${schematic_file}" >&2
@@ -66,14 +71,15 @@ if ! versions_json="$(curl -sSf --max-time 30 --retry 3 https://factory.talos.de
   echo "error: factory.talos.dev/versions unreachable" >&2
   exit 1
 fi
+versions_type="$(printf '%s' "${versions_json}" | jq -r 'type')"
+if [ "${versions_type}" != "array" ]; then
+  echo "error: factory /versions returned ${versions_type}, expected array" >&2
+  exit 1
+fi
 if ! printf '%s' "${versions_json}" | jq -e --arg pin "${pin}" '
-  (if type == "array" then . else .versions // . end) as $list
-  | ($list | map(select(type == "string")) ) as $tags
-  | ($tags | index($pin)) != null
-    and ($pin | test("-(alpha|beta|rc)[0-9.]*$") | not)
+  (map(select(type == "string")) | index($pin)) != null
 ' >/dev/null; then
-  echo "error: ${pin} is not a published stable Talos version on factory.talos.dev" >&2
-  echo "  (pre-releases such as -alpha/-beta/-rc are rejected even if listed)" >&2
+  echo "error: ${pin} is not a published Talos version on factory.talos.dev" >&2
   exit 1
 fi
 
@@ -82,14 +88,15 @@ if ! ext_json="$(curl -sSf --max-time 30 --retry 3 \
   echo "error: factory.talos.dev unreachable for ${pin} official extensions" >&2
   exit 1
 fi
+ext_type="$(printf '%s' "${ext_json}" | jq -r 'type')"
+if [ "${ext_type}" != "array" ]; then
+  echo "error: factory official extensions returned ${ext_type}, expected array" >&2
+  exit 1
+fi
 
 missing=0
 for ext in "${extensions[@]}"; do
-  if ! printf '%s' "${ext_json}" | jq -e --arg name "${ext}" '
-    (if type == "array" then . else .[] end)
-    | map(select(.name == $name))
-    | length > 0
-  ' >/dev/null; then
+  if ! printf '%s' "${ext_json}" | jq -e --arg name "${ext}" 'any(.name == $name)' >/dev/null; then
     echo "error: schematic extension ${ext} is not available for ${pin}" >&2
     missing=1
   fi
