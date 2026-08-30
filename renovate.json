@@ -13,6 +13,20 @@
         "https://github\\.com/(?<depName>kubevirt/kubevirt|kubevirt/containerized-data-importer)/releases/download/(?<currentValue>v[\\d.]+)/"
       ],
       "datasourceTemplate": "github-releases"
+    },
+    {
+      "customType": "regex",
+      "description": "Talos OS pin and factory installer image tag (must stay in lockstep; CI enforces agreement)",
+      "managerFilePatterns": [
+        "/^infra/metal/talos-version$/",
+        "/^infra/metal/patches/machine-install-image\\.yaml$/"
+      ],
+      "matchStrings": [
+        "^(?<currentValue>v\\d+\\.\\d+\\.\\d+)\\s*$",
+        "factory\\.talos\\.dev/installer/[0-9a-f]{64}:(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "siderolabs/talos"
     }
   ]
 }

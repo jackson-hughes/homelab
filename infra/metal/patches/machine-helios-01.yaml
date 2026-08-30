@@ -3,17 +3,10 @@ machine:
   sysctls:
     vm.nr_hugepages: "1024"
   network:
-    hostname: helios-01
-    nameservers:
-      - 192.168.1.1
-    interfaces:
-      - interface: enp110s0
-        dhcp: false
-        addresses:
-          - 192.168.1.25/24
-        routes:
-          - network: 0.0.0.0/0
-            gateway: 192.168.1.1
+    $patch: delete
+  features:
+    stableHostname:
+      $patch: delete
   nodeLabels:
     node.kubernetes.io/exclude-from-external-load-balancers:
       $patch: delete
@@ -29,3 +22,23 @@ machine:
           - rw
   install:
     disk: /dev/disk/by-id/nvme-eui.002538ba11b71889
+---
+apiVersion: v1alpha1
+kind: HostnameConfig
+hostname: helios-01
+auto: off
+---
+apiVersion: v1alpha1
+kind: ResolverConfig
+nameservers:
+  - address: 192.168.1.1
+---
+# Explicit LinkConfig disables the default DHCP-on-all-links behavior.
+# Omitting destination creates a default route for the gateway's address family.
+apiVersion: v1alpha1
+kind: LinkConfig
+name: enp110s0
+addresses:
+  - address: 192.168.1.25/24
+routes:
+  - gateway: 192.168.1.1
