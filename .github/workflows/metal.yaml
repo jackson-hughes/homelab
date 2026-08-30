@@ -6,6 +6,7 @@ on:
     paths:
       - infra/metal/**
       - scripts/check-schematic.sh
+      - scripts/check-talos-version.sh
       - .github/workflows/metal.yaml
 
 concurrency:
@@ -23,3 +24,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - run: ./scripts/check-schematic.sh
+
+  talos-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - run: ./scripts/check-talos-version.sh
