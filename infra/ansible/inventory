@@ -1,5 +1,2 @@
 [docker]
 usenet ansible_host=usenet.ducknet.io
-
-[libvirt_hosts]
-titan libvirt_rw_users=jhughes

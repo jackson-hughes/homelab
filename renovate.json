@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
-  "ignorePaths": ["infra/ansible/**"],
+  "ignorePaths": [],
   "minimumReleaseAge": "10 days",
   "internalChecksFilter": "strict",
   "customManagers": [
