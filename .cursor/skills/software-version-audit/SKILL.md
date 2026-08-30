@@ -36,7 +36,7 @@ Before lookups, read [reference.md](reference.md) and prefer the scripts under `
 | Helm charts | HelmRelease objects — discover by kind (below) | `chart.spec.version` (exact or range) |
 | Flux sources | GitRepository / HelmRepository objects — discover by kind (below) | `ref.tag` / `ref.branch`; chart repo `url` |
 | App values | HelmRelease `values:`, CronJob/Pod specs | Container `image:` / `tag:` |
-| Talos | `infra/metal/patches/` | Machine patches only — **cluster OS/K8s version may not be pinned here** |
+| Talos OS | `infra/metal/talos-version`, `infra/metal/patches/machine-install-image.yaml` | Exact OS tag; factory installer tag must match (CI: `scripts/check-talos-version.sh`). Kubernetes version is not pinned here. |
 
 Discover Flux objects by top-level `kind:`, never by filename glob — names vary (`operator-release.yaml`, `operator-repository.yaml`) and globs go stale silently:
 
@@ -134,7 +134,7 @@ Use concrete queried versions in every cell (as above). Never write range placeh
 ### End sections (required)
 
 - **Biggest gaps** — prioritized: security patches, exact pins far behind, floating images
-- **Not in repo** — components with no declared version (e.g. Talos/K8s if unpinned)
+- **Not in repo** — components with no declared version (e.g. Kubernetes if unpinned)
 - **Methodology** — sources used, whether `gh` auth was used, cluster queried or not, timestamp
 
 ## Components commonly unpinned in this repo
