@@ -12,9 +12,9 @@
     uid: "{{ item.uid }}"
     group: media
   loop:
-    - { name: "nzbget", uid: 1201 }
-    - { name: "radarr", uid: 1202 }
-    - { name: "sonarr", uid: 1203 }
+    - { name: "nzbget",   uid: 1201 }
+    - { name: "radarr",   uid: 1202 }
+    - { name: "sonarr",   uid: 1203 }
     - { name: "prowlarr", uid: 1204 }
 
 - name: Create media config directories
