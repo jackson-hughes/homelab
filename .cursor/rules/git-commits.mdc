@@ -1,0 +1,34 @@
+---
+description: Git commit message conventions for this repository. Apply when creating commits or writing commit messages.
+alwaysApply: false
+---
+
+# Commit messages
+
+Use short imperative sentences. Do not use Conventional Commits prefixes (`feat:`, `fix:`, `chore:`, `docs:`).
+
+- Sentence case: `Add usenet KubeVirt VM to replace ifrit`
+- No trailing full stop on the subject or body
+- Lead with the outcome, not the file list
+- Skip a body when the subject is enough
+- Add a body only to explain *why*, not to restate the diff
+
+```
+# ❌ BAD
+feat: add homepage widgets
+Updated kubernetes/apps/homepage/release.yaml to enable plex.
+
+# ✅ GOOD
+Enable the Plex widget on the homepage dashboard
+```
+
+```
+# ❌ BAD
+Pin Helios to Talos v1.13.9 and migrate node network off machine.network.
+
+# ✅ GOOD
+Pin Helios to Talos v1.13.9 and migrate node network off machine.network
+```
+
+Dependency bumps follow `Update dependency <name> to v<version>`.
+Action/image bumps follow `Update <name> to v<version>`.
