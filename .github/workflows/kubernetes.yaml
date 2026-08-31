@@ -46,7 +46,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: home-operations/flate/action@2862e47ed4d6efebeffb43c7691ee6df06b4536c # v0.5.0
+      - uses: home-operations/flate/action@af6f188c520a6a9c55b4b863bb9c77227e5fd37f # v0.5.1
         with:
           cache: true
           # The SHA pin alone doesn't pin the CLI: the action resolves the SHA
@@ -72,7 +72,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: home-operations/flate/action@2862e47ed4d6efebeffb43c7691ee6df06b4536c # v0.5.0
+      - uses: home-operations/flate/action@af6f188c520a6a9c55b4b863bb9c77227e5fd37f # v0.5.1
         with:
           cache: true
           base: ${{ github.event.pull_request.base.sha }}
