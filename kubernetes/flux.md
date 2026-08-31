@@ -23,4 +23,5 @@ Placement rules:
 Examples:
 
 - MetalLB `IPAddressPool` and `L2Advertisement`: `infrastructure/controllers`
+- Gateway API CRDs: `infrastructure/controllers` (required for Traefik's Gateway API provider)
 - `ClusterSecretStore`, `ClusterIssuer`, `Certificate`, `DiskPool`: `infrastructure/config`

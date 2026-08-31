@@ -4,6 +4,7 @@ resources:
   - cdi
   - cert-manager
   - external-secrets
+  - gateway-api
   - intel-device-plugins
   - kubevirt
   - metallb
