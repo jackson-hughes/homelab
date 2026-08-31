@@ -8,9 +8,10 @@ alwaysApply: false
 Use short imperative sentences. Do not use Conventional Commits prefixes (`feat:`, `fix:`, `chore:`, `docs:`).
 
 - Sentence case: `Add usenet KubeVirt VM to replace ifrit`
+- No trailing full stop on the subject or body
 - Lead with the outcome, not the file list
 - Skip a body when the subject is enough
-- Add a body only to explain *why*, not to restates the diff
+- Add a body only to explain *why*, not to restate the diff
 
 ```
 # ❌ BAD
@@ -23,10 +24,10 @@ Enable the Plex widget on the homepage dashboard
 
 ```
 # ❌ BAD
-chore(deps): bump talos
+Pin Helios to Talos v1.13.9 and migrate node network off machine.network.
 
 # ✅ GOOD
-Pin Helios to Talos v1.13.9 and migrate node network off machine.network.
+Pin Helios to Talos v1.13.9 and migrate node network off machine.network
 ```
 
 Dependency bumps follow `Update dependency <name> to v<version>`.
