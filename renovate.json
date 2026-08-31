@@ -2,8 +2,11 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended"],
   "ignorePaths": [],
-  "minimumReleaseAge": "10 days",
+  "minimumReleaseAge": "5 days",
   "internalChecksFilter": "strict",
+  "flux": {
+    "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
+  },
   "customManagers": [
     {
       "customType": "regex",
