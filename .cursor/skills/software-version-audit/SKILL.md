@@ -32,8 +32,8 @@ Before lookups, read [reference.md](reference.md) and prefer the scripts under `
 | Ansible toolchain | `infra/ansible/requirements.txt` | `ansible`, `ansible-core` pins |
 | Ansible Galaxy roles | `infra/ansible/requirements.yml` | Role name + version/ref |
 | Ansible services | `infra/ansible/group_vars/` (extensionless), `infra/ansible/playbooks/` | `*_version`, `image:`, `tag:` |
-| Flux bundle | `find kubernetes -name gotk-components.yaml` (don't hardcode the cluster path) | Flux version + controller image tags |
-| Helm charts | HelmRelease objects — discover by kind (below) | `chart.spec.version` (exact or range) |
+| Flux distribution | FluxInstance objects — discover by kind (below); do not hardcode the cluster path | `spec.distribution.version` (exact pin). Controller image tags are no longer committed; take them from the cluster when available |
+| Helm charts | HelmRelease objects — discover by kind (below), including `clusters/*/flux-system` for flux-operator | `chart.spec.version` (exact or range) |
 | Flux sources | GitRepository / HelmRepository objects — discover by kind (below) | `ref.tag` / `ref.branch`; chart repo `url` |
 | App values | HelmRelease `values:`, CronJob/Pod specs | Container `image:` / `tag:` |
 | Talos OS | `infra/metal/talos-version`, `infra/metal/patches/machine-install-image.yaml` | Exact OS tag; factory installer tag must match (CI: `scripts/check-talos-version.sh`). Kubernetes version is not pinned here. |
@@ -43,9 +43,10 @@ Discover Flux objects by top-level `kind:`, never by filename glob — names var
 ```bash
 rg -l '^kind: HelmRelease$' kubernetes
 rg -l '^kind: (GitRepository|HelmRepository)$' kubernetes
+rg -l '^kind: FluxInstance$' kubernetes
 ```
 
-Anchor the pattern: unanchored matches also hit Flux CRD schema and embedded GVKs in `gotk-components.yaml`.
+Anchor the pattern: unanchored `kind:` matches also hit CRD schemas and embedded GVKs.
 
 Do not conflate **chart version**, **appVersion**, **Ansible role version**, and **container image tag**. For Helm `^` / range pins, **Declared** is the constraint; **Resolved/Locked** comes from cluster HelmRelease status (or lockfile) when available — never treat the constraint string as the resolved version.
 
@@ -98,7 +99,7 @@ For Ansible Docker hosts, running image versions require host access (`docker in
 - If `latest stable < declared`, recheck the source and sort logic
 - If latest jumped ≥1 major, verify source and report **both** overall latest stable and **same-major latest**
 - If two sources disagree, prefer the canonical source and note the conflict
-- Sanity-check against live upstream (not memorized majors): one Terraform provider, Flux bundle, one Helm chart
+- Sanity-check against live upstream (not memorized majors): one Terraform provider, FluxInstance / flux-operator chart, one Helm chart
 - Failed lookups → mark **"lookup failed"**, do not invent a version
 - Huge gaps → verify the declared value's meaning (Ansible var vs binary vs chart vs image tag)
 
