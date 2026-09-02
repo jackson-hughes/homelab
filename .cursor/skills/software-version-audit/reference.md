@@ -41,6 +41,8 @@ bash "$SKILL/scripts/latest_homepage_chart.sh"
 
 # GitHub semver via authenticated gh. Derive --major from the declared pin in git
 # (e.g. rg -n '_version' infra/ansible/group_vars infra/ansible/playbooks), never from memory.
+# Declared Flux version: FluxInstance.spec.distribution.version
+rg -l '^kind: FluxInstance$' kubernetes
 bash "$SKILL/scripts/latest_github_semver.sh" fluxcd/flux2
 bash "$SKILL/scripts/latest_github_semver.sh" apache/kafka --tags
 bash "$SKILL/scripts/latest_github_semver.sh" hashicorp/consul --major 1     # "1" from the consul_version pin
@@ -62,7 +64,7 @@ gh release view --repo hashicorp/terraform --json tagName -q .tagName
 # Enumerate deployed charts from git first — never audit from a memorized list.
 # Git-sourced chart paths in the output (e.g. script/helm/garage) are not on
 # Artifact Hub; resolve those via their source repo instead.
-rg -n --no-heading '^\s+chart: ' kubernetes --glob '!**/flux-system/**' | sort -u
+rg -n --no-heading '^\s+chart: ' kubernetes | sort -u
 
 # Then query each — syntax examples, not the full set:
 curl -fsSL "https://artifacthub.io/api/v1/packages/helm/jetstack/cert-manager" | jq -r .version

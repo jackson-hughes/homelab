@@ -10,6 +10,19 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "Flux itself is installed by flux-operator from the FluxInstance; Renovate's flux manager only reads gotk manifests, so bump spec.distribution.version here (kept exact because validate-kubernetes.sh resolves the CRD schemas from it)",
+      "managerFilePatterns": [
+        "/^kubernetes/clusters/homelab/flux-system/flux-instance\\.yaml$/"
+      ],
+      "matchStrings": [
+        "distribution:[\\s\\S]*?version: \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "fluxcd/flux2",
+      "extractVersionTemplate": "^v(?<version>.+)$"
+    },
+    {
+      "customType": "regex",
       "description": "KubeVirt, CDI, and Gateway API ship release YAML, not charts; bump the version pinned in the kustomize remote resource URLs",
       "managerFilePatterns": [
         "/^kubernetes/infrastructure/controllers/(kubevirt|cdi|gateway-api)/kustomization\\.yaml$/"

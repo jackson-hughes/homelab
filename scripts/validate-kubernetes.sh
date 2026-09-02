@@ -6,9 +6,10 @@
 #
 # Schema sources, in lookup order:
 #   1. kubeconform's default catalog (core Kubernetes types)
-#   2. Flux CRD schemas, pinned to the Flux version deployed in
-#      kubernetes/clusters/homelab/flux-system/gotk-components.yaml
-#   3. the datree CRDs-catalog (all other CRs)
+#   2. Flux CRD schemas, pinned to FluxInstance.spec.distribution.version in
+#      kubernetes/clusters/homelab/flux-system/flux-instance.yaml
+#   3. the datree CRDs-catalog (FluxInstance / fluxcd.controlplane.io, and
+#      every other CR)
 #
 # Skipped kinds (extend this list rather than reaching for
 # -ignore-missing-schemas, which would also silently skip misspelled kinds):
@@ -39,10 +40,16 @@ if ! command -v kubeconform >/dev/null; then
 fi
 
 # Match the schemas to the Flux version actually running in the cluster.
-flux_version="$(grep -m1 'app.kubernetes.io/version:' \
-  kubernetes/clusters/homelab/flux-system/gotk-components.yaml | awk '{print $2}')" || true
-if [ -z "${flux_version}" ]; then
-  echo "error: could not determine the Flux version from gotk-components.yaml" >&2
+flux_instance=kubernetes/clusters/homelab/flux-system/flux-instance.yaml
+flux_version="v$(awk '
+  /^  distribution:/ { in_distribution = 1; next }
+  /^  [a-zA-Z]/      { in_distribution = 0 }
+  in_distribution && /^    version:/ { gsub(/"/, "", $2); print $2; exit }
+' "${flux_instance}")" || true
+if ! [[ "${flux_version}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+  echo "error: could not read an exact Flux version from ${flux_instance}" >&2
+  echo "       (got '${flux_version}'; spec.distribution.version must be pinned," >&2
+  echo "       e.g. \"2.9.4\", not a range like \"2.9.x\")" >&2
   exit 1
 fi
 
