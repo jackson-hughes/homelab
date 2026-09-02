@@ -21,10 +21,5 @@ spec:
     crds: CreateReplace
     remediation:
       retries: 3
-  # No serviceAccountName: the chart creates the flux-operator service account, so
-  # naming it here would make the first reconcile depend on an object this release
-  # has not created yet.
   values:
-    # Flux itself is what recovers this cluster, so the operator that installs it
-    # should not be the first thing evicted under node pressure.
     priorityClassName: system-cluster-critical
