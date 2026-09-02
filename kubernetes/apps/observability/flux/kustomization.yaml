@@ -4,3 +4,5 @@ resources:
   - dashboards
   - vmpodscrape.yaml
   - vmservicescrape.yaml
+  - httproute.yaml
+
