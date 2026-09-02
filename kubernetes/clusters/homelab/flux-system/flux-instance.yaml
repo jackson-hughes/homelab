@@ -1,0 +1,33 @@
+apiVersion: fluxcd.controlplane.io/v1
+kind: FluxInstance
+metadata:
+  name: flux
+  namespace: flux-system
+spec:
+  distribution:
+    # Exact pin rather than "2.9.x": kubeconform downloads flux2 CRD schemas
+    # from this value, so it has to name a real release.
+    version: "2.9.4"
+    registry: ghcr.io/fluxcd
+    # Without this the selectable Flux versions are capped by the manifests
+    # baked into the operator image, so a Flux patch could not apply until
+    # the operator itself was upgraded.
+    artifact: oci://ghcr.io/controlplaneio-fluxcd/flux-operator-manifests
+  components:
+    - source-controller
+    - kustomize-controller
+    - helm-controller
+    - notification-controller
+  cluster:
+    type: kubernetes
+    # Leave size unset: a profile would repatch controller limits and
+    # concurrency, which this migration leaves as the CLI bootstrap set them.
+    networkPolicy: true
+    domain: cluster.local
+  sync:
+    kind: GitRepository
+    url: https://github.com/jackson-hughes/homelab.git
+    ref: refs/heads/main
+    path: kubernetes/clusters/homelab
+    pullSecret: flux-system
+    interval: 1m
