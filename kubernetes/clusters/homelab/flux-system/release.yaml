@@ -23,3 +23,7 @@ spec:
       retries: 3
   values:
     priorityClassName: system-cluster-critical
+    # Operator docs recommend 30s when scraping flux_instance_info and the
+    # other metrics on :8080, so they stay as fresh as the VMServiceScrape.
+    reporting:
+      interval: 30s
