@@ -274,7 +274,7 @@ spec:
                             - vminsert
                     topologyKey: kubernetes.io/hostname
     prometheus-node-exporter:
-      enabled: false
+      enabled: true
     kube-state-metrics:
       enabled: true
     kubeApiServer:
