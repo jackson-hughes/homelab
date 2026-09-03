@@ -4,7 +4,6 @@ resources:
   - flux
   - healthchecks-io
   - openebs
-  - prometheus-node-exporter
   - unpoller
   - victoria-metrics
   - victoria-logs
