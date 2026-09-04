@@ -84,7 +84,7 @@ jobs:
           # The blank line after </summary> is required: without it GitHub
           # treats the fenced block as raw text inside the HTML element.
           {
-            echo "## Rendered cluster diff"
+            echo "## Cluster changes"
             echo
             if [ -s "$RUNNER_TEMP/flate-diff.txt" ]; then
               echo "<details>"
@@ -96,7 +96,7 @@ jobs:
               echo
               echo "</details>"
             else
-              echo "No rendered changes."
+              echo "No changes."
             fi
           } > "$RUNNER_TEMP/flate-diff.md"
           cat "$RUNNER_TEMP/flate-diff.md" >> "$GITHUB_STEP_SUMMARY"
