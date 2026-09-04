@@ -1,0 +1,22 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: traefik
+  namespace: traefik
+  labels:
+    app.kubernetes.io/part-of: traefik
+    app.kubernetes.io/component: monitoring
+spec:
+  jobLabel: app.kubernetes.io/name
+  namespaceSelector:
+    matchNames:
+      - traefik
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: traefik
+      app.kubernetes.io/component: metrics
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      honorLabels: true

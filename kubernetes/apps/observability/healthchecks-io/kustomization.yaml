@@ -3,4 +3,5 @@ kind: Kustomization
 namespace: healthchecks-io
 resources:
   - namespace.yaml
+  - externalsecret.yaml
   - cronjob.yaml

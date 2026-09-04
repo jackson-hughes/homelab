@@ -13,7 +13,13 @@ spec:
         spec:
           containers:
             - name: ping
-              image: curlimages/curl:latest
+              image: curlimages/curl:8.22.0
+              env:
+                - name: HC_PING_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: healthchecks-io-ping
+                      key: url
               command:
                 - curl
                 - -fsS
@@ -23,5 +29,5 @@ spec:
                 - "5"
                 - -o
                 - /dev/null
-                - https://hc-ping.com/c5bdf3b6-bca7-4fb2-a038-ce7ddd2fca24
+                - "$(HC_PING_URL)"
           restartPolicy: Never

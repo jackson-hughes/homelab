@@ -1,0 +1,71 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: flux
+  namespace: flux-system
+  labels:
+    app.kubernetes.io/part-of: flux
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: flux-controllers
+      rules:
+        - alert: FluxControllerAbsent
+          expr: absent(up{job="source-controller"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+            controller: source-controller
+          annotations:
+            summary: "Flux source-controller is down"
+            description: "source-controller has been unreachable for more than 10 minutes; the cluster is no longer fetching from git."
+
+        - alert: FluxControllerAbsent
+          expr: absent(up{job="kustomize-controller"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+            controller: kustomize-controller
+          annotations:
+            summary: "Flux kustomize-controller is down"
+            description: "kustomize-controller has been unreachable for more than 10 minutes; the cluster is no longer reconciling manifests."
+
+        - alert: FluxControllerAbsent
+          expr: absent(up{job="helm-controller"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+            controller: helm-controller
+          annotations:
+            summary: "Flux helm-controller is down"
+            description: "helm-controller has been unreachable for more than 10 minutes; HelmReleases are no longer reconciling."
+
+        - alert: FluxControllerAbsent
+          expr: absent(up{job="notification-controller"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+            controller: notification-controller
+          annotations:
+            summary: "Flux notification-controller is down"
+            description: "notification-controller has been unreachable for more than 10 minutes; Flux reconciliation failures will not be alerted."
+
+    - name: flux-resources
+      rules:
+        - alert: FluxResourceNotReady
+          expr: gotk_resource_info{ready="False"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready"
+            description: "Flux {{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} has been Ready=False for more than 15 minutes."
+
+        - alert: FluxResourceSuspended
+          expr: gotk_resource_info{suspended="true"} == 1
+          for: 24h
+          labels:
+            severity: warning
+          annotations:
+            summary: "{{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} has been suspended for a day"
+            description: "Flux {{ $labels.customresource_kind }} {{ $labels.exported_namespace }}/{{ $labels.name }} has been suspended for more than 24 hours and is drifting from git."

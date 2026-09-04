@@ -1,0 +1,48 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: traefik
+  namespace: traefik
+  labels:
+    app.kubernetes.io/part-of: traefik
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: traefik-availability
+      rules:
+        - alert: TraefikDown
+          expr: absent(up{job="traefik"} == 1)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Traefik is down"
+            description: "Traefik has been unreachable for more than 5 minutes; ingress may be unavailable."
+
+    - name: traefik-http
+      rules:
+        - alert: TraefikHigh5xxRatio
+          expr: |
+            (
+              sum(rate(traefik_service_requests_total{code=~"5.."}[5m])) by (service)
+              /
+              sum(rate(traefik_service_requests_total[5m])) by (service)
+            ) > 0.05
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Traefik service {{ $labels.service }} is returning 5xx errors"
+            description: "{{ $value | humanizePercentage }} of requests to {{ $labels.service }} have returned a 5xx response over the last 10 minutes."
+
+        - alert: TraefikHighLatencyP99
+          expr: |
+            histogram_quantile(0.99,
+              sum(rate(traefik_service_request_duration_seconds_bucket[5m])) by (service, le)
+            ) > 1.2
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Traefik service {{ $labels.service }} p99 latency is high"
+            description: "p99 request latency for {{ $labels.service }} has been above 1.2s ({{ $value | humanizeDuration }}) for more than 15 minutes."

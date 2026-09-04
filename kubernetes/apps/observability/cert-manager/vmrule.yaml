@@ -1,0 +1,58 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+  labels:
+    app.kubernetes.io/part-of: cert-manager
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: cert-manager-availability
+      rules:
+        - alert: CertManagerAbsent
+          expr: absent(up{job="cert-manager"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "cert-manager is down"
+            description: "The cert-manager controller has been unreachable for more than 10 minutes; certificates will not be issued or renewed."
+
+    - name: cert-manager-certificates
+      rules:
+        - alert: CertManagerCertNotReady
+          expr: certmanager_certificate_ready_status{condition="False"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready"
+            description: "cert-manager has reported Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} as not Ready for more than 15 minutes."
+
+        - alert: CertManagerCertExpiringSoon
+          expr: (certmanager_certificate_expiration_timestamp_seconds > 0) - time() < 14 * 24 * 3600
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} expires in under 14 days"
+            description: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} expires in {{ $value | humanizeDuration }} and has not been renewed."
+
+        - alert: CertManagerCertExpiryCritical
+          expr: (certmanager_certificate_expiration_timestamp_seconds > 0) - time() < 7 * 24 * 3600
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} expires in under 7 days"
+            description: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} expires in {{ $value | humanizeDuration }} and has not been renewed."
+
+        - alert: CertManagerRenewalOverdue
+          expr: (certmanager_certificate_renewal_timestamp_seconds > 0) < time()
+          for: 6h
+          labels:
+            severity: warning
+          annotations:
+            summary: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} renewal is overdue"
+            description: "Certificate {{ $labels.exported_namespace }}/{{ $labels.name }} passed its scheduled renewal time more than 6 hours ago and is still on the old certificate."

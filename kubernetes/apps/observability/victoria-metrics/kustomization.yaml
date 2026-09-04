@@ -8,6 +8,7 @@ resources:
   - kube-state-metrics-flux-values.yaml
   - query-auth-externalsecret.yaml
   - release.yaml
+  - vmalertmanagerconfig.yaml
   - httproutes.yaml
   - vmnodescrape-etcd.yaml
   - vmauth.yaml

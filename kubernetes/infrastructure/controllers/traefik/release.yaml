@@ -50,6 +50,10 @@ spec:
           certificateRefs:
             - kind: Secret
               name: traefik-ducknet-tls
+    metrics:
+      prometheus:
+        service:
+          enabled: true
     additionalArguments:
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https

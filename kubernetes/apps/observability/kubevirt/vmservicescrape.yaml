@@ -1,0 +1,26 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+  labels:
+    app.kubernetes.io/part-of: kubevirt
+    app.kubernetes.io/component: monitoring
+spec:
+  namespaceSelector:
+    matchNames:
+      - kubevirt
+  selector:
+    matchLabels:
+      prometheus.kubevirt.io: "true"
+  endpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s
+      scheme: https
+      tlsConfig:
+        insecureSkipVerify: true
+      honorLabels: true
+      relabelConfigs:
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: node

@@ -1,0 +1,89 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: kubevirt
+  namespace: kubevirt
+  labels:
+    app.kubernetes.io/part-of: kubevirt
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: kubevirt-components
+      rules:
+        - alert: KubeVirtVirtOperatorDown
+          expr: sum(kubevirt_virt_operator_ready_status) == 0 or absent(kubevirt_virt_operator_ready_status)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "No ready virt-operator"
+            description: "No virt-operator pod has reported ready for more than 5 minutes; KubeVirt cannot be upgraded or repaired."
+
+        - alert: KubeVirtVirtControllerDown
+          expr: sum(kubevirt_virt_controller_ready_status) == 0 or absent(kubevirt_virt_controller_ready_status)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "No ready virt-controller"
+            description: "No virt-controller pod has reported ready for more than 5 minutes; VMs cannot be started, stopped or migrated."
+
+        - alert: KubeVirtVirtAPIDown
+          expr: sum(kubevirt_virt_api_ready_status) == 0 or absent(kubevirt_virt_api_ready_status)
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "No ready virt-api"
+            description: "No virt-api pod has reported ready for more than 5 minutes; VirtualMachine API requests will fail."
+
+        - alert: KubeVirtVirtHandlerNotReady
+          expr: kubevirt_virt_handler_ready_status == 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "virt-handler on {{ $labels.node }} is not ready"
+            description: "virt-handler {{ $labels.pod }} has not been ready for more than 10 minutes; VMs cannot run on that node."
+
+    - name: kubevirt-virtual-machines
+      rules:
+        - alert: KubeVirtVMStuckInErrorState
+          expr: kubevirt_vm_error_status_last_transition_timestamp_seconds != 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "VM {{ $labels.namespace }}/{{ $labels.name }} is in an error state"
+            description: "VirtualMachine {{ $labels.namespace }}/{{ $labels.name }} has been in an error state (CrashLoopBackOff, Unschedulable, ErrImagePull, ...) for more than 5 minutes."
+
+        - alert: KubeVirtVMStuckInStartingState
+          expr: kubevirt_vm_starting_status_last_transition_timestamp_seconds != 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "VM {{ $labels.namespace }}/{{ $labels.name }} is stuck starting"
+            description: "VirtualMachine {{ $labels.namespace }}/{{ $labels.name }} has been starting for more than 10 minutes without reaching Running."
+
+        - alert: KubeVirtVMStuckInMigratingState
+          expr: kubevirt_vm_migrating_status_last_transition_timestamp_seconds != 0
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "VM {{ $labels.namespace }}/{{ $labels.name }} is stuck migrating"
+            description: "VirtualMachine {{ $labels.namespace }}/{{ $labels.name }} has been migrating for more than 15 minutes."
+
+        - alert: KubeVirtVMIFilesystemFillingUp
+          expr: |
+            (
+              kubevirt_vmi_filesystem_used_bytes
+              / (kubevirt_vmi_filesystem_capacity_bytes > 0)
+            ) > 0.9
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "VM {{ $labels.namespace }}/{{ $labels.name }} filesystem {{ $labels.mount_point }} is over 90% full"
+            description: "Guest filesystem {{ $labels.mount_point }} on VirtualMachineInstance {{ $labels.namespace }}/{{ $labels.name }} is {{ $value | humanizePercentage }} full."

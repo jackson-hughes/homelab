@@ -1,0 +1,44 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  name: pushover
+  labels:
+    app.kubernetes.io/part-of: victoria-metrics
+    app.kubernetes.io/component: monitoring
+spec:
+  route:
+    receiver: pushover
+    routes:
+      - matchers:
+          - alertname = InfoInhibitor
+        receiver: blackhole
+      - matchers:
+          - reportingcontroller =~ ".+"
+        receiver: pushover-flux
+  receivers:
+    - name: blackhole
+    - name: pushover
+      pushover_configs:
+        - token:
+            name: pushover-credentials
+            key: vmalert_token
+          user_key:
+            name: pushover-credentials
+            key: user_key
+          send_resolved: true
+    - name: pushover-flux
+      pushover_configs:
+        - token:
+            name: pushover-credentials
+            key: vmalert_token
+          user_key:
+            name: pushover-credentials
+            key: user_key
+          send_resolved: false
+  inhibit_rules:
+    - source_matchers:
+        - alertname = InfoInhibitor
+      target_matchers:
+        - severity = info
+      equal:
+        - namespace
