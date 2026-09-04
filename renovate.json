@@ -37,15 +37,9 @@
     },
     {
       "customType": "regex",
-      "description": "Talos OS pin and factory installer image tag (must stay in lockstep; CI enforces agreement)",
-      "managerFilePatterns": [
-        "/^infra/metal/talos-version$/",
-        "/^infra/metal/patches/machine-install-image\\.yaml$/"
-      ],
-      "matchStrings": [
-        "^(?<currentValue>v\\d+\\.\\d+\\.\\d+)\\s*$",
-        "factory\\.talos\\.dev/installer/[0-9a-f]{64}:(?<currentValue>v\\d+\\.\\d+\\.\\d+)"
-      ],
+      "description": "Talos OS pin in topf.yaml. Do not Renovate kubernetesVersion; that pin must follow talosctl upgrade-k8s",
+      "managerFilePatterns": ["/^infra/metal/topf\\.yaml$/"],
+      "matchStrings": ["talosVersion: (?<currentValue>v\\d+\\.\\d+\\.\\d+)"],
       "datasourceTemplate": "github-releases",
       "depNameTemplate": "siderolabs/talos"
     }

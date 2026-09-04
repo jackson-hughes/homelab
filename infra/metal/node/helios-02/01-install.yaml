@@ -1,0 +1,4 @@
+---
+machine:
+  install:
+    disk: /dev/disk/by-id/nvme-eui.002538b921b6d7a6

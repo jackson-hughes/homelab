@@ -1,52 +1,43 @@
 # Talos Configuration
 
-OS pin: [`talos-version`](talos-version)
-Factory schematic: [`schematic.yaml`](schematic.yaml)
+Managed by [TOPF](https://postfinance.github.io/topf/main/)
 
-[`patches/`](patches/) are `talosctl patch mc` overlays. They are not applied automatically.
+TOPF does not read `~/.talos/config`; it builds client certs from the secrets bundle
 
-## Shared machine patches
-
-Apply to every node. `talosctl upgrade --image` uses the installer you pass on the command line and does not write `machine.install.image`. Apply this patch as part of the upgrade (same factory image, `--mode no-reboot`) so a later reset or reinstall does not fall back to the vanilla installer and drop `i915`, `intel-ucode`, and `intel-ice-firmware`.
+## Apply
 
 ```bash
-talosctl patch mc -n 192.168.1.25,192.168.1.26,192.168.1.27 \
-  --mode no-reboot \
-  --patch @infra/metal/patches/machine-install-image.yaml
+topf apply --topfconfig infra/metal/topf.yaml --dry-run --mode no-reboot
+topf apply --topfconfig infra/metal/topf.yaml --mode no-reboot --nodes-filter '^helios-01$'
 ```
 
-`machine-containerd.yaml` is the other cluster-wide machine overlay.
+Leave `--confirm` on. Never `talosctl patch mc` or `talosctl apply-config` outside TOPF.
 
-## Node patches (`machine-helios-0N.yaml`)
+After `topf upgrade`, run `topf apply` to persist `machine.install.image`.
 
-Hostname, static address, install disk, and node-local kubelet mounts.
+## Kubernetes upgrades
 
-Do not `talosctl patch mc` these files onto a node that already has them. Talos strategic merge appends lists, so a second apply duplicates `kubelet.extraMounts`, `ResolverConfig` nameservers, and `LinkConfig` addresses/routes. `$patch: delete` of a key that is already gone fails (the control-plane `exclude-from-external-load-balancers` label). Talos does not support `$patch: replace`. Regenerate a full machine config from secrets + patches and `talosctl apply-config` that file.
+`topf apply` will rewrite apiserver, controller-manager, scheduler, and kubelet image pins to `kubernetesVersion`. It does not run `upgrade-k8s` skew checks.
 
-Control-plane-only overlays (do not pass these when generating a worker): `cluster-scheduling.yaml`, `cluster-mayastor.yaml`, `cluster-controlplane-metrics.yaml`, `cluster-etcd-metrics.yaml`.
+1. `talosctl upgrade-k8s --to X`
+2. Set `kubernetesVersion: X` in `topf.yaml`
+3. `topf apply --dry-run` must show no changes
+4. Commit
 
-### Bootstrap a worker
+A stale pin makes the next apply revert control-plane images.
 
-`secrets.yaml` is the file from cluster creation (not in git). Boot the machine with the factory ISO for [`schematic.yaml`](schematic.yaml) + [`talos-version`](talos-version) (`factory.talos.dev/image/<schematic-id>/<talos-version>/metal-amd64.iso`) and wait for the maintenance API on its install NIC.
+## Add a worker
 
-Copy [`patches/machine-helios-01.yaml`](patches/machine-helios-01.yaml) to `patches/machine-helios-04.yaml`. Set `HostnameConfig`, `LinkConfig` address, and `install.disk`. Drop `node.kubernetes.io/exclude-from-external-load-balancers: $patch: delete` — Talos only sets that label on control planes, and deleting a missing key fails.
+Boot the machine with the factory ISO for [`schematic.yaml`](schematic.yaml) + `talosVersion` (`factory.talos.dev/image/<schematic-id>/<talos-version>/metal-amd64.iso`) and wait for the maintenance API on its install NIC.
+
+1. Add the node to `topf.yaml` (`role: worker`)
+2. Add `node/helios-04/01-install.yaml` with that node’s `machine.install.disk`
+3. If the NIC is not `enp110s0`, add a `node/helios-04/` `LinkConfig` override
+4. Apply only that node:
 
 ```bash
-TALOS_VER="$(tr -d '[:space:]' < infra/metal/talos-version)"
-KUBE_VER="$(kubectl version -o json | jq -r .serverVersion.gitVersion)"
-
-talosctl gen config helios https://kube.helios.ducknet.io:6443 \
-  --with-secrets secrets.yaml \
-  --talos-version "${TALOS_VER}" \
-  --kubernetes-version "${KUBE_VER}" \
-  --output-types worker \
-  --output helios-04.yaml \
-  --config-patch @infra/metal/patches/machine-install-image.yaml \
-  --config-patch @infra/metal/patches/machine-containerd.yaml \
-  --config-patch @infra/metal/patches/machine-helios-04.yaml
-
-talosctl apply-config --insecure -n 192.168.1.28 --file helios-04.yaml
-rm helios-04.yaml
+topf apply --topfconfig infra/metal/topf.yaml --nodes-filter '^helios-04$'
 ```
 
-Do not run `talosctl bootstrap` (that is first control plane only). The node joins via the existing API endpoint. Mayastor `DiskPool` objects and any extra `NetworkRuleConfig` source IPs are Kubernetes/control-plane follow-up, not part of this apply.
+Do not use `talosctl gen config`. Do not run `talosctl bootstrap` (first control plane only). The node joins via the existing API endpoint. Mayastor `DiskPool` objects and extra `NetworkRuleConfig` source IPs are Kubernetes/control-plane follow-up, not part of this apply.
+

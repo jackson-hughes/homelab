@@ -7,12 +7,14 @@
 tap "fluxcd/tap", trusted: { formulae: ["flux"] }
 tap "controlplaneio-fluxcd/tap", trusted: { formulae: ["flux-operator"] }
 tap "home-operations/tap", trusted: { casks: ["flate"] }
+tap "postfinance/tap", trusted: { casks: ["topf"] }
 
 # Cluster management
 brew "fluxcd/tap/flux" # fully qualified: homebrew/core has an unrelated "flux"
 brew "controlplaneio-fluxcd/tap/flux-operator" # manages the FluxInstance that installs Flux
 brew "kubernetes-cli"
 brew "talosctl"
+cask "postfinance/tap/topf"
 brew "virtctl"
 cask "headlamp"
 
