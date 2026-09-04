@@ -1,5 +1,0 @@
----
-# Factory installer; tag must match infra/metal/talos-version. Upgrade does not write this field. Apply: see ../README.md.
-machine:
-  install:
-    image: factory.talos.dev/installer/4577aa51b259ad4719a2005c9ec4a74e1e40b04ccdd351a1b624562e51d4ff9e:v1.13.9

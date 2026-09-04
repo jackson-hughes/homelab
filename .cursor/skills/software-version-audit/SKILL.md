@@ -36,7 +36,7 @@ Before lookups, read [reference.md](reference.md) and prefer the scripts under `
 | Helm charts | HelmRelease objects — discover by kind (below), including `clusters/*/flux-system` for flux-operator | `chart.spec.version` (exact or range) |
 | Flux sources | GitRepository / HelmRepository objects — discover by kind (below) | `ref.tag` / `ref.branch`; chart repo `url` |
 | App values | HelmRelease `values:`, CronJob/Pod specs | Container `image:` / `tag:` |
-| Talos OS | `infra/metal/talos-version`, `infra/metal/patches/machine-install-image.yaml` | Exact OS tag; factory installer tag must match (CI: `scripts/check-talos-version.sh`). Kubernetes version is not pinned here. |
+| Talos OS | `infra/metal/topf.yaml` | Exact `talosVersion` and `kubernetesVersion`. The k8s pin must equal the live `upgrade-k8s` version (not checked in CI). Factory/extensions for `talosVersion`: `scripts/check-talos-version.sh`. |
 
 Discover Flux objects by top-level `kind:`, never by filename glob — names vary (`operator-release.yaml`, `operator-repository.yaml`) and globs go stale silently:
 

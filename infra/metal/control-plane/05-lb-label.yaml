@@ -1,0 +1,7 @@
+---
+# Talos emits this label on control planes only. Deleting a missing key fails,
+# so this patch stays in control-plane/ and must not be applied to workers.
+machine:
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers:
+      $patch: delete

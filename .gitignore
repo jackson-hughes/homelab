@@ -7,3 +7,4 @@ AGENTS.md
 .ansible/**
 **/__pycache__/
 *.py[cod]
+/infra/metal/secrets.yaml

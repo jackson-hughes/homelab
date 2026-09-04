@@ -1,0 +1,6 @@
+---
+cluster:
+  apiServer:
+    certSANs:
+      - kube.helios.ducknet.io
+    disablePodSecurityPolicy: true

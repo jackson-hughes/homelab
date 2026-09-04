@@ -262,7 +262,7 @@ spec:
       enabled: true
     kubeApiServer:
       enabled: true
-    # Both are reachable only because infra/metal/patches/cluster-controlplane-metrics.yaml
+    # Both are reachable only because infra/metal/control-plane/03-cp-metrics.yaml
     # sets bind-address=0.0.0.0; Talos defaults them to 127.0.0.1. The chart's default
     # selector (component: kube-*) already matches the Talos static pods.
     #

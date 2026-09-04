@@ -16,13 +16,67 @@ concurrency:
 permissions:
   contents: read
 
+env:
+  TOPF_VERSION: v0.6.0
+  TALOSCTL_VERSION: v1.13.9
+
 jobs:
   schematic:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - run: ./scripts/check-schematic.sh
 
       - run: ./scripts/check-talos-version.sh
+
+      - name: Install topf and talosctl
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          curl -sfL "https://github.com/postfinance/topf/releases/download/${TOPF_VERSION}/topf_linux_amd64.tar.gz" \
+            | tar xz -C "$RUNNER_TEMP/bin" topf
+          curl -sfL "https://github.com/siderolabs/talos/releases/download/${TALOSCTL_VERSION}/talosctl-linux-amd64" \
+            -o "$RUNNER_TEMP/bin/talosctl"
+          chmod +x "$RUNNER_TEMP/bin/talosctl"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Render and validate machine configs
+        run: |
+          # Throwaway bundle for CI only. Never the real cluster secrets.
+          talosctl gen secrets -o infra/metal/secrets.yaml
+
+          documented="$(grep -oE '[0-9a-f]{64}' infra/metal/schematic.yaml | sort -u)"
+          if [ "$(printf '%s\n' "${documented}" | wc -l)" -ne 1 ]; then
+            echo "error: schematic.yaml must document exactly one schematic ID" >&2
+            exit 1
+          fi
+
+          actual="$(topf schematic-ids --topfconfig infra/metal/topf.yaml)"
+          if [ "${actual}" != "${documented}" ]; then
+            echo "error: topf schematic-ids does not match schematic.yaml:" >&2
+            echo "  documented: ${documented}" >&2
+            echo "  topf:       ${actual}" >&2
+            exit 1
+          fi
+          echo "schematic ID verified: ${actual}"
+
+          out="$RUNNER_TEMP/out"
+          mkdir -p "${out}"
+          topf render --topfconfig infra/metal/topf.yaml -o "${out}"
+
+          pin="$(awk '/^talosVersion:/{gsub(/["'\'']/, "", $2); print $2; exit}' infra/metal/topf.yaml)"
+          expected_image="factory.talos.dev/metal-installer/${documented}:${pin}"
+          shopt -s nullglob
+          files=("${out}"/*.yaml)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "error: topf render wrote no yaml files to ${out}" >&2
+            exit 1
+          fi
+          for f in "${files[@]}"; do
+            talosctl validate --config "${f}" --mode metal
+            if ! grep -q "${expected_image}" "${f}"; then
+              echo "error: ${f} does not contain ${expected_image}" >&2
+              exit 1
+            fi
+          done
