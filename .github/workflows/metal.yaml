@@ -21,7 +21,7 @@ env:
   TALOSCTL_VERSION: v1.13.9
 
 jobs:
-  schematic:
+  validate:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
