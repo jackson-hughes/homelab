@@ -1,0 +1,49 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: external-secrets
+  namespace: external-secrets
+  labels:
+    app.kubernetes.io/part-of: external-secrets
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: external-secrets-availability
+      rules:
+        - alert: ExternalSecretsAbsent
+          expr: absent(up{job="external-secrets"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "external-secrets is down"
+            description: "The external-secrets controller has been unreachable for more than 10 minutes; secrets will not be created or refreshed."
+
+        - alert: ClusterSecretStoreNotReady
+          expr: clustersecretstore_status_condition{condition="Ready",status="False"} == 1
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "ClusterSecretStore {{ $labels.name }} is not ready"
+            description: "ClusterSecretStore {{ $labels.name }} has reported Ready=False for more than 10 minutes; every ExternalSecret that uses it will fail to sync."
+
+    - name: external-secrets-sync
+      rules:
+        - alert: ExternalSecretNotReady
+          expr: externalsecret_status_condition{condition="Ready",status="False"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ExternalSecret {{ $labels.exported_namespace }}/{{ $labels.name }} is not ready"
+            description: "ExternalSecret {{ $labels.exported_namespace }}/{{ $labels.name }} has reported Ready=False for more than 15 minutes; check the 1Password item it references."
+
+        - alert: ExternalSecretSyncErrors
+          expr: increase(externalsecret_sync_calls_error[1h]) > 0
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "ExternalSecret {{ $labels.exported_namespace }}/{{ $labels.name }} is failing to sync"
+            description: "ExternalSecret {{ $labels.exported_namespace }}/{{ $labels.name }} recorded {{ $value | humanize }} sync errors in the last hour."

@@ -1,0 +1,20 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: external-secrets
+  namespace: external-secrets
+  labels:
+    app.kubernetes.io/part-of: external-secrets
+    app.kubernetes.io/component: monitoring
+spec:
+  jobLabel: app.kubernetes.io/name
+  namespaceSelector:
+    matchNames:
+      - external-secrets
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: external-secrets
+  podMetricsEndpoints:
+    - port: metrics
+      path: /metrics
+      interval: 30s

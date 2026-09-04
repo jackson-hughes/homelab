@@ -156,35 +156,18 @@ spec:
       enabled: true
       route:
         enabled: false
-      useManagedConfig: true
-      config:
-        route:
-          receiver: pushover
-          routes:
-            - matchers:
-                - alertname = InfoInhibitor
-              receiver: blackhole
-        receivers:
-          - name: blackhole
-          - name: pushover
-            pushover_configs:
-              - token:
-                  name: pushover-credentials
-                  key: vmalert_token
-                user_key:
-                  name: pushover-credentials
-                  key: user_key
-                send_resolved: true
-        inhibit_rules:
-          - source_matchers:
-              - alertname = InfoInhibitor
-            target_matchers:
-              - severity = info
-            equal:
-              - namespace
+      config: null
       spec:
         externalURL: https://alerts.ducknet.io
         replicaCount: 1
+        configRawYaml: |
+          global:
+            resolve_timeout: 15m
+          route:
+            receiver: blackhole
+          receivers:
+            - name: blackhole
+        disableNamespaceMatcher: true
         storage:
           volumeClaimTemplate:
             spec:
