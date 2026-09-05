@@ -24,6 +24,8 @@
     owner: "{{ item.owner }}"
     group: "{{ item.group }}"
     mode: "0774"
+    # A fresh xfs mount is unlabeled_t, which the guest agent cannot open, so fsfreeze (and any Velero backup hook) fails.
+    setype: usr_t
   loop:
     - { path: "/opt/media",          owner: "root",     group: "media" }
     - { path: "/opt/media/nzbget",   owner: "nzbget",   group: "media" }
