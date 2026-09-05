@@ -3,6 +3,12 @@
 
 version: '3'
 
+env:
+  B2_APPLICATION_KEY_ID:
+    sh: op read op://Homelab/backblaze-terraform/username
+  B2_APPLICATION_KEY:
+    sh: op read op://Homelab/backblaze-terraform/password
+
 tasks:
   default:
     cmds:
