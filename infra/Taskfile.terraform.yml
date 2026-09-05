@@ -1,5 +1,6 @@
 ---
 # https://taskfile.dev
+# Shared by infra/aws, infra/kvm, and infra/backblaze.
 
 version: '3'
 

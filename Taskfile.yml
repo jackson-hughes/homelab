@@ -1,3 +1,4 @@
+---
 # https://taskfile.dev
 
 version: '3'
@@ -6,6 +7,18 @@ includes:
   ansible:
     taskfile: ./infra/ansible/Taskfile.yml
     dir: ./infra/ansible
+
+  aws:
+    taskfile: ./infra/aws/Taskfile.yml
+    dir: ./infra/aws
+
+  kvm:
+    taskfile: ./infra/kvm/Taskfile.yml
+    dir: ./infra/kvm
+
+  backblaze:
+    taskfile: ./infra/backblaze/Taskfile.yml
+    dir: ./infra/backblaze
 
 tasks:
   default:

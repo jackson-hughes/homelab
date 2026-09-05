@@ -15,11 +15,11 @@ git ls-files -z | xargs -0 rg -n 'version:|tag:|image:'
 rg -l '^kind: HelmRelease$' kubernetes
 
 # Terraform pins (finds every stack; do not hardcode the stack list)
-rg 'required_version|version\s*=' infra/terraform --glob '*.tf'
-find infra/terraform -name .terraform-version -exec grep -H . {} +
+rg 'required_version|version\s*=' infra --glob '*.tf'
+find infra -name .terraform-version -exec grep -H . {} +
 # Locked (resolved) provider versions — fills the Resolved/Locked column.
 # Lockfiles are dotfiles, which rg's default filters may skip; find sidesteps that.
-find infra/terraform -name .terraform.lock.hcl -exec grep -H -A1 '^provider ' {} +
+find infra -name .terraform.lock.hcl -exec grep -H -A1 '^provider ' {} +
 ```
 
 ## Scripts (preferred)
@@ -31,8 +31,8 @@ SKILL=".cursor/skills/software-version-audit"
 
 # Terraform providers: derive namespace/name and declared major from git first —
 # never from memory. (^-anchored: unanchored version\s*= also matches required_version.)
-rg -n 'source\s*=' infra/terraform/*/terraform.tf
-rg -n '^\s*version\s*=' infra/terraform/*/terraform.tf
+rg -n 'source\s*=' infra/*/terraform.tf
+rg -n '^\s*version\s*=' infra/*/terraform.tf
 python3 "$SKILL/scripts/latest_tf_provider.py" hashicorp aws     # latest stable only
 python3 "$SKILL/scripts/latest_tf_provider.py" hashicorp aws 5   # + same-major; "5" = major of the declared pin above
 

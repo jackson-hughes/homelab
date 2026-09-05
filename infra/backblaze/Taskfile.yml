@@ -3,12 +3,6 @@
 
 version: '3'
 
-env:
-  B2_APPLICATION_KEY_ID:
-    sh: op read op://Homelab/backblaze-terraform/keyID
-  B2_APPLICATION_KEY:
-    sh: op read op://Homelab/backblaze-terraform/applicationKey
-
 tasks:
   default:
     cmds:
@@ -18,17 +12,24 @@ tasks:
   setup:
     run: once
     desc: Runs terraform init
+    env: &b2-env
+      B2_APPLICATION_KEY_ID:
+        sh: op read op://Homelab/backblaze-terraform/keyID
+      B2_APPLICATION_KEY:
+        sh: op read op://Homelab/backblaze-terraform/applicationKey
     cmds:
       - terraform init
 
   plan:
     deps: [setup]
     desc: Runs terraform plan against current project
+    env: *b2-env
     cmds:
       - terraform plan
 
   apply:
     deps: [setup]
     desc: Runs terraform apply against current project
+    env: *b2-env
     cmds:
       - terraform apply -auto-approve
