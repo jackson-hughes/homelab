@@ -46,7 +46,7 @@ jobs:
           schematic_id="$(topf schematic-ids --topfconfig infra/metal/topf.yaml)"
           if [ "$(printf '%s\n' "${schematic_id}" | wc -l)" -ne 1 ]; then
             echo "error: expected exactly one schematic ID from topf schematic-ids:" >&2
-            printf '  %s\n' ${schematic_id} >&2
+            printf '  %s\n' "${schematic_id}" >&2
             exit 1
           fi
 
