@@ -19,17 +19,6 @@ if [[ ! "${pin}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
   exit 1
 fi
 
-documented_ids="$(grep -oE '[0-9a-f]{64}' "${schematic_file}" | sort -u)" || true
-if [ -z "${documented_ids}" ]; then
-  echo "error: no schematic ID found in ${schematic_file}" >&2
-  exit 1
-fi
-if [ "$(printf '%s\n' "${documented_ids}" | wc -l)" -ne 1 ]; then
-  echo "error: ${schematic_file} references more than one schematic ID:" >&2
-  printf '  %s\n' ${documented_ids} >&2
-  exit 1
-fi
-
 extensions=()
 while IFS= read -r ext; do
   [ -n "${ext}" ] && extensions+=("${ext}")

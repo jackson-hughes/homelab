@@ -28,7 +28,7 @@ A stale pin makes the next apply revert control-plane images.
 
 ## Add a worker
 
-Boot the machine with the factory ISO for [`schematic.yaml`](schematic.yaml) + `talosVersion` (`factory.talos.dev/image/<schematic-id>/<talos-version>/metal-amd64.iso`) and wait for the maintenance API on its install NIC.
+Boot the machine with the factory ISO for [`schematic.yaml`](schematic.yaml) + `talosVersion` and wait for the maintenance API on its install NIC. Get the ID with `topf schematic-ids --topfconfig infra/metal/topf.yaml` (`factory.talos.dev/image/<id>/<talos-version>/metal-amd64.iso`).
 
 1. Add the node to `topf.yaml` (`role: worker`)
 2. Add `node/helios-04/01-install.yaml` with that node’s `machine.install.disk`
