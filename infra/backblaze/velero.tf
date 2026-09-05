@@ -4,8 +4,12 @@ data "onepassword_vault" "homelab" {
   name = "Homelab"
 }
 
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}
+
 resource "b2_bucket" "backups" {
-  bucket_name = "homelab-backups"
+  bucket_name = "homelab-backups-${random_id.bucket_suffix.hex}"
   bucket_type = "allPrivate"
 
   lifecycle_rules {
