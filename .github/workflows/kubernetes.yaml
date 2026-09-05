@@ -56,7 +56,10 @@ jobs:
       # --base= forces full-tree mode: without it the action's exported
       # FLATE_BASE (defaulting to main) flips test into changed-only mode,
       # which errors on shallow PR checkouts.
-      - run: flate test all --base= --path kubernetes/clusters/homelab --no-progress
+      # --concurrency 1 serializes reconcile: flate's default parallel DAG
+      # can livelock (home-operations/flate#828) and hang the job with no
+      # output until timeout.
+      - run: flate test all --base= --path kubernetes/clusters/homelab --no-progress --concurrency 1
 
   # PR review aid: diff the rendered cluster state against the PR's base, so
   # review sees what actually changes in the cluster, not just the file diff.
@@ -80,7 +83,8 @@ jobs:
 
       - name: Diff rendered manifests against base
         run: |
-          flate diff all --path kubernetes/clusters/homelab -o github --no-progress > "$RUNNER_TEMP/flate-diff.txt"
+          # --concurrency 1: same flate#828 livelock workaround as flate-test.
+          flate diff all --path kubernetes/clusters/homelab -o github --no-progress --concurrency 1 > "$RUNNER_TEMP/flate-diff.txt"
           # The blank line after </summary> is required: without it GitHub
           # treats the fenced block as raw text inside the HTML element.
           {
