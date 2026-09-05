@@ -20,7 +20,6 @@ resource "b2_bucket" "backups" {
 resource "b2_application_key" "velero" {
   key_name   = "velero-helios"
   bucket_ids = [b2_bucket.backups.bucket_id]
-  # listAllBucketNames is how the S3 API resolves a bucket-restricted key.
   capabilities = [
     "listAllBucketNames",
     "listBuckets",
@@ -31,10 +30,7 @@ resource "b2_application_key" "velero" {
   ]
 }
 
-# Velero seeds its Kopia repository password from a Secret at first backup and
-# the repository cannot be re-keyed afterwards, so the value must outlive the
-# cluster.
-resource "random_password" "velero_repository" {
+ephemeral "random_password" "velero_repository" {
   length  = 64
   special = false
 }
@@ -49,8 +45,9 @@ resource "onepassword_item" "velero_b2" {
 }
 
 resource "onepassword_item" "velero_repository_password" {
-  vault    = data.onepassword_vault.homelab.uuid
-  title    = "velero-repo-password"
-  category = "password"
-  password = random_password.velero_repository.result
+  vault               = data.onepassword_vault.homelab.uuid
+  title               = "velero-repo-password"
+  category            = "password"
+  password_wo         = ephemeral.random_password.velero_repository.result
+  password_wo_version = 1
 }
