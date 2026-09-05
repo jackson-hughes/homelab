@@ -85,6 +85,14 @@ spec:
               allowUiUpdates: false
               options:
                 path: /var/lib/grafana/dashboards/garage
+            - name: velero
+              orgId: 1
+              folder: Velero
+              type: file
+              disableDeletion: false
+              allowUiUpdates: false
+              options:
+                path: /var/lib/grafana/dashboards/velero
       dashboards:
         unifi:
           # DS_UNIFI_POLLER is an undefined variable left by upstream.
@@ -130,6 +138,12 @@ spec:
             datasource:
               - name: DS_DS_PROMETHEUS
                 value: VictoriaMetrics
+        velero:
+          # Picks the default Prometheus-type datasource through a dashboard
+          # variable, so no input mapping is needed.
+          velero:
+            gnetId: 16829
+            revision: 5
       admin:
         existingSecret: vm-grafana-admin
         userKey: admin-user

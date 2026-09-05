@@ -1,0 +1,58 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMRule
+metadata:
+  name: velero
+  namespace: velero
+  labels:
+    app.kubernetes.io/part-of: velero
+    app.kubernetes.io/component: monitoring
+spec:
+  groups:
+    - name: velero-availability
+      rules:
+        - alert: VeleroAbsent
+          expr: absent(up{job="velero"} == 1)
+          for: 10m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Velero is down"
+            description: "The Velero server has been unreachable for more than 10 minutes; scheduled backups will not run."
+
+        - alert: VeleroBackupStorageLocationUnavailable
+          expr: velero_backup_location_status_gauge == 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Backup storage location {{ $labels.backup_location_name }} is unavailable"
+            description: "Velero has not been able to reach BackupStorageLocation {{ $labels.backup_location_name }} for more than 15 minutes; backups cannot be written or read."
+
+    - name: velero-backups
+      rules:
+        # Last status is 1 only for Completed, so PartiallyFailed (a volume
+        # skipped while the manifests succeeded) fires this too.
+        - alert: VeleroBackupFailed
+          expr: velero_backup_last_status == 0
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Last backup for schedule {{ $labels.schedule }} did not complete"
+            description: "The most recent backup from schedule {{ $labels.schedule }} finished Failed or PartiallyFailed. Check `velero backup describe` and the DataUpload objects."
+
+        - alert: VeleroDataUploadFailed
+          expr: increase(podVolume_data_upload_failure_total[6h]) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "A Velero data upload failed on {{ $labels.node }}"
+            description: "At least one snapshot-to-repository upload failed in the last 6 hours; the owning backup will be PartiallyFailed."
+
+        - alert: VeleroRepoMaintenanceFailed
+          expr: increase(velero_repo_maintenance_failure_total[24h]) > 0
+          labels:
+            severity: warning
+          annotations:
+            summary: "Kopia repository maintenance failed"
+            description: "A Velero repository maintenance job failed in the last 24 hours; deleted blobs are not being reclaimed and the repository may accumulate stale data."

@@ -9,5 +9,6 @@ resources:
   - openebs
   - traefik
   - unpoller
+  - velero
   - victoria-metrics
   - victoria-logs
