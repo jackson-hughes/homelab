@@ -1,0 +1,28 @@
+---
+# https://taskfile.dev
+
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      - task -l
+    silent: true
+
+  setup:
+    run: once
+    desc: Runs terraform init
+    cmds:
+      - terraform init
+
+  plan:
+    deps: [setup]
+    desc: Runs terraform plan against current project
+    cmds:
+      - terraform plan
+
+  apply:
+    deps: [setup]
+    desc: Runs terraform apply against current project
+    cmds:
+      - terraform apply -auto-approve

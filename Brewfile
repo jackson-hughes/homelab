@@ -23,7 +23,7 @@ brew "go-task"
 brew "jq" # scripts/check-schematic.sh
 
 # Infrastructure as code
-brew "tfenv" # resolves infra/terraform/*/.terraform-version; run `tfenv install` there once
+brew "tfenv" # resolves the .terraform-version in each Terraform root; run `tfenv install` there once
 
 # Validation: local companion to CI (.github/workflows, .pre-commit-config.yaml)
 brew "pre-commit"

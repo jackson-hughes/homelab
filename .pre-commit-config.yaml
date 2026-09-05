@@ -35,7 +35,7 @@ repos:
       # violation isn't masked by a clean later one.
       - id: terraform-fmt
         name: terraform fmt -check
-        entry: bash -c 'rc=0; for d in infra/terraform/*/; do [ -f "${d}.terraform-version" ] || continue; (cd "${d}" && terraform fmt -check -recursive) || rc=1; done; exit "${rc}"'
+        entry: bash -c 'rc=0; for d in infra/*/ infra/terraform/*/; do [ -f "${d}.terraform-version" ] || continue; (cd "${d}" && terraform fmt -check -recursive) || rc=1; done; exit "${rc}"'
         language: system
-        files: ^infra/terraform/
+        files: ^infra/
         pass_filenames: false
