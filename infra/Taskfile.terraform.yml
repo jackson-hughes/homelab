@@ -10,20 +10,48 @@ tasks:
       - task -l
     silent: true
 
-  setup:
+  init:
     run: once
     desc: Runs terraform init
+    env: &tf-env
+      B2_APPLICATION_KEY_ID: '{{.B2_APPLICATION_KEY_ID | default ""}}'
+      B2_APPLICATION_KEY: '{{.B2_APPLICATION_KEY | default ""}}'
     cmds:
-      - terraform init
+      - terraform init -input=false {{.CLI_ARGS}}
 
   plan:
-    deps: [setup]
+    deps: [init]
     desc: Runs terraform plan against current project
+    env: *tf-env
     cmds:
-      - terraform plan
+      - terraform plan {{.CLI_ARGS}}
 
   apply:
-    deps: [setup]
+    deps: [init]
     desc: Runs terraform apply against current project
+    env: *tf-env
     cmds:
-      - terraform apply -auto-approve
+      - terraform apply -auto-approve {{.CLI_ARGS}}
+
+  fmt:
+    desc: Runs terraform fmt
+    cmds:
+      - terraform fmt -recursive {{.CLI_ARGS}}
+
+  validate:
+    deps: [init]
+    desc: Runs terraform validate
+    cmds:
+      - terraform validate {{.CLI_ARGS}}
+
+  upgrade:
+    desc: Upgrades providers and locks hashes for darwin and linux
+    env: *tf-env
+    cmds:
+      - terraform init -upgrade -input=false {{.CLI_ARGS}}
+      - terraform providers lock -platform=darwin_amd64 -platform=darwin_arm64 -platform=linux_amd64
+
+  install:
+    desc: Installs the Terraform version pinned in .terraform-version
+    cmds:
+      - tfenv install

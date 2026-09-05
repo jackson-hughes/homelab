@@ -3,33 +3,22 @@
 
 version: '3'
 
-tasks:
-  default:
-    cmds:
-      - task -l
-    silent: true
-
-  setup:
-    run: once
-    desc: Runs terraform init
-    env: &b2-env
+# Split include: Taskfile-level `env` with `sh: op read` runs for every
+# `task` at the repo root. Include vars only apply to the tasks that need
+# B2 credentials.
+includes:
+  terraform:
+    taskfile: ../Taskfile.terraform.yml
+    flatten: true
+    dir: .
+    excludes: [init, plan, apply, upgrade]
+  terraform_with_creds:
+    taskfile: ../Taskfile.terraform.yml
+    flatten: true
+    dir: .
+    excludes: [default, fmt, validate, install]
+    vars:
       B2_APPLICATION_KEY_ID:
         sh: op read op://Homelab/backblaze-terraform/keyID
       B2_APPLICATION_KEY:
         sh: op read op://Homelab/backblaze-terraform/applicationKey
-    cmds:
-      - terraform init
-
-  plan:
-    deps: [setup]
-    desc: Runs terraform plan against current project
-    env: *b2-env
-    cmds:
-      - terraform plan
-
-  apply:
-    deps: [setup]
-    desc: Runs terraform apply against current project
-    env: *b2-env
-    cmds:
-      - terraform apply -auto-approve
