@@ -3,7 +3,7 @@
 # mirror: flate test/diff, terraform validate, and the full-history gitleaks
 # scan run only in CI. Setup:
 #   brew bundle
-#   (cd infra/terraform/kvm && tfenv install)
+#   (cd infra/kvm && tfenv install)
 #   pre-commit install
 #
 # The kubernetes hook needs network on its first run (and when new resource
@@ -30,12 +30,12 @@ repos:
         files: ^kubernetes/
         pass_filenames: false
 
-      # Roots are derived from the .terraform-version glob so new stacks are
-      # covered automatically, and failures accumulate so an early root's
-      # violation isn't masked by a clean later one.
+      # Roots come from scripts/terraform-roots.sh so new stacks are covered
+      # automatically, and failures accumulate so an early root's violation
+      # isn't masked by a clean later one.
       - id: terraform-fmt
         name: terraform fmt -check
-        entry: bash -c 'rc=0; for d in infra/*/ infra/terraform/*/; do [ -f "${d}.terraform-version" ] || continue; (cd "${d}" && terraform fmt -check -recursive) || rc=1; done; exit "${rc}"'
+        entry: bash -c 'rc=0; while IFS= read -r d; do (cd "${d}" && terraform fmt -check -recursive) || rc=1; done < <(scripts/terraform-roots.sh); exit "${rc}"'
         language: system
         files: ^infra/
         pass_filenames: false

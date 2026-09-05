@@ -5,7 +5,7 @@ Usage:
   latest_tf_provider.py <namespace> <name> [declared_major]
 
 declared_major must come from the declared pin in git
-(rg -n '^\\s*version\\s*=' infra/terraform/*/terraform.tf), never from memory.
+(rg -n '^\\s*version\\s*=' infra/*/terraform.tf), never from memory.
 
 Examples:
   latest_tf_provider.py hashicorp aws

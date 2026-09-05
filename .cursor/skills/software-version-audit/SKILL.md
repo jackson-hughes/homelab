@@ -28,7 +28,7 @@ Before lookups, read [reference.md](reference.md) and prefer the scripts under `
 
 | Surface | Paths | What to extract |
 |---|---|---|
-| Terraform | `infra/terraform/*/` (one dir per stack) — `terraform.tf`, `.terraform-version`, `.terraform.lock.hcl` | CLI pin, provider constraints, locked provider versions |
+| Terraform | `infra/*/` stacks with `.terraform-version` — `terraform.tf`, `.terraform-version`, `.terraform.lock.hcl` | CLI pin, provider constraints, locked provider versions |
 | Ansible toolchain | `infra/ansible/requirements.txt` | `ansible`, `ansible-core` pins |
 | Ansible Galaxy roles | `infra/ansible/requirements.yml` | Role name + version/ref |
 | Ansible services | `infra/ansible/group_vars/` (extensionless), `infra/ansible/playbooks/` | `*_version`, `image:`, `tag:` |
@@ -79,7 +79,7 @@ Use the right source per artifact. Never guess. Prefer `scripts/` when listed.
 
 - Homepage chart index: derived by the script from `url:` in `kubernetes/apps/homepage/repository.yaml`
 - Garage GitRepository: `kubernetes/apps/garage/repository.yaml` — read `url:` and `ref.tag` from the manifest
-- Terraform providers per stack: `rg -n 'source\s*=' infra/terraform/*/terraform.tf`; resolved versions in each stack's `.terraform.lock.hcl`
+- Terraform providers per stack: `rg -n 'source\s*=' infra/*/terraform.tf`; resolved versions in each stack's `.terraform.lock.hcl`
 
 ## Live runtime queries (when cluster/host access available)
 

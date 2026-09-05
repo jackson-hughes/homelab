@@ -4,8 +4,12 @@ name: terraform
 on:
   pull_request:
     paths:
-      - infra/terraform/**
-      - infra/backblaze/**
+      - infra/**/.terraform-version
+      - infra/**/.terraform.lock.hcl
+      - infra/**/*.tf
+      - infra/**/*.tfvars
+      - infra/**/*.tpl
+      - scripts/terraform-roots.sh
       - .github/workflows/terraform.yaml
 
 concurrency:
@@ -16,13 +20,28 @@ permissions:
   contents: read
 
 jobs:
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      roots: ${{ steps.roots.outputs.roots }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - id: roots
+        run: |
+          json="$(scripts/terraform-roots.sh | jq -R . | jq -s -c .)"
+          test -n "${json}"
+          echo "roots=${json}" >> "$GITHUB_OUTPUT"
+
   validate:
+    needs: discover
     runs-on: ubuntu-latest
     timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        root: [infra/terraform/kvm, infra/terraform/aws, infra/backblaze]
+        root: ${{ fromJSON(needs.discover.outputs.roots) }}
     defaults:
       run:
         working-directory: ${{ matrix.root }}
