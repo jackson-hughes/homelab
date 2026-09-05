@@ -8,8 +8,8 @@
 #
 # The kubernetes hook needs network on its first run (and when new resource
 # kinds appear) to fetch JSON schemas; kubeconform caches them for later
-# offline runs. The schematic check (scripts/check-schematic.sh) is CI-only
-# because every run must reach factory.talos.dev.
+# offline runs. The Talos pin check (scripts/check-talos-version.sh) is
+# CI-only because every run must reach factory.talos.dev.
 repos:
   - repo: https://github.com/gitleaks/gitleaks
     rev: 83d9cd684c87d95d656c1458ef04895a7f1cbd8e # v8.30.1
