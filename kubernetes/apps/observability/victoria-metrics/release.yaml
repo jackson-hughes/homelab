@@ -139,8 +139,6 @@ spec:
               - name: DS_DS_PROMETHEUS
                 value: VictoriaMetrics
         velero:
-          # Picks the default Prometheus-type datasource through a dashboard
-          # variable, so no input mapping is needed.
           velero:
             gnetId: 16829
             revision: 5

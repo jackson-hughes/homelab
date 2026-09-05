@@ -1,5 +1,3 @@
-# Data mover (DataUpload/DataDownload) metrics come from the node-agent pods,
-# which have no Service.
 apiVersion: operator.victoriametrics.com/v1beta1
 kind: VMPodScrape
 metadata:

@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: velero
-      version: 12.1.0
+      version: "~12.1.0"
       sourceRef:
         kind: HelmRepository
         name: vmware-tanzu
@@ -29,8 +29,6 @@ spec:
         volumeMounts:
           - mountPath: /target
             name: plugins
-      # Untested upstream against KubeVirt 1.9; dropped if the scratch restore
-      # shows it misbehaving, in which case usenet-data is crash-consistent.
       - name: kubevirt-velero-plugin
         image: quay.io/kubevirt/kubevirt-velero-plugin:v0.9.0
         imagePullPolicy: IfNotPresent
@@ -62,8 +60,7 @@ spec:
             checksumAlgorithm: ""
       volumeSnapshotLocation: []
 
-    # CSI snapshots are addressed by VolumeSnapshotClass, not by a
-    # VolumeSnapshotLocation.
+    # CSI snapshots are addressed by VolumeSnapshotClass, not by a VolumeSnapshotLocation.
     snapshotsEnabled: false
 
     deployNodeAgent: true
@@ -74,8 +71,6 @@ spec:
     configMaps:
       node-agent:
         data:
-          # Replicas on the transient snapshot clone buy nothing; readOnly is
-          # left off because Mayastor has no ReadOnlyMany.
           node-agent-config.json: |
             {
               "backupPVC": {

@@ -30,8 +30,7 @@ spec:
 
     - name: velero-backups
       rules:
-        # Last status is 1 only for Completed, so PartiallyFailed (a volume
-        # skipped while the manifests succeeded) fires this too.
+        # Last status is 1 only for Completed, so PartiallyFailed (a volume skipped while the manifests succeeded) fires this too.
         - alert: VeleroBackupFailed
           expr: velero_backup_last_status == 0
           for: 15m
