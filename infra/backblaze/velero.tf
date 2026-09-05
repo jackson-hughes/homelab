@@ -8,8 +8,6 @@ resource "b2_bucket" "backups" {
   bucket_name = "homelab-backups"
   bucket_type = "allPrivate"
 
-  # Kopia keeps its own history. B2's default keeps every hidden version
-  # forever, so without this every blob Kopia deletes is billed indefinitely.
   lifecycle_rules {
     file_name_prefix                                       = ""
     days_from_hiding_to_deleting                           = 1
