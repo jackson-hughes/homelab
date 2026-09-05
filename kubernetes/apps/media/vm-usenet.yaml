@@ -8,6 +8,9 @@ spec:
   dataVolumeTemplates:
     - metadata:
         name: usenet-root
+        # Rebuilt from the image and cloud-init below; /opt/media on usenet-data is the state.
+        labels:
+          velero.io/exclude-from-backup: "true"
       spec:
         storage:
           storageClassName: mayastor-2

@@ -55,3 +55,23 @@ spec:
           annotations:
             summary: "Kopia repository maintenance failed"
             description: "A Velero repository maintenance job failed in the last 24 hours; deleted blobs are not being reclaimed and the repository may accumulate stale data."
+
+    - name: velero-schedules
+      rules:
+        - alert: VeleroDailyBackupStale
+          expr: time() - velero_backup_last_successful_timestamp{schedule="media-daily"} > 26 * 3600
+          for: 1h
+          labels:
+            severity: critical
+          annotations:
+            summary: "No successful media-daily backup for over 26 hours"
+            description: "The last Completed backup from schedule media-daily is {{ $value | humanizeDuration }} old; the 05:30 run has been missed or is failing."
+
+        - alert: VeleroWeeklyBackupStale
+          expr: time() - velero_backup_last_successful_timestamp{schedule="media-weekly"} > 8 * 24 * 3600
+          for: 1h
+          labels:
+            severity: warning
+          annotations:
+            summary: "No successful media-weekly backup for over 8 days"
+            description: "The last Completed backup from schedule media-weekly is {{ $value | humanizeDuration }} old."
