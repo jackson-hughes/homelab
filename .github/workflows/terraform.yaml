@@ -5,6 +5,7 @@ on:
   pull_request:
     paths:
       - infra/terraform/**
+      - infra/backblaze/**
       - .github/workflows/terraform.yaml
 
 concurrency:
@@ -21,10 +22,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        root: [kvm, aws]
+        root: [infra/terraform/kvm, infra/terraform/aws, infra/backblaze]
     defaults:
       run:
-        working-directory: infra/terraform/${{ matrix.root }}
+        working-directory: ${{ matrix.root }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
