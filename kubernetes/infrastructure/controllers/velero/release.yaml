@@ -24,7 +24,8 @@ spec:
   values:
     initContainers:
       - name: velero-plugin-for-aws
-        image: velero/velero-plugin-for-aws:v1.14.2
+        # Release candidate until 1.14.3 ships: 1.14.2 sends an empty x-amz-tagging header that B2 rejects.
+        image: velero/velero-plugin-for-aws:v1.14.3-rc.1
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - mountPath: /target
