@@ -1,0 +1,20 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMPodScrape
+metadata:
+  name: velero-node-agent
+  namespace: velero
+  labels:
+    app.kubernetes.io/part-of: velero
+    app.kubernetes.io/component: monitoring
+spec:
+  jobLabel: name
+  namespaceSelector:
+    matchNames:
+      - velero
+  selector:
+    matchLabels:
+      name: node-agent
+  podMetricsEndpoints:
+    - port: http-monitoring
+      path: /metrics
+      interval: 30s

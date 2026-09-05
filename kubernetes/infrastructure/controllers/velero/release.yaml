@@ -1,0 +1,84 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: velero
+  namespace: velero
+spec:
+  releaseName: velero
+  chart:
+    spec:
+      chart: velero
+      version: "~12.1.0"
+      sourceRef:
+        kind: HelmRepository
+        name: vmware-tanzu
+  interval: 24h
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  values:
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: velero/velero-plugin-for-aws:v1.14.2
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+      - name: kubevirt-velero-plugin
+        image: quay.io/kubevirt/kubevirt-velero-plugin:v0.9.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+
+    credentials:
+      existingSecret: velero-b2-credentials
+
+    configuration:
+      features: EnableCSI
+      defaultSnapshotMoveData: true
+      extraArgs:
+        - --node-agent-configmap=velero-node-agent
+      backupStorageLocation:
+        - name: default
+          provider: aws
+          bucket: homelab-backups-686be0d7
+          prefix: helios
+          default: true
+          credential:
+            name: velero-b2-credentials
+            key: cloud
+          config:
+            region: us-west-000
+            s3Url: https://s3.us-west-000.backblazeb2.com
+            # B2 rejects the checksum headers the AWS SDK sends by default.
+            checksumAlgorithm: ""
+      volumeSnapshotLocation: []
+
+    # CSI snapshots are addressed by VolumeSnapshotClass, not by a VolumeSnapshotLocation.
+    snapshotsEnabled: false
+
+    deployNodeAgent: true
+    nodeAgent:
+      extraArgs:
+        - --node-agent-configmap=velero-node-agent
+
+    configMaps:
+      node-agent:
+        data:
+          node-agent-config.json: |
+            {
+              "backupPVC": {
+                "mayastor-2": {
+                  "storageClass": "mayastor-1"
+                }
+              }
+            }
+
+    metrics:
+      enabled: true
