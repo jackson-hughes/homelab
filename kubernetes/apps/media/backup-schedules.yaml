@@ -1,0 +1,24 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: media-daily
+  namespace: velero
+spec:
+  # After Plex's 02:00-05:00 maintenance window, so its own nightly DB backup is in the snapshot.
+  schedule: "CRON_TZ=Europe/London 30 5 * * *"
+  template:
+    includedNamespaces:
+      - media
+    ttl: 336h
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: media-weekly
+  namespace: velero
+spec:
+  schedule: "CRON_TZ=Europe/London 0 6 * * 0"
+  template:
+    includedNamespaces:
+      - media
+    ttl: 2160h
