@@ -4,7 +4,7 @@ terraform {
   required_providers {
     b2 = {
       source  = "Backblaze/b2"
-      version = "0.13.2"
+      version = "0.14.0"
     }
     onepassword = {
       source  = "1Password/onepassword"
