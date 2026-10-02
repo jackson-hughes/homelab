@@ -25,6 +25,25 @@ spec:
     - kind: ConfigMap
       name: vm-kube-state-metrics-flux-values
       valuesKey: values.yaml
+  # Helm replaces lists, so setting these via values would mean copying the chart's
+  # default endpoint. max_scrape_size is checked before metric relabeling, so the
+  # drop alone can't keep the response under the 16MiB default.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: VMServiceScrape
+              name: vm-kube-api-server
+            patch: |
+              - op: add
+                path: /spec/endpoints/0/max_scrape_size
+                value: 32MiB
+              - op: add
+                path: /spec/endpoints/0/metricRelabelConfigs
+                value:
+                  - action: drop
+                    sourceLabels: [__name__]
+                    regex: (apiserver_request_duration_seconds|etcd_request_duration_seconds|apiserver_request_body_size_bytes|apiserver_response_sizes|apiserver_watch_cache_read_wait_seconds|apiserver_watch_list_duration_seconds|apiserver_watch_events_sizes)_bucket
   values:
     fullnameOverride: vm
     victoria-metrics-operator:
