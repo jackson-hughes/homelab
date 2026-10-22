@@ -31,13 +31,17 @@ spec:
     - name: velero-backups
       rules:
         # Not velero_backup_last_status: the schedule controller resets it to 1 every minute, so a 0 never lasts long enough to fire.
+        # Fires while the latest failure is newer than the latest success; unscheduled backups have no success timestamp and never fire.
         - alert: VeleroBackupFailed
-          expr: sum by (schedule) (increase({__name__=~"velero_backup_(failure|partial_failure)_total"}[24h])) > 0
+          expr: |
+            max by (schedule) (tlast_change_over_time({__name__=~"velero_backup_(failure|partial_failure)_total"}[24h]))
+              > on(schedule)
+            max by (schedule) (velero_backup_last_successful_timestamp)
           labels:
             severity: critical
           annotations:
-            summary: "A backup for schedule {{ $labels.schedule }} did not complete"
-            description: "A backup from schedule {{ $labels.schedule }} finished Failed or PartiallyFailed in the last 24 hours. Check `velero backup describe` and the DataUpload objects."
+            summary: "Latest backup for schedule {{ $labels.schedule }} did not complete"
+            description: "A backup from schedule {{ $labels.schedule }} finished Failed or PartiallyFailed and none has succeeded since. Check `velero backup describe` and the DataUpload objects."
 
         - alert: VeleroDataUploadFailed
           expr: increase(podVolume_data_upload_failure_total[6h]) > 0
