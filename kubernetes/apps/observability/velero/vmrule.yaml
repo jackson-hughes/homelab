@@ -30,15 +30,14 @@ spec:
 
     - name: velero-backups
       rules:
-        # Last status is 1 only for Completed, so PartiallyFailed (a volume skipped while the manifests succeeded) fires this too.
+        # Not velero_backup_last_status: the schedule controller resets it to 1 every minute, so a 0 never lasts long enough to fire.
         - alert: VeleroBackupFailed
-          expr: velero_backup_last_status == 0
-          for: 15m
+          expr: sum by (schedule) (increase({__name__=~"velero_backup_(failure|partial_failure)_total"}[24h])) > 0
           labels:
             severity: critical
           annotations:
-            summary: "Last backup for schedule {{ $labels.schedule }} did not complete"
-            description: "The most recent backup from schedule {{ $labels.schedule }} finished Failed or PartiallyFailed. Check `velero backup describe` and the DataUpload objects."
+            summary: "A backup for schedule {{ $labels.schedule }} did not complete"
+            description: "A backup from schedule {{ $labels.schedule }} finished Failed or PartiallyFailed in the last 24 hours. Check `velero backup describe` and the DataUpload objects."
 
         - alert: VeleroDataUploadFailed
           expr: increase(podVolume_data_upload_failure_total[6h]) > 0
