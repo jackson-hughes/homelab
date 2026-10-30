@@ -44,6 +44,20 @@ spec:
             summary: "Latest backup for schedule {{ $labels.schedule }} did not complete"
             description: "A backup from schedule {{ $labels.schedule }} finished Failed or PartiallyFailed and none has succeeded since. Check `velero backup describe` and the DataUpload objects."
 
+        # Velero exports no in-progress gauge; attempts minus outcomes is the number of backups still running.
+        - alert: VeleroBackupSlow
+          expr: |
+            sum by (schedule) (velero_backup_attempt_total{schedule!=""})
+              -
+            sum by (schedule) ({__name__=~"velero_backup_(success|failure|partial_failure|validation_failure)_total", schedule!=""})
+              > 0
+          for: 30m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Backup for schedule {{ $labels.schedule }} has been running for over 30 minutes"
+            description: "Daily backups normally finish in under 10 minutes. A slow run usually means slow uploads to B2; check the data mover pod's network throughput."
+
         - alert: VeleroDataUploadFailed
           expr: increase(podVolume_data_upload_failure_total[6h]) > 0
           labels:
