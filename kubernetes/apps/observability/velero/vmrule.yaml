@@ -32,9 +32,10 @@ spec:
       rules:
         # Not velero_backup_last_status: the schedule controller resets it to 1 every minute, so a 0 never lasts long enough to fire.
         # Fires while the latest failure is newer than the latest success; unscheduled backups have no success timestamp and never fire.
+        # `> 0` drops the fresh zero-valued series a Velero restart creates, which tlast_change_over_time would count as a change.
         - alert: VeleroBackupFailed
           expr: |
-            max by (schedule) (tlast_change_over_time({__name__=~"velero_backup_(failure|partial_failure)_total"}[24h]))
+            max by (schedule) (tlast_change_over_time(({__name__=~"velero_backup_(failure|partial_failure)_total"} > 0)[24h:1m]))
               > on(schedule)
             max by (schedule) (velero_backup_last_successful_timestamp)
           labels:
