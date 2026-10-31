@@ -63,8 +63,8 @@ unhealthy() {
         ($replicas[] | select(.state != "Online") | "replica on \(.node) \(.state)"),
         (if $v.state.target then
            (if $v.state.status != "Online" then "status \($v.state.status)" else empty end),
-           (if $v.state.target.rebuilds != 0 then "\($v.state.target.rebuilds) rebuilds" else empty end),
-           ($v.state.target.children[] | select(.state != "Online") | "nexus child \(.state)")
+           (if ($v.state.target.rebuilds // 0) != 0 then "\($v.state.target.rebuilds) rebuilds" else empty end),
+           ($v.state.target.children // [] | .[] | select(.state != "Online") | "nexus child \(.state)")
          else empty end)
       ]
     | select(length > 0)
@@ -122,6 +122,18 @@ workloads_on_node() {
   done | sort -u
 }
 
+# Label selector for a workload's pods. Fails on an empty one, which would match
+# every pod in the namespace.
+pod_selector() {
+  local sel
+  sel="$(kubectl get -n "$1" "$2" -o json | jq -r '.spec.selector.matchLabels // {} | to_entries | map("\(.key)=\(.value)") | join(",")')"
+  if [ -z "${sel}" ]; then
+    echo "error: $1/$2 has no matchLabels selector; can't wait for its pods" >&2
+    return 1
+  fi
+  echo "${sel}"
+}
+
 current_hash="$(kubectl get controllerrevision -n "${ns}" -o json | jq -r --arg ds "${ds}" '
   [.items[] | select(any(.metadata.ownerReferences[]?; .kind == "DaemonSet" and .name == $ds))]
   | max_by(.revision) | .metadata.labels["controller-revision-hash"]')"
@@ -145,6 +157,9 @@ for node in ${nodes}; do
   affected="$(workloads_on_node "${node}")"
   log "${node}: restart io-engine${affected:+; scale down: $(echo "${affected}" | tr '\n' ',' | sed 's/,$//')}"
   [ -n "${affected}" ] && blocked=1
+  echo "${affected}" | while read -r w_ns w; do
+    [ -z "${w}" ] || pod_selector "${w_ns}" "${w}" >/dev/null
+  done
 done
 if [ "${blocked}" -eq 1 ] && [ "${scale_down}" -eq 0 ]; then
   echo "error: some workloads have every replica on a node being restarted; rerun with --scale-down" >&2
@@ -170,9 +185,9 @@ for node in ${nodes}; do
       echo "${w_ns} ${w} $(kubectl get -n "${w_ns}" "${w}" -o jsonpath='{.spec.replicas}')"
     done)"
     echo "${scaled}" | while read -r w_ns w _; do
+      sel="$(pod_selector "${w_ns}" "${w}")"
       log "${node}: scaling ${w_ns}/${w} to 0"
       kubectl scale -n "${w_ns}" "${w}" --replicas=0 >/dev/null
-      sel="$(kubectl get -n "${w_ns}" "${w}" -o json | jq -r '.spec.selector.matchLabels | to_entries | map("\(.key)=\(.value)") | join(",")')"
       until [ -z "$(kubectl get pods -n "${w_ns}" -l "${sel}" -o name)" ]; do sleep 5; done
     done
   fi
