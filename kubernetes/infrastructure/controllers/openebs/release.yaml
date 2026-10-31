@@ -13,6 +13,10 @@ spec:
         kind: HelmRepository
         name: openebs
   interval: 24h
+  # io-engine is OnDelete, which kstatus never sees as rolled out; Helm's own
+  # wait treats it as ready. Roll it with scripts/roll-io-engine.sh.
+  waitStrategy:
+    name: legacy
   install:
     crds: CreateReplace
     remediation:
