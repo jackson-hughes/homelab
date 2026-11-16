@@ -1,4 +1,4 @@
-apiVersion: notification.toolkit.fluxcd.io/v1beta3
+apiVersion: notification.toolkit.fluxcd.io/v1
 kind: Alert
 metadata:
   name: flux-system
@@ -10,7 +10,8 @@ spec:
   providerRef:
     name: alertmanager
   eventSeverity: error
-  summary: "Flux reconciliation failed"
+  eventMetadata:
+    summary: "Flux reconciliation failed"
   eventSources:
     - kind: GitRepository
       name: "*"
