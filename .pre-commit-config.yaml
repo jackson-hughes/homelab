@@ -3,7 +3,7 @@
 # mirror: flate test/diff, terraform validate, and the full-history gitleaks
 # scan run only in CI. Setup:
 #   brew bundle
-#   (cd infra/kvm && tfenv install)
+#   (cd infra/aws && tfenv install)
 #   pre-commit install
 #
 # The kubernetes hook needs network on its first run (and when new resource
