@@ -12,10 +12,6 @@ includes:
     taskfile: ./infra/aws/Taskfile.yml
     dir: ./infra/aws
 
-  kvm:
-    taskfile: ./infra/kvm/Taskfile.yml
-    dir: ./infra/kvm
-
   backblaze:
     taskfile: ./infra/backblaze/Taskfile.yml
     dir: ./infra/backblaze
