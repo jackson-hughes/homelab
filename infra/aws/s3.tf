@@ -24,9 +24,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "backups" {
     id     = "glacier"
     status = "Enabled"
 
-    filter {
-      prefix = "*"
-    }
+    filter {}
 
     transition {
       days          = 7
@@ -36,6 +34,10 @@ resource "aws_s3_bucket_lifecycle_configuration" "backups" {
     transition {
       days          = 97
       storage_class = "DEEP_ARCHIVE"
+    }
+
+    abort_incomplete_multipart_upload {
+      days_after_initiation = 7
     }
   }
 }
