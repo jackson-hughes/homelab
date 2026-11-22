@@ -31,4 +31,4 @@ spec:
   path: ./kubernetes/infrastructure/config
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 15m

@@ -3,8 +3,6 @@ kind: HelmRelease
 metadata:
   name: velero
   namespace: velero
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   releaseName: velero
   chart:

@@ -3,8 +3,6 @@ kind: HelmRepository
 metadata:
   name: vmware-tanzu
   namespace: velero
-  annotations:
-    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   interval: 24h
   url: https://vmware-tanzu.github.io/helm-charts
