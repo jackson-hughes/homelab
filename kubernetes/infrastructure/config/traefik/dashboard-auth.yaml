@@ -13,10 +13,10 @@ spec:
     creationPolicy: Owner
     template:
       type: kubernetes.io/basic-auth
+      data:
+        username: admin
+        password: "{{ .password }}"
   data:
-    - secretKey: username
-      remoteRef:
-        key: vm-query-auth/username
     - secretKey: password
       remoteRef:
         key: vm-query-auth/password
