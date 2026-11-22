@@ -1,0 +1,54 @@
+---
+# Under block, a hostNetwork port missing from these rules is unreachable from
+# other nodes and pods. Every node IP must be listed before that node joins.
+apiVersion: v1alpha1
+kind: NetworkDefaultActionConfig
+ingress: block
+---
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
+name: apid-ingress
+portSelector:
+  ports:
+    - 50000
+  protocol: tcp
+ingress:
+  - subnet: 0.0.0.0/0
+  - subnet: ::/0
+---
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
+name: cluster-tcp-ingress
+portSelector:
+  ports:
+    - 4421 # mayastor nvmf (replicas)
+    - 7946 # metallb memberlist
+    - 8420 # mayastor nvmf (nexus)
+    - 9100 # node-exporter
+    - 9120 # metallb metrics
+    - 9502 # mayastor io-engine metrics
+    - 10124 # mayastor io-engine grpc
+    - 10199 # mayastor csi-node
+    - 10250 # kubelet
+    - 50053 # mayastor agent-ha-node
+  protocol: tcp
+ingress:
+  # Same-node pod traffic arrives from the pod CIDR, while cross-node traffic is
+  # SNATed to the source node IP by flannel on this cluster.
+  - subnet: 10.244.0.0/16
+  - subnet: 192.168.1.25/32
+  - subnet: 192.168.1.26/32
+  - subnet: 192.168.1.27/32
+---
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
+name: cluster-udp-ingress
+portSelector:
+  ports:
+    - 4789 # flannel vxlan
+    - 7946 # metallb memberlist
+  protocol: udp
+ingress:
+  - subnet: 192.168.1.25/32
+  - subnet: 192.168.1.26/32
+  - subnet: 192.168.1.27/32
