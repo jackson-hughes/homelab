@@ -24,10 +24,10 @@ repos:
   - repo: local
     hooks:
       - id: validate-kubernetes
-        name: kustomize build + kubeconform
+        name: validate kubernetes manifests
         entry: scripts/validate-kubernetes.sh
         language: script
-        files: ^kubernetes/
+        files: ^(kubernetes/|scripts/validate-kubernetes\.sh$)
         pass_filenames: false
 
       # Roots come from scripts/terraform-roots.sh so new stacks are covered
