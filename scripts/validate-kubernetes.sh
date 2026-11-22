@@ -239,7 +239,8 @@ fi
 # A ClusterSecretStore with spec.conditions refuses ExternalSecrets from
 # unlisted namespaces. Verify every ExternalSecret's namespace is listed in
 # spec.conditions[].namespaces of the ClusterSecretStore it references
-# (namespaceSelector/namespaceRegexes are not evaluated here).
+# Not evaluated: stores whose conditions use namespaceSelector/namespaceRegexes
+# (skipped), data[]/dataFrom[] sourceRef.storeRef, and ClusterExternalSecrets.
 if [ "${build_failed}" -eq 0 ]; then
   echo "==> cluster secret store namespace conditions"
   awk '
@@ -264,12 +265,13 @@ if [ "${build_failed}" -eq 0 ]; then
     kind == "ClusterSecretStore" && sub_section == "conditions:" && /^ +- [a-z0-9-]+$/ {
       if (name != "") { v = $0; sub(/^ +- /, "", v); allowed[name, v] = 1 }
     }
+    kind == "ClusterSecretStore" && sub_section == "conditions:" && /namespace(Selector|Regexes):/ { unchecked[name] = 1 }
     kind == "ClusterSecretStore" && section == "spec:" && /^  conditions:/ { conditioned[name] = 1 }
     END {
       flush()
       for (k in used) {
         split(k, p, SUBSEP)
-        if ((p[1] in conditioned) && !((p[1], p[2]) in allowed)) {
+        if ((p[1] in conditioned) && !(p[1] in unchecked) && !((p[1], p[2]) in allowed)) {
           printf "error: ExternalSecret %s/%s uses ClusterSecretStore %s, whose spec.conditions do not list namespace %s\n", p[2], p[3], p[1], p[2] | "sort >&2"
           missing = 1
         }
