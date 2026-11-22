@@ -22,7 +22,7 @@ spec:
       s3:
         api:
           region: "garage"
-          rootDomain: ".s3.garage.tld"
+          rootDomain: ".s3.ducknet.io"
     deployment:
       replicaCount: 3
       podManagementPolicy: Parallel
