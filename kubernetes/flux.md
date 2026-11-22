@@ -4,7 +4,7 @@ This repo uses a 3-tier Flux layout for the Helios cluster:
 
 - `clusters/homelab`: Flux `Kustomization` objects only
 - `clusters/homelab/flux-system`: flux-operator HelmRelease and FluxInstance
-- `infrastructure/controllers`: operators, controllers, namespaces, Helm repositories, Helm releases
+- `infrastructure/controllers`: operators, controllers, namespaces, Helm repositories, Helm releases, except controllers that need `ExternalSecret`s
 - `infrastructure/config`: CRs and config that depend on those controllers, and controllers that need `ExternalSecret`s
 - `apps`: apps and workload-specific resources
 
@@ -16,11 +16,11 @@ Reconcile order:
 
 ## How Flux installs itself
 
-`clusters/homelab/flux-system` holds the flux-operator HelmRelease and the FluxInstance. `infrastructure/controllers` is everything Flux installs after that.
+`clusters/homelab/flux-system` holds the flux-operator HelmRelease and the FluxInstance. `infrastructure/controllers` and `infrastructure/config` are everything Flux installs after that.
 
 Placement rules:
 
-- Put controller installs in `infrastructure/controllers`
+- Put controller installs in `infrastructure/controllers`, unless they need an `ExternalSecret` (see below)
 - Put CRDs and plain manifests in `infrastructure/controllers` when a controller there needs them to become usable
 - Put CRs, shared secret sources, and controller-owned config in `infrastructure/config` when they depend on an already-usable controller
 - Put a controller in `infrastructure/config` if it cannot become Ready without an `ExternalSecret`: `infra-controllers` waits for health, and `ClusterSecretStore` only exists after it
