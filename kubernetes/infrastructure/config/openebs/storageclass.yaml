@@ -2,8 +2,6 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: mayastor-1
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: io.openebs.csi-mayastor
 parameters:
   fsType: xfs
@@ -17,6 +15,8 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: mayastor-2
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
 provisioner: io.openebs.csi-mayastor
 parameters:
   fsType: xfs

@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  # Empty string opts out of the default StorageClass (mayastor-1).
+  # Empty string opts out of the default StorageClass (mayastor-2).
   storageClassName: ""
   volumeName: media-nfs
   resources:
