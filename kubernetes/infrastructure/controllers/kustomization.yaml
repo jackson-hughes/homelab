@@ -11,5 +11,4 @@ resources:
   - node-feature-discovery
   - openebs
   - traefik
-  - velero
   - victoria-metrics-operator
