@@ -37,16 +37,32 @@ spec:
         enabled: true
         experimentalChannel: false
     gateway:
+      # A route outside these namespaces stays unattached
+      # (NotAllowedByListeners), and external-dns ignores it too. A route
+      # with no spec.hostnames inherits the listener hostname, so external-dns
+      # would publish *.ducknet.io for it.
       listeners:
         web:
           port: 80
-          namespacePolicy:
-            from: All
+          hostname: "*.ducknet.io"
+          namespacePolicy: &routeNamespaces
+            from: Selector
+            selector:
+              matchExpressions:
+                - key: kubernetes.io/metadata.name
+                  operator: In
+                  values:
+                    - flux-system
+                    - garage
+                    - homepage
+                    - media
+                    - podinfo
+                    - victoria-metrics
         websecure:
           port: 443
           protocol: HTTPS
-          namespacePolicy:
-            from: All
+          hostname: "*.ducknet.io"
+          namespacePolicy: *routeNamespaces
           certificateRefs:
             - kind: Secret
               name: traefik-ducknet-tls
