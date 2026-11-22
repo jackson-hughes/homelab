@@ -27,7 +27,7 @@
       "description": "The podinfo chart's redis image sits under redis:, not an *image key, so the flux manager's values heuristic skips it",
       "managerFilePatterns": ["/^kubernetes/apps/podinfo/release\\.yaml$/"],
       "matchStrings": [
-        "redis:\\n(?:\\s+\\S+: .*\\n)*?\\s+repository: (?<depName>\\S+)\\n\\s+tag: (?<currentValue>\\S+)"
+        "redis:\\n(?:\\s+\\S+: .*\\n)*?\\s+repository: (?<depName>\\S+)\\n\\s+tag: \"?(?<currentValue>[^\"\\s]+)\"?"
       ],
       "datasourceTemplate": "docker"
     },
