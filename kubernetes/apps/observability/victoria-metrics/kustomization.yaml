@@ -9,6 +9,8 @@ resources:
   - query-auth-externalsecret.yaml
   - release.yaml
   - vmalertmanagerconfig.yaml
+  - watchdog-externalsecret.yaml
+  - watchdog-vmalertmanagerconfig.yaml
   - httproutes.yaml
   - vmnodescrape-etcd.yaml
   - vmauth.yaml

@@ -67,8 +67,6 @@ spec:
     defaultRules:
       enabled: true
       rules:
-        Watchdog:
-          enabled: false
         KubeClientCertificateExpiration:
           enabled: false
     grafana:
@@ -225,7 +223,7 @@ spec:
     vmcluster:
       enabled: true
       spec:
-        replicationFactor: 1
+        replicationFactor: 2
         retentionPeriod: 60d
         vmstorage:
           replicaCount: 2

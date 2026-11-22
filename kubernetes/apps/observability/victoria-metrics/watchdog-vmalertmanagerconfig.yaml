@@ -1,0 +1,26 @@
+# Kept apart from the pushover config: the operator drops an invalid
+# VMAlertmanagerConfig (e.g. missing Secret) on its own, not the others. The
+# operator forces continue on top-level routes, so the pushover config must
+# blackhole Watchdog itself.
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAlertmanagerConfig
+metadata:
+  name: watchdog
+  labels:
+    app.kubernetes.io/part-of: victoria-metrics
+    app.kubernetes.io/component: monitoring
+spec:
+  route:
+    receiver: healthchecks-io
+    matchers:
+      - alertname = Watchdog
+    group_wait: 0s
+    group_interval: 1m
+    repeat_interval: 5m
+  receivers:
+    - name: healthchecks-io
+      webhook_configs:
+        - url_secret:
+            name: healthchecks-io-watchdog
+            key: url
+          send_resolved: false

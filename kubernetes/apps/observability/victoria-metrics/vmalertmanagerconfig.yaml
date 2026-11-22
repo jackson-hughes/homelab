@@ -10,7 +10,7 @@ spec:
     receiver: pushover
     routes:
       - matchers:
-          - alertname = InfoInhibitor
+          - alertname =~ "InfoInhibitor|Watchdog"
         receiver: blackhole
       - matchers:
           - reportingcontroller =~ ".+"
