@@ -1,0 +1,23 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: garage-daily
+  namespace: velero
+spec:
+  schedule: "CRON_TZ=Europe/London 30 4 * * *"
+  template:
+    includedNamespaces:
+      - garage
+    ttl: 336h
+---
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: garage-weekly
+  namespace: velero
+spec:
+  schedule: "CRON_TZ=Europe/London 0 5 * * 0"
+  template:
+    includedNamespaces:
+      - garage
+    ttl: 2160h

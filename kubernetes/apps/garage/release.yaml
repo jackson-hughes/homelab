@@ -18,6 +18,8 @@ spec:
   values:
     garage:
       replicationFactor: "3"
+      # A CSI snapshot of a live LMDB file can be corrupt; this keeps a clean copy in the backed-up meta volume.
+      metadataAutoSnapshotInterval: "6h"
       existingRpcSecret: "garage-rpc-secret"
       s3:
         api:

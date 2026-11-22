@@ -12,10 +12,16 @@ resource "b2_bucket" "backups" {
   bucket_name = "homelab-backups-${random_id.bucket_suffix.hex}"
   bucket_type = "allPrivate"
 
+  # Velero and Kopia delete by hiding, so a mistaken prune stays recoverable
+  # for a week. A key with deleteFiles can still delete versions directly.
   lifecycle_rules {
     file_name_prefix                                       = ""
-    days_from_hiding_to_deleting                           = 1
+    days_from_hiding_to_deleting                           = 7
     days_from_starting_to_canceling_unfinished_large_files = 7
+  }
+
+  lifecycle {
+    prevent_destroy = true
   }
 }
 
