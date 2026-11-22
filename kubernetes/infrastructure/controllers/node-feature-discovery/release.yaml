@@ -19,6 +19,8 @@ spec:
       retries: 3
   upgrade:
     crds: CreateReplace
+    remediation:
+      retries: 3
   # NFD owns the NodeFeatureRule CRD that intel-device-plugins-gpu creates, and
   # evaluates it to apply the intel.feature.node.kubernetes.io/gpu label that the
   # GPU plugin DaemonSet selects on.

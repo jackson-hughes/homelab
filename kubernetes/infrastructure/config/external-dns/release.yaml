@@ -16,6 +16,9 @@ spec:
   install:
     remediation:
       retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   values:
     fullnameOverride: external-dns
     logLevel: &logLevel info
