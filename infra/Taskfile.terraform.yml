@@ -29,9 +29,10 @@ tasks:
   apply:
     deps: [init]
     desc: Runs terraform apply against current project
+    interactive: true
     env: *tf-env
     cmds:
-      - terraform apply -auto-approve {{.CLI_ARGS}}
+      - terraform apply {{.CLI_ARGS}}
 
   fmt:
     desc: Runs terraform fmt
