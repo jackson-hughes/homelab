@@ -239,6 +239,13 @@ spec:
         retentionPeriod: 60d
         vmstorage:
           replicaCount: 2
+          resources:
+            requests:
+              cpu: 250m
+              memory: 1Gi
+            limits:
+              cpu: "1"
+              memory: 4Gi
           affinity:
             podAntiAffinity:
               preferredDuringSchedulingIgnoredDuringExecution:
