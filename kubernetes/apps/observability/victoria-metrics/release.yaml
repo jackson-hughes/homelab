@@ -73,6 +73,11 @@ spec:
           enabled: false
     grafana:
       enabled: true
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 2Gi
       # Route dashboards to folders by ConfigMap annotation.
       sidecar:
         dashboards:
@@ -83,6 +88,11 @@ spec:
           folderAnnotation: grafana_folder
           provider:
             foldersFromFilesStructure: true
+        resources:
+          requests:
+            memory: 128Mi
+          limits:
+            memory: 512Mi
 
       dashboardProviders:
         dashboardproviders.yaml:
