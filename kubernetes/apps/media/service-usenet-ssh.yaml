@@ -5,7 +5,7 @@ metadata:
   namespace: media
   annotations:
     metallb.io/loadBalancerIPs: 192.168.1.42
-    external-dns.alpha.kubernetes.io/hostname: usenet.ducknet.io
+    external-dns.kubernetes.io/hostname: usenet.ducknet.io
 spec:
   type: LoadBalancer
   selector:
