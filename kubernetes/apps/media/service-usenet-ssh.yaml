@@ -8,6 +8,8 @@ metadata:
     external-dns.kubernetes.io/hostname: usenet.ducknet.io
 spec:
   type: LoadBalancer
+  loadBalancerSourceRanges:
+    - 192.168.1.0/24
   selector:
     app.kubernetes.io/name: usenet
   ports:
