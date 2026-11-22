@@ -3,7 +3,7 @@ name: terraform
 
 on:
   pull_request:
-    paths:
+    paths: &paths
       - infra/**/.terraform-version
       - infra/**/.terraform.lock.hcl
       - infra/**/*.tf
@@ -11,10 +11,13 @@ on:
       - infra/**/*.tpl
       - scripts/terraform-roots.sh
       - .github/workflows/terraform.yaml
+  push:
+    branches: [main]
+    paths: *paths
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
