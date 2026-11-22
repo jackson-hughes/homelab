@@ -19,6 +19,7 @@ ds="openebs-io-engine"
 selector="app=io-engine,openebs.io/release=openebs"
 healthy_timeout=1800 # seconds to wait for volumes after each node
 settle_checks=3      # consecutive healthy checks, 20s apart, before moving on
+pod_timeout=600      # seconds to wait for pods to stop or be recreated
 
 dry_run=0
 scale_down=0
@@ -50,7 +51,10 @@ unhealthy() {
     echo "mayastor API call failed"
     return 0
   fi
-  echo "${pools}" | jq -r '.[] | select(.state.status != "Online") | "pool \(.id): \(.state.status)"' ||
+  echo "${pools}" | jq -r '
+    if length == 0 then "no pools listed" else
+    .[] | select(.state.status != "Online") | "pool \(.id): \(.state.status)"
+    end' ||
     echo "can't parse pool list"
   # An unpublished volume (its workload scaled down) has no nexus, so only its
   # replicas are checked.
@@ -104,6 +108,7 @@ workloads_on_node() {
     | .items[] | select(.spec.csi.volumeHandle as $h | $u | index($h))
     | "\(.spec.claimRef.namespace) \(.spec.claimRef.name)"')"
   echo "${pvcs}" | while read -r pvc_ns pvc; do
+    [ -n "${pvc}" ] || continue
     kubectl get pods -n "${pvc_ns}" -o json | jq -r --arg pvc "${pvc}" '
       .items[] | select(any(.spec.volumes[]?; .persistentVolumeClaim.claimName == $pvc))
       | .metadata.ownerReferences[0] | "\(.kind)/\(.name)"' |
@@ -188,7 +193,11 @@ for node in ${nodes}; do
       sel="$(pod_selector "${w_ns}" "${w}")"
       log "${node}: scaling ${w_ns}/${w} to 0"
       kubectl scale -n "${w_ns}" "${w}" --replicas=0 >/dev/null
-      until [ -z "$(kubectl get pods -n "${w_ns}" -l "${sel}" -o name)" ]; do sleep 5; done
+      deadline=$((SECONDS + pod_timeout))
+      until [ -z "$(kubectl get pods -n "${w_ns}" -l "${sel}" -o name)" ]; do
+        [ "${SECONDS}" -lt "${deadline}" ] || { echo "error: ${w_ns}/${w} pods still present after ${pod_timeout}s" >&2; exit 1; }
+        sleep 5
+      done
     done
   fi
 
@@ -197,7 +206,9 @@ for node in ${nodes}; do
   kubectl delete pod -n "${ns}" "${old_pod}" --wait=true >/dev/null
 
   new_pod=""
+  deadline=$((SECONDS + pod_timeout))
   until [ -n "${new_pod}" ]; do
+    [ "${SECONDS}" -lt "${deadline}" ] || { echo "error: no ${ds} pod on revision ${current_hash} on ${node} after ${pod_timeout}s" >&2; exit 1; }
     sleep 5
     new_pod="$(kubectl get pods -n "${ns}" -l "${selector}" --field-selector "spec.nodeName=${node}" -o json | jq -r --arg h "${current_hash}" '
       .items[] | select(.metadata.labels["controller-revision-hash"] == $h) | .metadata.name')"

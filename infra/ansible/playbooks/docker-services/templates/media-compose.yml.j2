@@ -21,9 +21,10 @@ services:
       - WIREGUARD_PRIVATE_KEY={{ mullvad_wireguard_private_key }}
       - WIREGUARD_ADDRESSES=10.74.209.255/32
       - SERVER_CITIES=Glasgow
-      - DNS_PLAINTEXT_ADDRESS=192.168.1.1
+      - DNS_UPSTREAM_RESOLVER_TYPE=plain
+      - DNS_UPSTREAM_PLAIN_ADDRESSES=192.168.1.1:53
       - FIREWALL=on
-      - EXTRA_SUBNETS=192.168.1.0/24,10.244.0.0/16,10.0.2.0/24
+      - FIREWALL_OUTBOUND_SUBNETS=192.168.1.0/24,10.244.0.0/16,10.0.2.0/24
     restart: unless-stopped
   nzbget:
     image: linuxserver/nzbget
