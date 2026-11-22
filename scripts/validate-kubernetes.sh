@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# Validate the Flux kustomize trees: build each entry point with kustomize and
-# check every resource against its schema with kubeconform.
+# Validate the Flux kustomize trees: build each entry point with kustomize,
+# check every resource against its schema with kubeconform, and verify that
+# every Flux source/reconciler is covered by a Flux Alert.
 #
 # Used by CI (.github/workflows/kubernetes.yaml) and the pre-commit hook.
 #
@@ -92,17 +93,145 @@ if [ "${#trees[@]}" -lt 2 ]; then
   exit 1
 fi
 
+work_dir="$(mktemp -d)"
+trap 'rm -rf "${work_dir}"' EXIT
+all_yaml="${work_dir}/all.yaml"
+: > "${all_yaml}"
+
 rc=0
+build_failed=0
 for tree in "${trees[@]}"; do
   echo "==> ${tree}"
-  build "${tree}" | kubeconform \
-    -strict \
-    -summary \
-    -cache "${kubeconform_cache}" \
-    -skip CustomResourceDefinition,DiskPool,VLAgent \
-    -schema-location default \
-    -schema-location "${schema_dir}" \
-    -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
-    || rc=1
+  tree_yaml="${work_dir}/tree.yaml"
+  if build "${tree}" > "${tree_yaml}"; then
+    printf '\n---\n' >> "${all_yaml}"
+    cat "${tree_yaml}" >> "${all_yaml}"
+    kubeconform \
+      -strict \
+      -summary \
+      -cache "${kubeconform_cache}" \
+      -skip CustomResourceDefinition,DiskPool,VLAgent \
+      -schema-location default \
+      -schema-location "${schema_dir}" \
+      -schema-location 'https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json' \
+      < "${tree_yaml}" \
+      || rc=1
+  else
+    rc=1
+    build_failed=1
+  fi
 done
+
+# Flux Alert.spec.eventSources does not support namespace: "*" (omitting
+# namespace matches only the Alert's own namespace). Verify that every Flux
+# source and reconciler across all trees (including FluxInstance.spec.sync) is
+# covered by an active, unfiltered Alert eventSource.
+if [ "${build_failed}" -eq 0 ]; then
+  echo "==> flux alert coverage"
+  awk '
+    function parse_kv(line, kv,    idx, v) {
+      sub(/^[ \t]+(-[ \t]+)?/, "", line)
+      idx = index(line, ":")
+      if (idx == 0) return 0
+      kv["k"] = substr(line, 1, idx - 1)
+      v = substr(line, idx + 1)
+      gsub(/^[ \t]+|[ \t]+$/, "", v)
+      if ((v ~ /^".*"$/) || (v ~ /^\047.*\047$/)) v = substr(v, 2, length(v) - 2)
+      kv["v"] = v
+      return 1
+    }
+    function flush_es() {
+      if (in_es_item && es_kind != "" && es_name != "" && !es_has_labels) {
+        doc_es[++doc_es_n] = es_kind SUBSEP es_ns SUBSEP es_name
+      }
+      in_es_item = es_has_labels = 0
+      es_kind = es_name = es_ns = ""
+    }
+    function flush_doc(    eff_ns, eff_sync, i, e) {
+      flush_es()
+      eff_ns = (ns != "" ? ns : "default")
+      if (api ~ /\.toolkit\.fluxcd\.io\// &&
+          kind ~ /^(GitRepository|OCIRepository|Bucket|HelmRepository|HelmChart|Kustomization|HelmRelease|ImageRepository|ImagePolicy|ImageUpdateAutomation)$/) {
+        needed[kind, eff_ns, name] = 1
+      } else if (api ~ /^fluxcd\.controlplane\.io\// && kind == "FluxInstance" && sync_kind != "") {
+        eff_sync = (sync_name != "" ? sync_name : eff_ns)
+        needed[sync_kind, eff_ns, eff_sync] = 1
+        needed["Kustomization", eff_ns, eff_sync] = 1
+      } else if (api ~ /^notification\.toolkit\.fluxcd\.io\// && kind == "Alert" &&
+                 !alert_suspended && !alert_filtered) {
+        for (i = 1; i <= doc_es_n; i++) {
+          split(doc_es[i], e, SUBSEP)
+          covered[e[1], (e[2] != "" ? e[2] : eff_ns), e[3]] = 1
+        }
+      }
+      api = kind = ns = name = section = subsec = sync_kind = sync_name = ""
+      doc_es_n = alert_suspended = alert_filtered = 0
+    }
+    /^---/ { flush_doc(); next }
+    /^[a-zA-Z]/ {
+      flush_es()
+      section = subsec = ""
+      if (parse_kv($0, kv)) {
+        if (kv["k"] == "apiVersion") api = kv["v"]
+        else if (kv["k"] == "kind") kind = kv["v"]
+        else if (kv["k"] == "metadata" || kv["k"] == "spec") section = kv["k"]
+      }
+      next
+    }
+    section == "metadata" && /^  [a-zA-Z]/ && parse_kv($0, kv) {
+      if (kv["k"] == "name") name = kv["v"]
+      else if (kv["k"] == "namespace") ns = kv["v"]
+      next
+    }
+    section == "spec" && /^  [a-zA-Z]/ {
+      flush_es()
+      subsec = ""
+      if (parse_kv($0, kv)) {
+        if (kind == "FluxInstance" && kv["k"] == "sync") subsec = "sync"
+        else if (kind == "Alert") {
+          if (kv["k"] == "eventSources") subsec = "eventSources"
+          else if (kv["k"] == "suspend" && kv["v"] == "true") alert_suspended = 1
+          else if (kv["k"] == "inclusionList" && kv["v"] != "[]") alert_filtered = 1
+        }
+      }
+      next
+    }
+    subsec == "sync" && /^    [a-zA-Z]/ && parse_kv($0, kv) {
+      if (kv["k"] == "kind") sync_kind = kv["v"]
+      else if (kv["k"] == "name") sync_name = kv["v"]
+      next
+    }
+    subsec == "eventSources" {
+      if (/^[ \t]+-[ \t]+/) { flush_es(); in_es_item = 1 }
+      if (in_es_item && parse_kv($0, kv)) {
+        if (kv["k"] == "kind") es_kind = kv["v"]
+        else if (kv["k"] == "name") es_name = kv["v"]
+        else if (kv["k"] == "namespace") es_ns = kv["v"]
+        else if (kv["k"] == "matchLabels" && kv["v"] != "{}") es_has_labels = 1
+      }
+    }
+    END {
+      flush_doc()
+      err_sort = "sort >&2"
+      for (k in needed) {
+        split(k, p, SUBSEP)
+        pair = p[1] SUBSEP p[2]
+        if (!((pair SUBSEP "*") in covered) && !(k in covered) && !(pair in reported)) {
+          reported[pair] = 1
+          printf "error: %s in namespace %s is not covered by any Flux Alert eventSources\n", p[1], p[2] | err_sort
+          missing = 1
+        }
+      }
+      if (missing) {
+        close(err_sort)
+        print "       add it to kubernetes/apps/observability/flux/alert.yaml" | "cat >&2"
+        close("cat >&2")
+        exit 1
+      }
+      print "Summary: all Flux resources covered by Alert eventSources"
+    }
+  ' "${all_yaml}" || rc=1
+else
+  echo "==> flux alert coverage (skipped: kustomize build failed)"
+fi
 exit "${rc}"

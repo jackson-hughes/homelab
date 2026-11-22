@@ -12,10 +12,114 @@ spec:
   eventSeverity: error
   eventMetadata:
     summary: "Flux reconciliation failed"
+  # Flux Alert.spec.eventSources does not support namespace: "*" (omitting
+  # namespace matches only flux-system), so each namespace owning Flux
+  # resources is listed explicitly.
   eventSources:
+    # Flux core
     - kind: GitRepository
       name: "*"
+      namespace: flux-system
     - kind: Kustomization
       name: "*"
+      namespace: flux-system
+    - kind: HelmRepository
+      name: "*"
+      namespace: flux-system
     - kind: HelmRelease
       name: "*"
+      namespace: flux-system
+
+    # Infrastructure
+    - kind: HelmRepository
+      name: "*"
+      namespace: cert-manager
+    - kind: HelmRelease
+      name: "*"
+      namespace: cert-manager
+    - kind: HelmRepository
+      name: "*"
+      namespace: external-dns
+    - kind: HelmRelease
+      name: "*"
+      namespace: external-dns
+    - kind: HelmRepository
+      name: "*"
+      namespace: external-secrets
+    - kind: HelmRelease
+      name: "*"
+      namespace: external-secrets
+    - kind: HelmRepository
+      name: "*"
+      namespace: inteldeviceplugins-system
+    - kind: HelmRelease
+      name: "*"
+      namespace: inteldeviceplugins-system
+    - kind: HelmRepository
+      name: "*"
+      namespace: metallb-system
+    - kind: HelmRelease
+      name: "*"
+      namespace: metallb-system
+    - kind: HelmRepository
+      name: "*"
+      namespace: node-feature-discovery
+    - kind: HelmRelease
+      name: "*"
+      namespace: node-feature-discovery
+    - kind: HelmRepository
+      name: "*"
+      namespace: openebs
+    - kind: HelmRelease
+      name: "*"
+      namespace: openebs
+    - kind: HelmRepository
+      name: "*"
+      namespace: traefik
+    - kind: HelmRelease
+      name: "*"
+      namespace: traefik
+    - kind: HelmRepository
+      name: "*"
+      namespace: velero
+    - kind: HelmRelease
+      name: "*"
+      namespace: velero
+    - kind: HelmRepository
+      name: "*"
+      namespace: victoria-metrics
+    - kind: HelmRelease
+      name: "*"
+      namespace: victoria-metrics
+
+    # Apps
+    - kind: GitRepository
+      name: "*"
+      namespace: garage
+    - kind: HelmRelease
+      name: "*"
+      namespace: garage
+    - kind: HelmRepository
+      name: "*"
+      namespace: homepage
+    - kind: HelmRelease
+      name: "*"
+      namespace: homepage
+    - kind: HelmRepository
+      name: "*"
+      namespace: media
+    - kind: HelmRelease
+      name: "*"
+      namespace: media
+    - kind: HelmRepository
+      name: "*"
+      namespace: podinfo
+    - kind: HelmRelease
+      name: "*"
+      namespace: podinfo
+    - kind: HelmRepository
+      name: "*"
+      namespace: unpoller
+    - kind: HelmRelease
+      name: "*"
+      namespace: unpoller
