@@ -151,7 +151,7 @@ if [ "${build_failed}" -eq 0 ]; then
       flush_es()
       eff_ns = (ns != "" ? ns : "default")
       if (api ~ /\.toolkit\.fluxcd\.io\// &&
-          kind ~ /^(GitRepository|OCIRepository|Bucket|HelmRepository|HelmChart|Kustomization|HelmRelease)$/) {
+          kind ~ /^(GitRepository|OCIRepository|Bucket|HelmRepository|HelmChart|Kustomization|HelmRelease|ImageRepository|ImagePolicy|ImageUpdateAutomation)$/) {
         needed[kind, eff_ns, name] = 1
       } else if (api ~ /^fluxcd\.controlplane\.io\// && kind == "FluxInstance" && sync_kind != "") {
         eff_sync = (sync_name != "" ? sync_name : eff_ns)
