@@ -12,11 +12,23 @@ ingress:
 ---
 apiVersion: v1alpha1
 kind: NetworkRuleConfig
-name: controlplane-peer-ingress
+name: trustd-ingress
 portSelector:
   ports:
-    - 2379-2380 # etcd
-    - 50001 # trustd
+    - 50001
+  protocol: tcp
+ingress:
+  - subnet: 192.168.1.25/32
+  - subnet: 192.168.1.26/32
+  - subnet: 192.168.1.27/32
+---
+# Control-plane IPs only; workers never talk to etcd directly.
+apiVersion: v1alpha1
+kind: NetworkRuleConfig
+name: etcd-ingress
+portSelector:
+  ports:
+    - 2379-2380
   protocol: tcp
 ingress:
   - subnet: 192.168.1.25/32

@@ -41,7 +41,11 @@ topf apply --topfconfig infra/metal/topf.yaml --nodes-filter '^helios-04$'
 
 Do not use `talosctl gen config`. Do not run `talosctl bootstrap` (first control plane only). The node joins via the existing API endpoint. Mayastor `DiskPool` objects are Kubernetes follow-up, not part of this apply.
 
-Ingress is `block` ([`all/06-firewall.yaml`](all/06-firewall.yaml)). Before step 4, add the new IP to every `NetworkRuleConfig` that lists node IPs and apply that to the existing nodes, or they drop its trustd, flannel and Mayastor traffic.
+Ingress is `block` ([`all/06-firewall.yaml`](all/06-firewall.yaml)). Before step 4, add the new IP to every `NetworkRuleConfig` that lists node IPs except `etcd-ingress`, and apply to the existing nodes only, or they drop its trustd, flannel and Mayastor traffic:
+
+```bash
+topf apply --topfconfig infra/metal/topf.yaml --mode no-reboot --nodes-filter '^helios-0[1-3]$'
+```
 
 ## Firewall changes
 
