@@ -85,6 +85,17 @@ spec:
             summary: "No successful {{ $labels.schedule }} backup for over 26 hours"
             description: "The last Completed backup from schedule {{ $labels.schedule }} is {{ $value | humanizeDuration }} old; the daily run has been missed or is failing."
 
+        # The success timestamp only exists after a success in this Velero process, so the rules above
+        # are blind to a new schedule that has never succeeded, or to one failing since a Velero restart.
+        - alert: VeleroDailyBackupNeverSucceeded
+          expr: velero_backup_attempt_total{schedule=~".+-daily"} unless on(schedule) velero_backup_last_successful_timestamp
+          for: 26h
+          labels:
+            severity: critical
+          annotations:
+            summary: "No successful {{ $labels.schedule }} backup since Velero started or the schedule was created"
+            description: "Velero has recorded no Completed backup from schedule {{ $labels.schedule }} for over 26 hours."
+
         - alert: VeleroWeeklyBackupStale
           expr: time() - velero_backup_last_successful_timestamp{schedule=~".+-weekly"} > 8 * 24 * 3600
           for: 1h

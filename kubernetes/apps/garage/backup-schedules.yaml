@@ -9,6 +9,20 @@ spec:
     includedNamespaces:
       - garage
     ttl: 336h
+    hooks:
+      resources:
+        # A CSI snapshot of a live LMDB file can be corrupt; this writes a clean
+        # copy into <metadata_dir>/snapshots just before the volume snapshot.
+        - name: garage-meta-snapshot
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: garage
+          pre:
+            - exec:
+                container: garage
+                command: ["/garage", "meta", "snapshot"]
+                onError: Fail
+                timeout: 2m
 ---
 apiVersion: velero.io/v1
 kind: Schedule
@@ -21,3 +35,15 @@ spec:
     includedNamespaces:
       - garage
     ttl: 2160h
+    hooks:
+      resources:
+        - name: garage-meta-snapshot
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: garage
+          pre:
+            - exec:
+                container: garage
+                command: ["/garage", "meta", "snapshot"]
+                onError: Fail
+                timeout: 2m
