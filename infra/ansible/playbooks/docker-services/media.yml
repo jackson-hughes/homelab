@@ -38,7 +38,8 @@
     dest: /opt/media/docker-compose.yml
     owner: root
     group: root
-    mode: "0644"
+    mode: "0600"
+  no_log: true
 
 - name: Ensure media compose stack is running
   community.docker.docker_compose_v2:
