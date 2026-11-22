@@ -1,5 +1,7 @@
 # The bucket itself belongs to state-setup/, a bootstrap root with no remote
-# state, so it is referenced by name rather than managed here.
+# state, so it is referenced by name rather than managed here. Its public access
+# block and policy are owned here only: adding them in state-setup/ too would
+# make the two roots fight over them.
 locals {
   state_bucket = "jhughes-tf-states"
 }

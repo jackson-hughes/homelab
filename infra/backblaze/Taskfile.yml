@@ -11,7 +11,7 @@ includes:
     taskfile: ../Taskfile.terraform.yml
     flatten: true
     dir: .
-    excludes: [init, plan, apply, upgrade]
+    excludes: [init, _init, plan, apply, upgrade]
   terraform_with_creds:
     taskfile: ../Taskfile.terraform.yml
     flatten: true
