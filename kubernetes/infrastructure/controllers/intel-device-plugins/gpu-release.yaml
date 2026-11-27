@@ -20,6 +20,9 @@ spec:
   install:
     remediation:
       retries: 3
+  upgrade:
+    remediation:
+      retries: 3
   values:
     # Name of the GpuDevicePlugin CR; chart default is "gpudeviceplugin-sample".
     name: intel-gpu
