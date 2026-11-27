@@ -3,21 +3,28 @@ name: metal
 
 on:
   pull_request:
-    paths:
+    paths: &paths
       - infra/metal/**
       - scripts/check-talos-version.sh
       - .github/workflows/metal.yaml
+  push:
+    branches: [main]
+    paths: *paths
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.sha || github.ref }}
   cancel-in-progress: true
 
 permissions:
   contents: read
 
+# Not Renovate-managed: bump each SHA256 with its version, from the
+# release's published checksums file for the linux-amd64 asset.
 env:
   TOPF_VERSION: v0.6.0
+  TOPF_SHA256: 458df4b25f4181a31ed361c0592194f7eb9e6e7b13e7096f8745453afdeaadfb
   TALOSCTL_VERSION: v1.13.9
+  TALOSCTL_SHA256: 7e1d4b7d5846964bdcf63a794e3c8161bb6ef2983d5ace58ea5322f3bf32a27e
 
 jobs:
   validate:
@@ -30,12 +37,13 @@ jobs:
 
       - name: Install topf and talosctl
         run: |
-          mkdir -p "$RUNNER_TEMP/bin"
-          curl -sfL "https://github.com/postfinance/topf/releases/download/${TOPF_VERSION}/topf_linux_amd64.tar.gz" \
-            | tar xz -C "$RUNNER_TEMP/bin" topf
-          curl -sfL "https://github.com/siderolabs/talos/releases/download/${TALOSCTL_VERSION}/talosctl-linux-amd64" \
-            -o "$RUNNER_TEMP/bin/talosctl"
-          chmod +x "$RUNNER_TEMP/bin/talosctl"
+          mkdir -p "$RUNNER_TEMP/bin" "$RUNNER_TEMP/dl" && cd "$RUNNER_TEMP/dl"
+          curl -sfL -o topf.tar.gz "https://github.com/postfinance/topf/releases/download/${TOPF_VERSION}/topf_linux_amd64.tar.gz"
+          curl -sfL -o talosctl "https://github.com/siderolabs/talos/releases/download/${TALOSCTL_VERSION}/talosctl-linux-amd64"
+          echo "${TOPF_SHA256}  topf.tar.gz" | sha256sum -c -
+          echo "${TALOSCTL_SHA256}  talosctl" | sha256sum -c -
+          tar xzf topf.tar.gz -C "$RUNNER_TEMP/bin" topf
+          install -m 0755 talosctl "$RUNNER_TEMP/bin/talosctl"
           echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
 
       - name: Render and validate machine configs

@@ -3,11 +3,14 @@ name: actionlint
 
 on:
   pull_request:
-    paths:
+    paths: &paths
       - .github/workflows/**
+  push:
+    branches: [main]
+    paths: *paths
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.sha || github.ref }}
   cancel-in-progress: true
 
 permissions:
