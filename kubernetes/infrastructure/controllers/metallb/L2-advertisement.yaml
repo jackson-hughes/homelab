@@ -3,6 +3,8 @@ kind: L2Advertisement
 metadata:
   name: homelab
   namespace: metallb-system
+  annotations:
+    kustomize.toolkit.fluxcd.io/prune: disabled
 spec:
   ipAddressPools:
     - homelab
