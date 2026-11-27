@@ -10,7 +10,7 @@ spec:
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
-  # Empty string opts out of the default StorageClass (mayastor-1), which would
+  # Empty string opts out of the default StorageClass, which would
   # otherwise intercept the claim and leave it unbound.
   storageClassName: ""
   # Pre-binds this volume to the claim below so nothing else can take it.
