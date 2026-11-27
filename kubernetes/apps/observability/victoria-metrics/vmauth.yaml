@@ -11,3 +11,16 @@ spec:
   userSelector:
     matchLabels:
       app.kubernetes.io/name: vm-query
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAuth
+metadata:
+  name: alertmanager
+  namespace: victoria-metrics
+spec:
+  userNamespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: victoria-metrics
+  userSelector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager

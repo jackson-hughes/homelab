@@ -27,3 +27,24 @@ spec:
       target_path_suffix: /select/0/prometheus
       paths:
         - /api/.*
+---
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMUser
+metadata:
+  name: alertmanager-admin
+  namespace: victoria-metrics
+  labels:
+    app.kubernetes.io/name: alertmanager
+spec:
+  name: alertmanager-admin
+  username: admin
+  passwordRef:
+    name: vm-query-auth
+    key: password
+  targetRefs:
+    - crd:
+        kind: VMAlertmanager
+        name: vm
+        namespace: victoria-metrics
+      paths:
+        - /.*

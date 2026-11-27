@@ -30,8 +30,11 @@ spec:
         enabled: true
         matchRule: Host(`traefik.ducknet.io`)
         entryPoints:
-          - web
           - websecure
+        middlewares:
+          - name: dashboard-auth
+        tls:
+          secretName: traefik-ducknet-tls
     providers:
       kubernetesGateway:
         enabled: true

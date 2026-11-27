@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: traefik
 resources:
   - certificate.yaml
+  - dashboard-auth.yaml
