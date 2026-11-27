@@ -18,7 +18,7 @@ Install dependencies:
 
 To apply all:
 
-    ansible-playbook --playbooks/site.yml
+    ansible-playbook playbooks/site.yml
 
 ## Useful commands
 
