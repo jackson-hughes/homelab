@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Validate the Flux kustomize trees: build each entry point with kustomize,
 # check every resource against its schema with kubeconform, and verify that
-# every Flux source/reconciler is covered by a Flux Alert.
+# every Flux source/reconciler is covered by a Flux Alert and every
+# ExternalSecret's namespace is allowed by its ClusterSecretStore.
 #
 # Used by CI (.github/workflows/kubernetes.yaml) and the pre-commit hook.
 #
@@ -233,5 +234,54 @@ if [ "${build_failed}" -eq 0 ]; then
   ' "${all_yaml}" || rc=1
 else
   echo "==> flux alert coverage (skipped: kustomize build failed)"
+fi
+
+# A ClusterSecretStore with spec.conditions refuses ExternalSecrets from
+# unlisted namespaces. Verify every ExternalSecret's namespace is listed in
+# spec.conditions[].namespaces of the ClusterSecretStore it references
+# Not evaluated: stores whose conditions use namespaceSelector/namespaceRegexes
+# (skipped), data[]/dataFrom[] sourceRef.storeRef, and ClusterExternalSecrets.
+if [ "${build_failed}" -eq 0 ]; then
+  echo "==> cluster secret store namespace conditions"
+  awk '
+    function val(line) {
+      sub(/^[^:]*:[ \t]*/, "", line)
+      gsub(/^["\047]|["\047][ \t]*$/, "", line)
+      return line
+    }
+    function flush() {
+      if (kind == "ExternalSecret" && store_kind == "ClusterSecretStore")
+        used[store, (ns != "" ? ns : "default"), name] = 1
+      kind = ns = name = store = store_kind = section = sub_section = ""
+    }
+    /^---/ { flush(); next }
+    /^kind:/ { kind = val($0) }
+    /^[a-zA-Z]/ { section = $1; sub_section = ""; next }
+    section == "metadata:" && /^  name:/ { name = val($0) }
+    section == "metadata:" && /^  namespace:/ { ns = val($0) }
+    section == "spec:" && /^  [a-zA-Z]/ { sub_section = $1 }
+    sub_section == "secretStoreRef:" && /^    kind:/ { store_kind = val($0) }
+    sub_section == "secretStoreRef:" && /^    name:/ { store = val($0) }
+    kind == "ClusterSecretStore" && sub_section == "conditions:" && /^ +- [a-z0-9-]+$/ {
+      if (name != "") { v = $0; sub(/^ +- /, "", v); allowed[name, v] = 1 }
+    }
+    kind == "ClusterSecretStore" && sub_section == "conditions:" && /namespace(Selector|Regexes):/ { unchecked[name] = 1 }
+    kind == "ClusterSecretStore" && section == "spec:" && /^  conditions:/ { conditioned[name] = 1 }
+    END {
+      flush()
+      for (k in used) {
+        split(k, p, SUBSEP)
+        if ((p[1] in conditioned) && !(p[1] in unchecked) && !((p[1], p[2]) in allowed)) {
+          printf "error: ExternalSecret %s/%s uses ClusterSecretStore %s, whose spec.conditions do not list namespace %s\n", p[2], p[3], p[1], p[2] | "sort >&2"
+          missing = 1
+        }
+      }
+      close("sort >&2")
+      if (missing) exit 1
+      print "Summary: all ExternalSecret namespaces allowed by their ClusterSecretStore"
+    }
+  ' "${all_yaml}" || rc=1
+else
+  echo "==> cluster secret store namespace conditions (skipped: kustomize build failed)"
 fi
 exit "${rc}"
