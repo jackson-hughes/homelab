@@ -20,11 +20,8 @@ spec:
     fullnameOverride: plex
 
     image:
-      tag: "latest"
-      # The chart defaults to IfNotPresent, which would keep serving whichever
-      # `latest` the node first cached. Always makes each pod start re-resolve
-      # the tag; updates therefore land on pod restart, not on a timer.
-      pullPolicy: Always
+      repository: plexinc/pms-docker
+      tag: "1.43.5.11079-b3b13e506"
 
     extraEnv:
       # Inside a pod Plex only sees the pod IP, which is unroutable from the LAN;

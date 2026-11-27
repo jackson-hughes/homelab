@@ -10,7 +10,40 @@
   "kubernetes": {
     "managerFilePatterns": ["/kubernetes/.+\\.ya?ml$/"]
   },
+  "docker-compose": {
+    "managerFilePatterns": ["/^infra/ansible/.+compose\\.ya?ml\\.j2$/"]
+  },
+  "packageRules": [
+    {
+      "description": "Plex tags end in a per-release commit hash, which default docker versioning would treat as a fixed compatibility suffix",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["plexinc/pms-docker"],
+      "versioning": "regex:^(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)-[0-9a-f]+$"
+    },
+    {
+      "description": "gluetun tracks latest (master) because releases lag it by months; digest updates of an unversioned tag carry no release timestamp, so minimumReleaseAge would hold them forever",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["qmcgaw/gluetun"],
+      "matchUpdateTypes": ["digest"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "description": "ECR Public returns no release timestamps, so minimumReleaseAge would hold every redis update forever",
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["public.ecr.aws/docker/library/redis"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    }
+  ],
   "customManagers": [
+    {
+      "customType": "regex",
+      "description": "The podinfo chart's redis image sits under redis:, not an *image key, so the flux manager's values heuristic skips it",
+      "managerFilePatterns": ["/^kubernetes/apps/podinfo/release\\.yaml$/"],
+      "matchStrings": [
+        "redis:\\n(?:\\s+\\S+: .*\\n)*?\\s+repository: (?<depName>\\S+)\\n\\s+tag: \"?(?<currentValue>[^\"\\s]+)\"?"
+      ],
+      "datasourceTemplate": "docker"
+    },
     {
       "customType": "regex",
       "description": "Flux itself is installed by flux-operator from the FluxInstance; Renovate's flux manager only reads gotk manifests, so bump spec.distribution.version here (kept exact because validate-kubernetes.sh resolves the CRD schemas from it)",
