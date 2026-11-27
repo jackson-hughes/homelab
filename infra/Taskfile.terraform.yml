@@ -11,27 +11,38 @@ tasks:
     silent: true
 
   init:
-    run: once
     desc: Runs terraform init
+    cmds:
+      - task: _init
+        vars: {TF_INIT_ARGS: '{{.CLI_ARGS}}'}
+
+  # CLI_ARGS is global, so dependents must call this with TF_INIT_ARGS empty
+  # or their own flags (e.g. -target) reach terraform init and break it.
+  _init:
+    internal: true
+    run: once
     env: &tf-env
       B2_APPLICATION_KEY_ID: '{{.B2_APPLICATION_KEY_ID | default ""}}'
       B2_APPLICATION_KEY: '{{.B2_APPLICATION_KEY | default ""}}'
     cmds:
-      - terraform init -input=false {{.CLI_ARGS}}
+      - terraform init -input=false {{.TF_INIT_ARGS}}
 
   plan:
-    deps: [init]
+    deps: &init-dep
+      - task: _init
+        vars: {TF_INIT_ARGS: ''}
     desc: Runs terraform plan against current project
     env: *tf-env
     cmds:
       - terraform plan {{.CLI_ARGS}}
 
   apply:
-    deps: [init]
+    deps: *init-dep
     desc: Runs terraform apply against current project
+    interactive: true
     env: *tf-env
     cmds:
-      - terraform apply -auto-approve {{.CLI_ARGS}}
+      - terraform apply {{.CLI_ARGS}}
 
   fmt:
     desc: Runs terraform fmt
@@ -39,7 +50,7 @@ tasks:
       - terraform fmt -recursive {{.CLI_ARGS}}
 
   validate:
-    deps: [init]
+    deps: *init-dep
     desc: Runs terraform validate
     cmds:
       - terraform validate {{.CLI_ARGS}}
